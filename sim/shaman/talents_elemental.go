@@ -242,13 +242,24 @@ func (shaman *Shaman) applyTotemOfWrath() {
 	if !shaman.Talents.TotemOfWrath {
 		return
 	}
+	duration := time.Second * 120
+	value := 3.0
 	config := shaman.newTotemSpellConfig(int32(shaman.GetInitialStat(stats.Mana)*0.05), 30706, SpellMaskBasicTotem)
+	buffAura := shaman.RegisterAura(core.Aura{
+		Label:    "Totem Of Wrath (Self)",
+		ActionID: config.ActionID,
+		Duration: duration,
+	}).AttachStatsBuff(stats.Stats{
+		stats.SpellCritPercent:    value,
+		stats.PhysicalCritPercent: value,
+	})
 	config.ApplyEffects = func(sim *core.Simulation, target *core.Unit, spell *core.Spell) {
 		shaman.MagmaTotem.AOEDot().Deactivate(sim)
 		shaman.SearingTotem.Dot(shaman.CurrentTarget).Deactivate(sim)
 		shaman.FireElemental.Disable(sim)
 		shaman.FireNovaTotemPA.Cancel(sim)
-		shaman.TotemExpirations[FireTotem] = sim.CurrentTime + time.Second*120
+		shaman.TotemExpirations[FireTotem] = sim.CurrentTime + duration
+		buffAura.Activate(sim)
 	}
 	shaman.RegisterSpell(config)
 }

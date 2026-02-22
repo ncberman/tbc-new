@@ -87,7 +87,7 @@ func (shaman *Shaman) applyEnhancingTotems() {
 	if shaman.Talents.EnhancingTotems == 0 {
 		return
 	}
-	// TODO
+	// In totems.go
 }
 
 func (shaman *Shaman) applyFlurry() {
@@ -148,7 +148,7 @@ func (shaman *Shaman) applyImprovedWeaponTotems() {
 		FloatValue: 0.06 * float64(shaman.Talents.ImprovedWeaponTotems),
 		ClassMask:  SpellMaskFlametongueTotem,
 	})
-	//TODO WF totem bonus
+	// WF bonus in totems.go
 }
 
 func (shaman *Shaman) applyMentalQuickness() {
@@ -269,7 +269,37 @@ func (shaman *Shaman) applyUnleashedRage() {
 	if shaman.Talents.UnleashedRage == 0 {
 		return
 	}
-	// TODO
+
+	value := 1 + 0.02*float64(shaman.Talents.UnleashedRage)
+
+	unleashBuffAura := shaman.RegisterAura(core.Aura{
+		Label:    "Unleashed Rage (Self)",
+		ActionID: core.ActionID{SpellID: 30807},
+		Duration: time.Second * 10,
+	}).AttachStatDependency(shaman.NewDynamicMultiplyStat(stats.AttackPower, value))
+
+	unleashTriggerAura := shaman.MakeProcTriggerAura(core.ProcTrigger{
+		Name:               "Unleashed Rage Trigger (Self)",
+		Callback:           core.CallbackOnSpellHitDealt,
+		ProcMask:           core.ProcMaskMeleeOrMeleeProc,
+		Outcome:            core.OutcomeLanded,
+		TriggerImmediately: true,
+		Handler: func(sim *core.Simulation, _ *core.Spell, _ *core.SpellResult) {
+			unleashBuffAura.Activate(sim)
+		},
+	})
+
+	core.MakePermanent(shaman.RegisterAura(core.Aura{
+		Label: "Unleashed Rage Dummy (Self)",
+	}).NewExclusiveEffect(core.UnleashedRageCategory, false, core.ExclusiveEffect{
+		Priority: value,
+		OnGain: func(_ *core.ExclusiveEffect, sim *core.Simulation) {
+			unleashTriggerAura.Activate(sim)
+		},
+		OnExpire: func(_ *core.ExclusiveEffect, sim *core.Simulation) {
+			unleashTriggerAura.Deactivate(sim)
+		},
+	}).Aura)
 }
 
 func (shaman *Shaman) applyWeaponMastery() {
