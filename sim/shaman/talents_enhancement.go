@@ -46,19 +46,28 @@ func (shaman *Shaman) applyDualWieldSpecialization() {
 	if shaman.Talents.DualWieldSpecialization == 0 {
 		return
 	}
-	mod := shaman.AddDynamicMod(core.SpellModConfig{
-		Kind:       core.SpellMod_BonusHit_Percent,
-		FloatValue: 2 * float64(shaman.Talents.DualWieldSpecialization),
-		ProcMask:   core.ProcMaskMeleeOrRanged,
-	})
-	if shaman.AutoAttacks.IsDualWielding {
-		mod.Activate()
-	}
-	shaman.RegisterItemSwapCallback(core.AllWeaponSlots(), func(_ *core.Simulation, _ proto.ItemSlot) {
-		mod.Deactivate()
-		if shaman.AutoAttacks.IsDualWielding {
-			mod.Activate()
-		}
+	value := 2.0 * float64(shaman.Talents.DualWieldSpecialization) * core.PhysicalHitRatingPerHitPercent
+	buffed := false
+	DWaura := core.MakePermanent(shaman.RegisterAura(core.Aura{
+		Label:      "Dual Wield Specialization",
+		BuildPhase: core.CharacterBuildPhaseTalents,
+		OnGain: func(aura *core.Aura, sim *core.Simulation) {
+			if !buffed && shaman.AutoAttacks.IsDualWielding {
+				shaman.AddStatDynamic(sim, stats.MeleeHitRating, value)
+				buffed = true
+			}
+		},
+		OnExpire: func(aura *core.Aura, sim *core.Simulation) {
+			if buffed {
+				shaman.AddStatDynamic(sim, stats.MeleeHitRating, -value)
+			}
+			buffed = false
+		},
+	}))
+
+	shaman.RegisterItemSwapCallback(core.AllWeaponSlots(), func(sim *core.Simulation, _ proto.ItemSlot) {
+		DWaura.Deactivate(sim)
+		DWaura.Activate(sim)
 	})
 }
 
@@ -219,7 +228,7 @@ func (shaman *Shaman) applyShamanisticRage() {
 	shaman.RegisterSpell(core.SpellConfig{
 		ActionID:       actionId,
 		SpellSchool:    core.SpellSchoolPhysical,
-		Flags:          SpellFlagInstant,
+		Flags:          SpellFlagInstant | core.SpellFlagAPL,
 		ClassSpellMask: SpellMaskShamanisticRage,
 		Cast: core.CastConfig{
 			DefaultCast: core.Cast{
