@@ -145,7 +145,7 @@ export const P2_ARMS_EP_PRESET = PresetUtils.makePresetEpWeights(
 			[Stat.StatStrength]: 1.0,
 			[Stat.StatAgility]: 0.80,
 			[Stat.StatAttackPower]: 0.45,
-			[Stat.StatMeleeHitRating]: 0.56,
+			[Stat.StatMeleeHitRating]: 1.01,
 			[Stat.StatMeleeCritRating]: 1.10,
 			[Stat.StatMeleeHasteRating]: 0.85,
 			[Stat.StatArmorPenetration]: 0.23,

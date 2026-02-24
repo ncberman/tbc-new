@@ -162,7 +162,6 @@ export class DpsWarriorSimUI extends IndividualSimUI<Spec.SpecDpsWarrior> {
 					[HandType.HandTypeOneHand, HandType.HandTypeMainHand].includes(mainHandType) &&
 					offHandType &&
 					[HandType.HandTypeOneHand, HandType.HandTypeOffHand].includes(offHandType);
-				console.log(isFury);
 
 				const softCapToModify = softCaps.find(sc => sc.unitStat.equalsPseudoStat(PseudoStat.PseudoStatMeleeHitPercent));
 				if (softCapToModify) {
