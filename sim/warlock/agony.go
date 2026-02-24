@@ -32,6 +32,7 @@ func (warlock *Warlock) registerCurseOfAgony() {
 		ApplyEffects: func(sim *core.Simulation, target *core.Unit, spell *core.Spell) {
 			result := spell.CalcOutcome(sim, target, spell.OutcomeMagicHit)
 			if result.Landed() {
+				warlock.DeactivateOtherCurses(sim, target, warlock.CurseOfAgony)
 				spell.Dot(target).Apply(sim)
 			}
 			spell.DealOutcome(sim, result)
@@ -48,7 +49,7 @@ func (warlock *Warlock) registerCurseOfAgony() {
 			AffectedByCastSpeed: false,
 
 			OnSnapshot: func(sim *core.Simulation, target *core.Unit, dot *core.Dot) {
-				dot.Snapshot(target, 1356/12)
+				dot.Snapshot(target, 1356/float64(dot.BaseTickCount))
 			},
 
 			BonusCoefficient: agonyCoeff,

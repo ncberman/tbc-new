@@ -60,7 +60,7 @@ func (warlock *Warlock) registerImmolate() {
 			TickLength:       3 * time.Second,
 			BonusCoefficient: immolateDotCoeff,
 			OnSnapshot: func(sim *core.Simulation, target *core.Unit, dot *core.Dot) {
-				dot.Snapshot(target, 615)
+				dot.Snapshot(target, 615/float64(dot.BaseTickCount))
 			},
 			OnTick: func(sim *core.Simulation, target *core.Unit, dot *core.Dot) {
 				dot.CalcAndDealPeriodicSnapshotDamage(sim, target, dot.OutcomeTick)

@@ -50,7 +50,7 @@ message APLGroup {
 	repeated APLValueVariable variables = 3; // Variables that can be used in this group
 }
 
-// NextIndex: 29
+// NextIndex: 30
 message APLAction {
     APLValue condition = 1; // If set, action will only execute if value is true or != 0.
 
@@ -89,19 +89,18 @@ message APLAction {
         // Class or Spec-specific actions
         APLActionCatOptimalRotationAction cat_optimal_rotation_action = 18;
         APLActionGuardianHotwDpsRotation guardian_hotw_dps_rotation = 27;
+		APLActionCastWarlockAssignedCurse cast_warlock_assigned_curse = 29;
 
         // Internal use only, not exposed in UI.
         APLActionCustomRotation custom_rotation = 19;
 
         // Group reference
         APLActionGroupReference group_reference = 28;
-
-		APLActionCastWarlockAssignedCurse cast_warlock_assigned_curse = 29;
     }
 }
 
 
-// NextIndex: 129
+// NextIndex: 128
 message APLValue {
 	UUID uuid = 85;
 
@@ -229,8 +228,7 @@ message APLValue {
         APLValueTotemRemainingTime totem_remaining_time = 49;
         APLValueCatExcessEnergy cat_excess_energy = 52;
         APLValueCatNewSavageRoarDuration cat_new_savage_roar_duration = 61;
-        APLValueWarlockHandOfGuldanInFlight warlock_hand_of_guldan_in_flight = 59;
-		APLValueWarlockAssignedCurseIsActive warlock_assigned_curse_is_active = 128;
+		APLValueWarlockAssignedCurseIsActive warlock_assigned_curse_is_active = 59;
         APLValueCurrentEclipsePhase druid_current_eclipse_phase = 70;
         APLValueShamanFireElementalDuration shaman_fire_elemental_duration = 83;
 		APLValueProtectionPaladinDamageTakenLastGlobal protection_paladin_damage_taken_last_global = 100;
@@ -766,7 +764,6 @@ message APLValueTotemRemainingTime {
 }
 message APLValueCatExcessEnergy {}
 message APLValueCatNewSavageRoarDuration {}
-message APLValueWarlockHandOfGuldanInFlight {}
 message APLValueWarlockAssignedCurseIsActive {}
 message APLValueAfflictionCurrentSnapshot {
 	ActionID spell_id = 1;

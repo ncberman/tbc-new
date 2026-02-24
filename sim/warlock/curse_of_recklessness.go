@@ -5,7 +5,9 @@ import (
 )
 
 func (warlock *Warlock) registerCurseOfRecklessness() {
-	warlock.CurseOfRecklessnessAura = core.CurseOfRecklessnessAura(warlock.CurrentTarget)
+	warlock.CurseOfRecklessnessAuras = warlock.NewEnemyAuraArray(func(target *core.Unit) *core.Aura {
+		return core.CurseOfRecklessnessAura(target)
+	})
 	warlock.CurseOfRecklessness = warlock.RegisterSpell(core.SpellConfig{
 		ActionID:       core.ActionID{SpellID: 27226},
 		SpellSchool:    core.SpellSchoolShadow,
@@ -27,7 +29,8 @@ func (warlock *Warlock) registerCurseOfRecklessness() {
 		ApplyEffects: func(sim *core.Simulation, target *core.Unit, spell *core.Spell) {
 			result := spell.CalcOutcome(sim, target, spell.OutcomeMagicHit)
 			if result.Landed() {
-				warlock.CurseOfRecklessnessAura.Activate(sim)
+				warlock.DeactivateOtherCurses(sim, target, warlock.CurseOfRecklessness)
+				warlock.CurseOfRecklessnessAuras.Get(target).Activate(sim)
 			}
 
 			spell.DealOutcome(sim, result)

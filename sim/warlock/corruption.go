@@ -47,7 +47,7 @@ func (warlock *Warlock) registerCorruption() *core.Spell {
 			AffectedByCastSpeed: false,
 			BonusCoefficient:    corruptionCoeff,
 			OnSnapshot: func(sim *core.Simulation, target *core.Unit, dot *core.Dot) {
-				dot.Snapshot(target, 900/6)
+				dot.Snapshot(target, 900/float64(dot.BaseTickCount))
 			},
 			OnTick: func(sim *core.Simulation, target *core.Unit, dot *core.Dot) {
 				dot.CalcAndDealPeriodicSnapshotDamage(sim, target, dot.OutcomeTick)

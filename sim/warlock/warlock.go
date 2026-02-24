@@ -27,13 +27,12 @@ type Warlock struct {
 	LifeTap *core.Spell
 
 	// Curses
-	CurseOfAgony            *core.Spell
-	CurseOfDoom             *core.Spell
-	CurseOfElements         *core.Spell
-	CurseOfElementsAura     *core.Aura
-	CurseOfRecklessness     *core.Spell
-	CurseOfRecklessnessAura *core.Aura
-	CurseOfTongues          *core.Spell
+	CurseOfAgony             *core.Spell
+	CurseOfDoom              *core.Spell
+	CurseOfElements          *core.Spell
+	CurseOfElementsAuras     core.AuraArray
+	CurseOfRecklessness      *core.Spell
+	CurseOfRecklessnessAuras core.AuraArray
 
 	// Talent Tree Spells
 	AmplifyCurse       *core.Spell
@@ -153,22 +152,42 @@ func NewWarlock(character *core.Character, options *proto.Player, warlockOptions
 	warlock.EnableManaBar()
 	warlock.AddStatDependency(stats.Strength, stats.AttackPower, 1)
 
-	// warlock.Infernal = warlock.NewInfernalPet()
-	// warlock.Doomguard = warlock.NewDoomguardPet()
-
-	// warlock.serviceTimer = character.NewTimer()
-
 	if !warlock.Options.SacrificeSummon {
 		warlock.registerPets()
 	}
-
-	// warlock.registerGrimoireOfService()
 
 	return warlock
 }
 
 func (warlock *Warlock) AfflictionCount(target *core.Unit) float64 {
 	return float64(len(target.GetAurasWithTag("Affliction")))
+}
+
+func (w *Warlock) DeactivateOtherCurses(sim *core.Simulation, target *core.Unit, curse *core.Spell) {
+	if w.CurseOfAgony != nil && curse != w.CurseOfAgony {
+		if dot := w.CurseOfAgony.Dot(target); dot != nil {
+			if dot.IsActive() {
+				dot.Deactivate(sim)
+			}
+		}
+	}
+
+	if w.CurseOfDoom != nil && curse != w.CurseOfDoom {
+		if dot := w.CurseOfDoom.Dot(target); dot != nil {
+			if dot.IsActive() {
+				dot.Deactivate(sim)
+			}
+		}
+	}
+
+	if w.CurseOfElements != nil && curse != w.CurseOfElements {
+		w.CurseOfElementsAuras.Get(target).Deactivate(sim)
+	}
+
+	if w.CurseOfRecklessness != nil && curse != w.CurseOfRecklessness {
+		w.CurseOfRecklessnessAuras.Get(target).Deactivate(sim)
+	}
+
 }
 
 // Agent is a generic way to access underlying warlock on any of the agents.
@@ -211,7 +230,6 @@ const (
 	WarlockSpellCurseOfDoom
 	WarlockSpellCurseOfRecklessness
 	WarlockSpellCurseOfWeakness
-	WarlockSpellCurseOfTongues
 	WarlockSpellSiphonLife
 	WarlockSpellDrainSoul
 	WarlockSpellShadowFury
@@ -239,14 +257,13 @@ const (
 
 	WarlockShadowEmbraceSpells = WarlockSpellCorruption | WarlockSpellCurseOfAgony | WarlockSpellSiphonLife | WarlockSpellSeedOfCorruption
 
-	WarlockCurses = WarlockSpellCurseOfAgony | WarlockSpellCurseOfDoom | WarlockSpellCurseOfElements |
-		WarlockSpellCurseOfRecklessness | WarlockSpellCurseOfTongues | WarlockSpellCurseOfWeakness
+	WarlockCurses = WarlockSpellCurseOfAgony | WarlockSpellCurseOfDoom | WarlockSpellCurseOfElements | WarlockSpellCurseOfRecklessness
 
 	WarlockSoulLeechSpells = WarlockSpellShadowBolt | WarlockSpellShadowBurn | WarlockSpellSoulFire |
 		WarlockSpellIncinerate | WarlockSpellSearingPain | WarlockSpellConflagrate
 
 	WarlockAfflictionSpells = WarlockSpellCorruption | WarlockSpellCurseOfAgony | WarlockSpellCurseOfDoom | WarlockSpellCurseOfRecklessness | WarlockSpellCurseOfElements |
-		WarlockSpellCurseOfTongues | WarlockSpellCurseOfWeakness | WarlockSpellDrainLife |
+		WarlockSpellDrainLife |
 		WarlockSpellSeedOfCorruption | WarlockSpellDeathCoil
 
 	WarlockDemonologySpells = WarlockAllSummons

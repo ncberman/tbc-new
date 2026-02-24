@@ -1,6 +1,7 @@
 package warlock
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/wowsims/tbc/sim/core"
@@ -28,28 +29,8 @@ func (x *APLValueWarlockAssignedCurseIsActive) GetNextAction(*core.Simulation) *
 	return nil
 }
 func (x *APLValueWarlockAssignedCurseIsActive) GetSpellFromAction(sim *core.Simulation) *core.Spell {
-	switch x.warlock.Options.CurseOptions {
-	case proto.WarlockOptions_Agony:
-		return x.warlock.CurseOfAgony
-
-	case proto.WarlockOptions_Doom:
-		if sim.BaseDuration-sim.CurrentTime > time.Minute*1 {
-			return x.warlock.CurseOfDoom
-		} else {
-			return x.warlock.CurseOfAgony
-		}
-
-	case proto.WarlockOptions_Elements:
-		return x.warlock.CurseOfElements
-
-	case proto.WarlockOptions_Recklessness:
-		return x.warlock.CurseOfRecklessness
-	}
-
-	return nil
+	return x.warlock.GetAssignedCurse()
 }
-
-// func (x APLValueWarlockAssignedCurse)
 
 func (warlock *Warlock) newValueWarlockAssignedCurseIsActive(rot *core.APLRotation, config *proto.APLValueWarlockAssignedCurseIsActive) core.APLValue {
 	return &APLValueWarlockAssignedCurseIsActive{
@@ -69,7 +50,7 @@ func (x *APLValueWarlockAssignedCurseIsActive) GetBool(sim *core.Simulation) boo
 }
 
 func (x *APLValueWarlockAssignedCurseIsActive) String() string {
-	return "Cast Assigned Curse"
+	return fmt.Sprintf("Is Assigned Curse Active (%s)", x.warlock.GetAssignedCurse().ActionID)
 }
 
 func (warlock *Warlock) NewAPLAction(rot *core.APLRotation, config *proto.APLAction) core.APLActionImpl {
@@ -97,26 +78,7 @@ func (x *APLActionCastWarlockAssignedCurse) ReResolveVariableRefs(*core.APLRotat
 }
 
 func (x *APLActionCastWarlockAssignedCurse) GetSpellFromAction(sim *core.Simulation) *core.Spell {
-
-	switch x.warlock.Options.CurseOptions {
-	case proto.WarlockOptions_Agony:
-		return x.warlock.CurseOfAgony
-
-	case proto.WarlockOptions_Doom:
-		if sim.BaseDuration-sim.CurrentTime > time.Minute*1 {
-			return x.warlock.CurseOfDoom
-		} else {
-			return x.warlock.CurseOfAgony
-		}
-
-	case proto.WarlockOptions_Elements:
-		return x.warlock.CurseOfElements
-
-	case proto.WarlockOptions_Recklessness:
-		return x.warlock.CurseOfRecklessness
-	}
-
-	return nil
+	return x.warlock.GetAssignedCurse()
 }
 
 func (warlock *Warlock) newActionWarlockAssignedCurseAction(_ *core.APLRotation, _ *proto.APLActionCastWarlockAssignedCurse) core.APLActionImpl {
@@ -134,9 +96,27 @@ func (x *APLActionCastWarlockAssignedCurse) IsReady(sim *core.Simulation) bool {
 }
 
 func (x *APLActionCastWarlockAssignedCurse) Reset(*core.Simulation) {
-	x.lastAction = core.DurationFromSeconds(-100)
+	x.lastAction = -core.NeverExpires
 }
 
 func (x *APLActionCastWarlockAssignedCurse) String() string {
-	return "Cast Assigned Curse"
+	return fmt.Sprintf("Cast Assigned Curse(%s)", x.warlock.GetAssignedCurse().ActionID)
+}
+
+func (warlock *Warlock) GetAssignedCurse() *core.Spell {
+	switch warlock.Options.CurseOptions {
+	case proto.WarlockOptions_Agony:
+		return warlock.CurseOfAgony
+
+	case proto.WarlockOptions_Doom:
+		return warlock.CurseOfDoom
+
+	case proto.WarlockOptions_Elements:
+		return warlock.CurseOfElements
+
+	case proto.WarlockOptions_Recklessness:
+		return warlock.CurseOfRecklessness
+	}
+
+	return nil
 }

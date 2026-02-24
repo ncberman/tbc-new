@@ -7,7 +7,9 @@ import (
 )
 
 func (warlock *Warlock) registerCurseOfElements() {
-	warlock.CurseOfElementsAura = core.CurseOfElementsAura(warlock.CurrentTarget, warlock.Talents.Malediction)
+	warlock.CurseOfElementsAuras = warlock.NewEnemyAuraArray(func(target *core.Unit) *core.Aura {
+		return core.CurseOfElementsAura(target, warlock.Talents.Malediction)
+	})
 	warlock.CurseOfElements = warlock.RegisterSpell(core.SpellConfig{
 		ActionID:       core.ActionID{SpellID: 27228},
 		SpellSchool:    core.SpellSchoolShadow,
@@ -30,7 +32,8 @@ func (warlock *Warlock) registerCurseOfElements() {
 		ApplyEffects: func(sim *core.Simulation, target *core.Unit, spell *core.Spell) {
 			result := spell.CalcOutcome(sim, target, spell.OutcomeMagicHit)
 			if result.Landed() {
-				warlock.CurseOfElementsAura.Activate(sim)
+				warlock.DeactivateOtherCurses(sim, target, warlock.CurseOfElements)
+				warlock.CurseOfElementsAuras.Get(target).Activate(sim)
 			}
 
 			spell.DealOutcome(sim, result)
