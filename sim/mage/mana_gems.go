@@ -21,7 +21,7 @@ func (mage *Mage) registerManaGems() {
 		remainingManaGems = maxManaGems
 	})
 
-	spell := mage.RegisterSpell(core.SpellConfig{
+	mage.RegisterSpell(core.SpellConfig{
 		ActionID: actionID,
 		Flags:    core.SpellFlagNoOnCastComplete | core.SpellFlagAPL | core.SpellFlagHelpful,
 
@@ -43,22 +43,6 @@ func (mage *Mage) registerManaGems() {
 		ApplyEffects: func(sim *core.Simulation, _ *core.Unit, _ *core.Spell) {
 			manaGain = sim.Roll(minManaGain, maxManaGain)
 			mage.AddMana(sim, manaGain, manaMetrics)
-
-			remainingManaGems--
-			if remainingManaGems == 0 {
-				mage.GetMajorCooldown(actionID).Disable()
-			}
-		},
-	})
-
-	mage.AddMajorCooldown(core.MajorCooldown{
-		Spell:    spell,
-		Priority: core.CooldownPriorityDefault,
-		Type:     core.CooldownTypeMana,
-		ShouldActivate: func(sim *core.Simulation, character *core.Character) bool {
-			// Only pop if we have less than the max mana provided by the gem minus 1mp5 tick.
-			totalRegen := character.ManaRegenPerSecondWhileCombat() * 5
-			return character.MaxMana()-(character.CurrentMana()+totalRegen) >= maxManaGain
 		},
 	})
 }
