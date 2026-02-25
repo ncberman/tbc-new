@@ -228,7 +228,6 @@ message APLValue {
         APLValueCatNewSavageRoarDuration cat_new_savage_roar_duration = 61;
         APLValueWarlockHandOfGuldanInFlight warlock_hand_of_guldan_in_flight = 59;
         APLValueCurrentEclipsePhase druid_current_eclipse_phase = 70;
-        APLValueShamanFireElementalDuration shaman_fire_elemental_duration = 83;
 		APLValueProtectionPaladinDamageTakenLastGlobal protection_paladin_damage_taken_last_global = 100;
 		APLValueAfflictionCurrentSnapshot affliction_current_snapshot = 123;
 
@@ -764,7 +763,6 @@ message APLValueAfflictionCurrentSnapshot {
 	ActionID spell_id = 1;
 	UnitReference target_unit = 2;
 }
-message APLValueShamanFireElementalDuration {}
 
 message APLValueProtectionPaladinDamageTakenLastGlobal {}
 
