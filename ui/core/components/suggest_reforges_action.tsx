@@ -1202,7 +1202,7 @@ export class ReforgeOptimizer {
 		const gemsToInclude = new Map<GemColor, GemData[]>();
 
 		const hasJC = this.player.hasProfession(Profession.Jewelcrafting);
-		const epStats = this.simUI.individualConfig.epStats;
+		const epStats = [...this.simUI.individualConfig.epStats];
 
 		if (epStats.includes(Stat.StatAttackPower) && !epStats.includes(Stat.StatRangedAttackPower)) {
 			epStats.push(Stat.StatRangedAttackPower);

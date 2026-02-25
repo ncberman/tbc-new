@@ -11,7 +11,6 @@ import * as Mechanics from '../../core/constants/mechanics';
 import * as Presets from './presets';
 import * as WarriorPresets from '../presets';
 import * as WarriorInputs from '../inputs';
-import { StatCapType } from '../../core/proto/ui';
 
 const SPEC_CONFIG = registerSpecConfig(Spec.SpecProtectionWarrior, {
 	cssClass: 'protection-warrior-sim-ui',

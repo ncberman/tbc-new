@@ -82,16 +82,16 @@ export const P1_FURY_EP_PRESET = PresetUtils.makePresetEpWeights(
 	Stats.fromMap(
 		{
 			[Stat.StatStrength]: 1.0,
-			[Stat.StatAgility]: 0.65,
-			[Stat.StatAttackPower]: 0.46,
-			[Stat.StatMeleeHitRating]: 0.57,
-			[Stat.StatMeleeCritRating]: 0.88,
-			[Stat.StatMeleeHasteRating]: 0.9,
+			[Stat.StatAgility]: 0.79,
+			[Stat.StatAttackPower]: 0.45,
+			[Stat.StatMeleeHitRating]: 0.56,
+			[Stat.StatMeleeCritRating]: 1.07,
+			[Stat.StatMeleeHasteRating]: 0.92,
 			[Stat.StatArmorPenetration]: 0.15,
-			[Stat.StatExpertiseRating]: 0.99,
+			[Stat.StatExpertiseRating]: 1.14,
 		},
 		{
-			[PseudoStat.PseudoStatMainHandDps]: 2.65,
+			[PseudoStat.PseudoStatMainHandDps]: 2.82,
 			[PseudoStat.PseudoStatOffHandDps]: 1.5,
 		},
 	),

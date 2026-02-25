@@ -218,7 +218,7 @@ func buildStatWeightRequests(swr *proto.StatWeightsRequest) *proto.StatWeightReq
 			statModsHigh[stats.MeleeHitRating] = 0
 		} else if strings.Contains(statName, "Hit") {
 			statModsLow[stats.SpellHitRating] = 0
-			statModsLow[stats.SpellHitRating] = 0
+			statModsHigh[stats.SpellHitRating] = 0
 		} else if strings.Contains(statName, "MeleeCrit") {
 			statModsLow[stats.MeleeCritRating] = 0
 			statModsHigh[stats.MeleeCritRating] = 0
@@ -235,7 +235,7 @@ func buildStatWeightRequests(swr *proto.StatWeightsRequest) *proto.StatWeightReq
 		}
 
 		var lowSimRequest *proto.RaidSimRequest
-		if statModsLow[stat] > 0 {
+		if statModsLow[stat] != 0 {
 			lowSimRequest = googleProto.Clone(swBaseResponse.BaseRequest).(*proto.RaidSimRequest)
 			stat.AddToStatsProto(lowSimRequest.Raid.Parties[0].Players[0].BonusStats, statModsLow[stat])
 		}
