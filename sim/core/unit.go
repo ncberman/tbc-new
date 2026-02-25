@@ -915,6 +915,12 @@ func (unit *Unit) GetDefenseReduction() float64 {
 	return math.Floor(unit.stats[stats.DefenseRating]/DefenseRatingPerDefenseLevel) * MissDodgeParryBlockCritChancePerDefense / 100
 }
 
+func (unit *Unit) GetCritImmunityPercent() float64 {
+	return unit.GetDefenseReduction() +
+		unit.GetStat(stats.ResilienceRating)/ResilienceRatingPerCritReductionChance/100 +
+		unit.PseudoStats.ReducedCritTakenChance
+}
+
 func (unit *Unit) GetTotalAvoidanceChance(spell *Spell, atkTable *AttackTable) float64 {
 	miss := unit.GetTotalChanceToBeMissedAsDefender(atkTable)
 	dodge := unit.GetTotalDodgeChanceAsDefender(spell, atkTable)
