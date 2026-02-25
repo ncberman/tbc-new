@@ -74,7 +74,7 @@ export function CursesSection(parentElem: HTMLElement, simUI: IndividualSimUI<an
 	contentBlock.bodyElement.appendChild(curses);
 
 	buildIconInput(curses, simUI.player,
-		makeCursePicker(WarlockOptions_CurseOptions.Agony, 980));
+		makeCursePicker(WarlockOptions_CurseOptions.Agony, 27218));
 
 	buildIconInput(curses, simUI.player,
 		makeCursePicker(WarlockOptions_CurseOptions.Doom, 603));

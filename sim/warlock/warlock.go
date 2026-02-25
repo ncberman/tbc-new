@@ -164,6 +164,7 @@ func (warlock *Warlock) AfflictionCount(target *core.Unit) float64 {
 }
 
 func (w *Warlock) DeactivateOtherCurses(sim *core.Simulation, target *core.Unit, curse *core.Spell) {
+
 	if w.CurseOfAgony != nil && curse != w.CurseOfAgony {
 		if dot := w.CurseOfAgony.Dot(target); dot != nil {
 			if dot.IsActive() {

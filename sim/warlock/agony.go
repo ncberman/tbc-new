@@ -44,9 +44,10 @@ func (warlock *Warlock) registerCurseOfAgony() {
 				Tag:   "Affliction",
 			},
 
-			TickLength:          2 * time.Second,
-			NumberOfTicks:       12,
-			AffectedByCastSpeed: false,
+			TickLength:               2 * time.Second,
+			NumberOfTicks:            12,
+			AffectedByCastSpeed:      false,
+			PeriodicDamageMultiplier: 1,
 
 			OnSnapshot: func(sim *core.Simulation, target *core.Unit, dot *core.Dot) {
 				dot.Snapshot(target, 1356/float64(dot.BaseTickCount))
@@ -68,7 +69,7 @@ func (warlock *Warlock) registerCurseOfAgony() {
 				result.Damage /= dot.TickPeriod().Seconds()
 				return result
 			} else {
-				result := spell.CalcPeriodicDamage(sim, target, 1000, spell.OutcomeExpectedMagicCrit)
+				result := spell.CalcPeriodicDamage(sim, target, 1356/float64(dot.BaseTickCount), spell.OutcomeExpectedMagicCrit)
 				result.Damage *= 10
 				result.Damage /= dot.CalcTickPeriod().Round(time.Millisecond).Seconds()
 				return result

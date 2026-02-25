@@ -6,7 +6,6 @@
 	],
 	"priorityList": [
 	{"action":{"condition":{"not":{"val":{"warlockAssignedCurseIsActive":{}}}},"castWarlockAssignedCurse":{}}},
-	{"action":{"condition":{"not":{"val":{"warlockAssignedCurseIsActive":{}}}},"castWarlockAssignedCurse":{}}},
 	{"action":{"condition":{"not":{"val":{"dotIsActive":{"spellId":{"spellId":348}}}}},"castSpell":{"spellId":{"spellId":348}}}},
 	{"action":{"condition":{"not":{"val":{"dotIsActive":{"spellId":{"spellId":30405}}}}},"castSpell":{"spellId":{"spellId":30405}}}},
 	{"action":{"condition":{"not":{"val":{"dotIsActive":{"spellId":{"spellId":172}}}}},"castSpell":{"spellId":{"spellId":172}}}},

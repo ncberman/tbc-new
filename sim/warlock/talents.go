@@ -101,13 +101,16 @@ func (warlock *Warlock) registerAmplifyCurse() {
 	}
 
 	actionID := core.ActionID{SpellID: 18288}
-	warlock.AmplifyCurseAura = warlock.MakeProcTriggerAura(core.ProcTrigger{
-		Name:           "Amplify Curse Aura",
-		ActionID:       actionID,
-		ClassSpellMask: WarlockSpellCurseOfAgony,
-		Callback:       core.CallbackOnApplyEffects,
-		Handler: func(sim *core.Simulation, spell *core.Spell, result *core.SpellResult) {
-			spell.DamageMultiplier *= 1.5
+
+	warlock.AmplifyCurseAura = warlock.GetOrRegisterAura(core.Aura{
+		Label:    "Amplify Curse",
+		Tag:      "Affliction",
+		ActionID: actionID,
+		OnApplyEffects: func(aura *core.Aura, sim *core.Simulation, target *core.Unit, spell *core.Spell) {
+			if spell.Matches(WarlockSpellCurseOfAgony | WarlockSpellCurseOfDoom) {
+				spell.DamageMultiplier *= 1.5
+				warlock.AmplifyCurseAura.Deactivate(sim)
+			}
 		},
 	})
 
@@ -126,7 +129,6 @@ func (warlock *Warlock) registerAmplifyCurse() {
 		ApplyEffects: func(sim *core.Simulation, _ *core.Unit, _ *core.Spell) {
 			warlock.AmplifyCurseAura.Activate(sim)
 		},
-		RelatedSelfBuff: warlock.AmplifyCurseAura,
 	})
 
 	warlock.AddMajorCooldown(core.MajorCooldown{
@@ -140,12 +142,12 @@ func (warlock *Warlock) applyImprovedCurseOfAgony() {
 		return
 	}
 
-	//This is a flat X% dot dmg buff, technically incorrect, fix later
 	warlock.AddStaticMod(core.SpellModConfig{
 		Kind:       core.SpellMod_DotDamageDone_Pct,
 		FloatValue: 0.05 * float64(warlock.Talents.ImprovedCurseOfAgony),
 		ClassMask:  WarlockSpellCurseOfAgony,
 	})
+
 }
 
 func (warlock *Warlock) applyNightfall() {
@@ -237,7 +239,7 @@ func (warlock *Warlock) applyContagion() {
 	}
 
 	warlock.AddStaticMod(core.SpellModConfig{
-		Kind:       core.SpellMod_DamageDone_Pct,
+		Kind:       core.SpellMod_DotDamageDone_Pct,
 		FloatValue: 0.01 * float64(warlock.Talents.Contagion),
 		ClassMask:  WarlockContagionSpells,
 	})
@@ -411,8 +413,7 @@ func (warlock *Warlock) applyDemonicKnowledge() {
 	if warlock.Talents.DemonicKnowledge == 0 {
 		return
 	}
-	// bonus := (0.04 * float64(warlock.Talents.DemonicKnowledge)) * (warlock.ActivePet.GetStat(stats.Stamina) + warlock.ActivePet.GetStat(stats.Intellect))
-	// warlock.DemonicKnowledgeAura = warlock.NewTemporaryStatsAura("Demonic Knowledge", core.ActionID{SpellID: 35693}, stats.Stats{stats.SpellDamage: bonus}, core.NeverExpires).Aura
+
 	warlock.DemonicKnowledgeAura = warlock.RegisterAura(core.Aura{
 		Label:    "Demonic Knowledge",
 		Duration: core.NeverExpires,
