@@ -98,7 +98,7 @@ func makeStatBuff(char *Character, config BuffConfig) *Aura {
 
 	baseAura := char.GetOrRegisterAura(Aura{
 		Label:      config.Label,
-		ActionID:   config.ActionID,
+		ActionID:   config.ActionID.WithTag(-1),
 		Duration:   TernaryDuration(config.Duration > 0, config.Duration, NeverExpires),
 		BuildPhase: CharacterBuildPhaseBuffs,
 		OnReset: func(aura *Aura, sim *Simulation) {
@@ -766,7 +766,7 @@ func WindfuryTotemAura(char *Character, isImpoved bool) *Aura {
 
 	wfAura := char.GetOrRegisterAura(Aura{
 		Label:    "Windfury Totem",
-		ActionID: ActionID{SpellID: 25587},
+		ActionID: ActionID{SpellID: 25587, Tag: -1},
 		Duration: time.Second * 10,
 	}).ApplyOnInit(func(aura *Aura, sim *Simulation) {
 		config := *char.AutoAttacks.MHConfig()
