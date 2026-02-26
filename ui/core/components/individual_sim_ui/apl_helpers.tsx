@@ -131,9 +131,13 @@ const actionIdSets: Record<
 					},
 				],
 				(spells || []).map(actionId => {
+					const baseActionName = actionId.id.name.replace(/ \(Rank \d+\)/g, '') + " ";
+					const rankedNameRegex = new RegExp(`${baseActionName.replace('(', '\\(').replace(')', '\\)')} \\(Rank [0-9]+\\)`);
+					const hasRanks = actionId.data.hasRanks || spells.filter(spell => !!spell.id.name.match(rankedNameRegex)).length > 1;
+
 					return {
 						value: actionId.id,
-						submenu: ['spell'],
+						submenu: hasRanks ? ['spell', baseActionName] : ['spell'],
 						extraCssClasses: actionId.data.prepullOnly
 							? ['apl-prepull-actions-only']
 							: actionId.data.encounterOnly
