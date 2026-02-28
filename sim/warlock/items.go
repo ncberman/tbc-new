@@ -99,7 +99,10 @@ var ItemSetCorruptorRaiment = core.NewItemSet(core.ItemSet{
 				Outcome:  core.OutcomeLanded,
 				Callback: core.CallbackOnSpellHitDealt,
 				Handler: func(sim *core.Simulation, spell *core.Spell, result *core.SpellResult) {
-					agent.(WarlockAgent).GetWarlock().ActivePet.GainHealth(sim, result.Damage*0.15, healthMetric)
+					for _, pet := range agent.(WarlockAgent).GetWarlock().Pets {
+						pet.GainHealth(sim, result.Damage*0.15, healthMetric)
+					}
+
 				},
 			})
 
@@ -211,15 +214,14 @@ func init() {
 	core.NewItemEffect(32493, func(agent core.Agent) {
 		// Ashtongue Talisman of Shadows
 		warlock := agent.(WarlockAgent).GetWarlock()
+		ashtongueAura := warlock.NewTemporaryStatsAura("Ashtongue Talisman of Shadows Proc", core.ActionID{SpellID: 40478}, stats.Stats{stats.SpellDamage: 220}, time.Second*5)
 		procAura := warlock.MakeProcTriggerAura(core.ProcTrigger{
 			Name:           "Ashtongue Talisman of Shadows",
 			ClassSpellMask: WarlockSpellCorruption,
 			Callback:       core.CallbackOnPeriodicDamageDealt,
+			ProcChance:     0.20,
 			Handler: func(sim *core.Simulation, spell *core.Spell, result *core.SpellResult) {
-				if !sim.Proc(0.20, "Ashtongue Talisman of Shadows") {
-					return
-				}
-				warlock.NewTemporaryStatsAura("Ashtongue Talisman of Shadows Proc", core.ActionID{SpellID: 40478}, stats.Stats{stats.SpellDamage: 220}, time.Second*5)
+				ashtongueAura.Activate(sim)
 			},
 		})
 

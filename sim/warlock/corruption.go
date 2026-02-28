@@ -11,7 +11,7 @@ const corruptionCoeff = 0.156
 func (warlock *Warlock) registerCorruption() *core.Spell {
 
 	warlock.Corruption = warlock.RegisterSpell(core.SpellConfig{
-		ActionID:       core.ActionID{SpellID: 172},
+		ActionID:       core.ActionID{SpellID: 27216},
 		SpellSchool:    core.SpellSchoolShadow,
 		ProcMask:       core.ProcMaskSpellDamage,
 		Flags:          core.SpellFlagAPL,

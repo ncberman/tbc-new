@@ -157,6 +157,7 @@ func (warlock *Warlock) registerPets() {
 	warlock.Succubus = warlock.registerSuccubus()
 	warlock.Felhunter = warlock.registerFelHunter()
 	warlock.Voidwalker = warlock.registerVoidWalker()
+	warlock.Felguard = warlock.registerFelguard()
 }
 
 func (warlock *Warlock) registerImp() *WarlockPet {
@@ -211,6 +212,39 @@ func (warlock *Warlock) registerSuccubusWithName(name string, enabledOnStart boo
 	return pet
 }
 
+func (warlock *Warlock) registerFelguard() *WarlockPet {
+	name := proto.WarlockOptions_Summon_name[int32(proto.WarlockOptions_Felguard)]
+	enabledOnStart := proto.WarlockOptions_Felguard == warlock.Options.Summon
+	return warlock.registerFelguardWithName(name, enabledOnStart, false)
+}
+
+func (warlock *Warlock) registerFelguardWithName(name string, enabledOnStart bool, isGuardian bool) *WarlockPet {
+	pet := warlock.RegisterPet(proto.WarlockOptions_Felguard, 173, 232, name, enabledOnStart, isGuardian)
+	pet.registerCleaveSpell()
+	dfDep := pet.NewDynamicMultiplyStat(stats.AttackPower, 1.5)
+
+	dfAura := pet.GetOrRegisterAura(core.Aura{
+		Label:     "Demonic Frenzy",
+		ActionID:  core.ActionID{SpellID: 32850},
+		MaxStacks: 5,
+		OnStacksChange: func(aura *core.Aura, sim *core.Simulation, oldStacks, newStacks int32) {
+			aura.AttachStatDependency(dfDep)
+		},
+	})
+	pet.MakeProcTriggerAura(core.ProcTrigger{
+		Name:     "Demonic Frenzy",
+		ActionID: core.ActionID{SpellID: 32850},
+		ProcMask: core.ProcMaskMeleeMHAuto | core.ProcMaskMeleeMHSpecial,
+		Outcome:  core.OutcomeLanded,
+		Callback: core.CallbackOnSpellHitDealt,
+		Handler: func(sim *core.Simulation, spell *core.Spell, _ *core.SpellResult) {
+			dfAura.AddStack(sim)
+		},
+	})
+	pet.MinMana = 190
+	return pet
+}
+
 func (warlock *Warlock) RegisterPet(
 	t proto.WarlockOptions_Summon,
 	min float64,
@@ -230,6 +264,7 @@ func (warlock *Warlock) RegisterPet(
 	}
 
 	inheritance := warlock.SimplePetStatInheritanceWithScale()
+
 	return warlock.makePet(name, enabledOnStart, *baseStats, attackOptions, inheritance, isGuardian)
 }
 
@@ -262,7 +297,7 @@ func (pet *WarlockPet) ExecuteCustomRotation(sim *core.Simulation) {
 	pet.WaitUntil(sim, sim.CurrentTime+waitUntil+time.Millisecond*100)
 }
 
-var petActionFireBolt = core.ActionID{SpellID: 3110}
+var petActionFireBolt = core.ActionID{SpellID: 27267}
 
 func (pet *WarlockPet) registerFireboltSpell() {
 	pet.AutoCastAbilities = append(pet.AutoCastAbilities, pet.RegisterSpell(core.SpellConfig{
@@ -297,7 +332,7 @@ func (pet *WarlockPet) registerFireboltSpell() {
 	}))
 }
 
-var petActionLashOfPain = core.ActionID{SpellID: 7814}
+var petActionLashOfPain = core.ActionID{SpellID: 27274}
 
 func (pet *WarlockPet) registerLashOfPainSpell() {
 	pet.AutoCastAbilities = append(pet.AutoCastAbilities, pet.RegisterSpell(core.SpellConfig{
@@ -349,6 +384,33 @@ func (pet *WarlockPet) registerTormentSpell() {
 		},
 		ApplyEffects: func(sim *core.Simulation, target *core.Unit, spell *core.Spell) {
 			result := spell.CalcDamage(sim, target, 1000, spell.OutcomeMagicHitAndCrit)
+			spell.DealDamage(sim, result)
+		},
+	}))
+}
+
+var petActionCleave = core.ActionID{SpellID: 30223}
+
+func (pet *WarlockPet) registerCleaveSpell() {
+	pet.AutoCastAbilities = append(pet.AutoCastAbilities, pet.RegisterSpell(core.SpellConfig{
+		ActionID:         petActionCleave,
+		SpellSchool:      core.SpellSchoolPhysical,
+		ProcMask:         core.ProcMaskMeleeMHSpecial,
+		ClassSpellMask:   WarlockSpellFelguardCleave,
+		DamageMultiplier: 1,
+		CritMultiplier:   2,
+		ThreatMultiplier: 1,
+		ManaCost: core.ManaCostOptions{
+			FlatCost: 295,
+		},
+		Cast: core.CastConfig{
+			DefaultCast: core.Cast{
+				GCD: core.GCDDefault,
+			},
+		},
+		ApplyEffects: func(sim *core.Simulation, target *core.Unit, spell *core.Spell) {
+			dmgRoll := pet.CalcAndRollDamageRange(sim, 270, 320) + 78
+			result := spell.CalcDamage(sim, target, dmgRoll, spell.OutcomeMeleeSpecialHitAndCrit)
 			spell.DealDamage(sim, result)
 		},
 	}))

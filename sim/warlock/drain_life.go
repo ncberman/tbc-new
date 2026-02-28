@@ -10,7 +10,7 @@ import (
 const drainLifeCoeff = 0.143
 
 func (warlock *Warlock) registerDrainLife() {
-	healthMetric := warlock.NewHealthMetrics(core.ActionID{SpellID: 689})
+	healthMetric := warlock.NewHealthMetrics(core.ActionID{SpellID: 27220})
 	resultSlice := make(core.SpellResultSlice, 1)
 
 	cappedDmgBonus := 1.24

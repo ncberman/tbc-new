@@ -10,7 +10,7 @@ const agonyCoeff = 0.1
 
 func (warlock *Warlock) registerCurseOfAgony() {
 	warlock.CurseOfAgony = warlock.RegisterSpell(core.SpellConfig{
-		ActionID:       core.ActionID{SpellID: 980},
+		ActionID:       core.ActionID{SpellID: 27218},
 		Flags:          core.SpellFlagAPL,
 		ProcMask:       core.ProcMaskSpellDamage,
 		SpellSchool:    core.SpellSchoolShadow,

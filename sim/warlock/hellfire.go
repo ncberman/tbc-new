@@ -9,7 +9,7 @@ import (
 const hellFireCoeff = 0.095
 
 func (warlock *Warlock) registerHellfire() *core.Spell {
-	hellfireActionID := core.ActionID{SpellID: 1949}
+	hellfireActionID := core.ActionID{SpellID: 27213}
 
 	manaCost := int32(1665)
 	warlock.Hellfire = warlock.RegisterSpell(core.SpellConfig{

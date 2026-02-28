@@ -11,7 +11,7 @@ const shadowBoltCoeff = 0.857
 func (warlock *Warlock) registerShadowBolt() {
 
 	warlock.RegisterSpell(core.SpellConfig{
-		ActionID:       core.ActionID{SpellID: 686},
+		ActionID:       core.ActionID{SpellID: 27209},
 		SpellSchool:    core.SpellSchoolShadow,
 		ProcMask:       core.ProcMaskSpellDamage,
 		Flags:          core.SpellFlagAPL,

@@ -10,7 +10,7 @@ const immolateCoeff = 0.2
 const immolateDotCoeff = 0.13
 
 func (warlock *Warlock) registerImmolate() {
-	actionID := core.ActionID{SpellID: 348}
+	actionID := core.ActionID{SpellID: 27215}
 	warlock.Immolate = warlock.RegisterSpell(core.SpellConfig{
 		ActionID:       actionID,
 		SpellSchool:    core.SpellSchoolFire,
@@ -44,7 +44,7 @@ func (warlock *Warlock) registerImmolate() {
 	})
 
 	warlock.Immolate.RelatedDotSpell = warlock.RegisterSpell(core.SpellConfig{
-		ActionID:       core.ActionID{SpellID: 348}.WithTag(1),
+		ActionID:       core.ActionID{SpellID: 27215}.WithTag(1),
 		SpellSchool:    core.SpellSchoolFire,
 		ProcMask:       core.ProcMaskSpellDamage,
 		ClassSpellMask: WarlockSpellImmolateDot,

@@ -212,6 +212,7 @@ const (
 	WarlockSpellDrainSoul
 	WarlockSpellShadowFury
 	WarlockSpellDeathCoil
+	WarlockSpellFelguardCleave
 	WarlockSpellAll int64 = 1<<iota - 1
 
 	WarlockShadowDamage = WarlockSpellCorruption | WarlockSpellUnstableAffliction | WarlockSpellDrainLife | WarlockSpellCurseOfAgony |

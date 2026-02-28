@@ -5,18 +5,18 @@ import { SavedTalents } from '../../core/proto/ui';
 import { Stats } from '../../core/proto_utils/stats';
 import BlankAPL from './apls/blank.apl.json'
 import BlankGear from './gear_sets/blank.gear.json';
-import PreRaid from './gear_sets/preraid.json';
-import PreRaidFire from './gear_sets/destro_fire_preraid.json';
-import T4Set from './gear_sets/t4.json';
-import T4Fire from './gear_sets/destro_fire_t4.json';
-import T5Set from './gear_sets/t5.json';
-import T6Set from './gear_sets/t6.json';
-import ZASet from './gear_sets/za.json';
-import SWPSet from './gear_sets/swp.json';
-import AfflictionRot from './apls/affliction.json';
-import DemoRot from './apls/demonology.json';
-import DestroRot from './apls/destruction.json';
-import DestroFireRot from './apls/destro_fire.json';
+import PreRaid from './gear_sets/preraid.gear.json';
+import PreRaidFire from './gear_sets/destro_fire_preraid.gear.json';
+import T4Set from './gear_sets/t4.gear.json';
+import T4Fire from './gear_sets/destro_fire_t4.gear.json';
+import T5Set from './gear_sets/t5.gear.json';
+import T6Set from './gear_sets/t6.gear.json';
+import ZASet from './gear_sets/za.gear.json';
+import SWPSet from './gear_sets/swp.gear.json';
+import AfflictionRot from './apls/affliction.apl.json';
+import DemoRot from './apls/demonology.apl.json';
+import DestroRot from './apls/destruction.apl.json';
+import DestroFireRot from './apls/destro_fire.apl.json';
 
 // Preset options for this spec.
 // Eventually we will import these values for the raid sim too, so its good to

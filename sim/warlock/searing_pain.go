@@ -11,7 +11,7 @@ var searingPainCoeff = 0.429
 func (warlock *Warlock) registerSearingPain() {
 
 	warlock.Shadowburn = warlock.RegisterSpell(core.SpellConfig{
-		ActionID:       core.ActionID{SpellID: 5676},
+		ActionID:       core.ActionID{SpellID: 30459},
 		SpellSchool:    core.SpellSchoolFire,
 		ProcMask:       core.ProcMaskSpellDamage,
 		Flags:          core.SpellFlagAPL,

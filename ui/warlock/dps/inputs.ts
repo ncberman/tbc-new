@@ -23,19 +23,7 @@ export const PetInput = <SpecType extends WarlockSpecs>() =>
 			{ actionId: ActionId.fromSpellId(688), value: Summon.Imp },
 			{ actionId: ActionId.fromSpellId(712), value: Summon.Succubus },
 			{ actionId: ActionId.fromSpellId(697), value: Summon.Voidwalker },
-		],
-		changeEmitter: (player: Player<SpecType>) => player.changeEmitter,
-	});
-export const PetAttackOptions = <SpecType extends WarlockSpecs>() =>
-	InputHelpers.makeClassOptionsEnumInput<SpecType, Summon>({
-		fieldName: 'summon',
-		label: 'peinput2' ,
-		values: [
-			{ value: Summon.NoSummon, name: 'No Pet', },
-			{ value: Summon.Felhunter, name: 'FelHunter'},
-			{ value: Summon.Imp, name: 'Imp'},
-			{ value: Summon.Succubus, name: 'Succubus'},
-			{ value: Summon.Voidwalker, name: 'VoidWalker'},
+			{ actionId: ActionId.fromSpellId(30146), value: Summon.Felguard },
 		],
 		changeEmitter: (player: Player<SpecType>) => player.changeEmitter,
 	});
