@@ -292,7 +292,7 @@ func (warlock *Warlock) applyFelIntellect() {
 }
 
 func (warlock *Warlock) applyImprovedSayaad() {
-	if warlock.Talents.ImprovedSayaad == 0 || !warlock.Options.SacrificeSummon {
+	if warlock.Talents.ImprovedSayaad == 0 || warlock.Options.SacrificeSummon {
 		return
 	}
 
