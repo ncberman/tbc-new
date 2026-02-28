@@ -1,5 +1,6 @@
+import { OtherDefaults as SimUIOtherDefaults } from '../../core/individual_sim_ui';
 import * as PresetUtils from '../../core/preset_utils.js';
-import { ConsumesSpec, Profession, PseudoStat, Stat } from '../../core/proto/common.js';
+import { ConsumesSpec, HealingModel, Profession, PseudoStat, Stat } from '../../core/proto/common.js';
 import { SavedTalents } from '../../core/proto/ui.js';
 import { ProtectionWarrior_Options as ProtectionWarriorOptions, WarriorShout, WarriorStance } from '../../core/proto/warrior.js';
 import { Stats } from '../../core/proto_utils/stats';
@@ -23,14 +24,20 @@ export const P1_EP_PRESET = PresetUtils.makePresetEpWeights(
 	Stats.fromMap(
 		{
 			[Stat.StatStamina]: 1.0,
-			[Stat.StatStrength]: 1.0,
-			[Stat.StatAgility]: 0.65,
-			[Stat.StatAttackPower]: 0.46,
-			[Stat.StatMeleeHitRating]: 0.57,
+			[Stat.StatStrength]: 0.9,
+			[Stat.StatAgility]: 0.52,
+			[Stat.StatAttackPower]: 0.42,
+			[Stat.StatMeleeHitRating]: 0.47,
 			[Stat.StatMeleeCritRating]: 0.88,
-			[Stat.StatMeleeHasteRating]: 0.9,
+			[Stat.StatMeleeHasteRating]: 0.82,
 			[Stat.StatArmorPenetration]: 0.15,
-			[Stat.StatExpertiseRating]: 0.99,
+			[Stat.StatExpertiseRating]: 0.38,
+			[Stat.StatDefenseRating]: 0.32,
+			[Stat.StatParryRating]: 0.42,
+			[Stat.StatBlockRating]: 0.01,
+			[Stat.StatBlockValue]: 0.3,
+			[Stat.StatResilienceRating]: 0.01,
+			[Stat.StatArmor]: 0.05,
 		},
 		{
 			[PseudoStat.PseudoStatMainHandDps]: 0.96,
@@ -40,17 +47,17 @@ export const P1_EP_PRESET = PresetUtils.makePresetEpWeights(
 
 // Default talents. Uses the wowhead calculator format, make the talents on
 // https://wowhead.com/tbc/talent-calc and copy the numbers in the url.
-export const StandardTalents = {
-	name: 'Standard',
+export const DefaultTalents = {
+	name: 'Default',
 	data: SavedTalents.create({
-		talentsString: '350003011-05-0055511033001103501351',
+		talentsString: '35000301302-03-0055511033001101501351',
 	}),
 };
 
 export const DefaultOptions = ProtectionWarriorOptions.create({
 	classOptions: {
 		queueDelay: 250,
-		startingRage: 0,
+		startingRage: 100,
 		defaultShout: WarriorShout.WarriorShoutCommanding,
 		defaultStance: WarriorStance.WarriorStanceDefensive,
 	},
@@ -70,8 +77,23 @@ export const DefaultConsumables = ConsumesSpec.create({
 	scrollArm: true,
 });
 
-export const OtherDefaults = {
+export const OtherDefaults: Partial<SimUIOtherDefaults> = {
 	profession1: Profession.Engineering,
 	profession2: Profession.Blacksmithing,
 	distanceFromTarget: 0,
+	healingModel: HealingModel.create({
+		hps: 2200,
+		cadenceSeconds: 0.4,
+		cadenceVariation: 1.2,
+		absorbFrac: 0.02,
+		burstWindow: 6,
+		inspirationUptime: 0.25,
+	}),
 };
+
+export const P1_PRESET_BUILD = PresetUtils.makePresetBuild('P1', {
+	gear: P1_PRESET,
+	talents: DefaultTalents,
+	epWeights: P1_EP_PRESET,
+	rotation: ROTATION_DEFAULT,
+});
