@@ -289,7 +289,7 @@ func (pet *WarlockPet) ExecuteCustomRotation(sim *core.Simulation) {
 
 		// calculate energy required
 		cost := max(pet.MinMana, spell.Cost.GetCurrentCost())
-		timeTillMana := max(0, (cost-pet.CurrentMana())/pet.ManaRegenPerSecondWhileCombat())
+		timeTillMana := max(0, (cost-pet.CurrentMana())/pet.ManaRegenPerSecondWhileCasting())
 		waitUntil = min(waitUntil, time.Duration(float64(time.Second)*timeTillMana))
 	}
 

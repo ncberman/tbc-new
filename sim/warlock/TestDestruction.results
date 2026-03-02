@@ -62,8 +62,8 @@ dps_results: {
 dps_results: {
  key: "TestDestruction-AllItems-CorruptorRaiment"
  value: {
-  dps: 2075.86128
-  tps: 1822.09212
+  dps: 2075.99115
+  tps: 1822.20243
  }
 }
 dps_results: {
@@ -104,29 +104,29 @@ dps_results: {
 dps_results: {
  key: "TestDestruction-AllItems-VoidheartRaiment"
  value: {
-  dps: 1996.17039
-  tps: 1753.17934
+  dps: 1996.14139
+  tps: 1753.11526
  }
 }
 dps_results: {
  key: "TestDestruction-Average-Default"
  value: {
-  dps: 2115.40363
-  tps: 1864.89571
+  dps: 2115.43146
+  tps: 1864.9165
  }
 }
 dps_results: {
  key: "TestDestruction-Settings-Gnome-preraid-Destruction-destruction-FullBuffs-0.0yards-LongMultiTarget"
  value: {
-  dps: 5681.43578
-  tps: 4305.60442
+  dps: 5682.78186
+  tps: 4305.78036
  }
 }
 dps_results: {
  key: "TestDestruction-Settings-Gnome-preraid-Destruction-destruction-FullBuffs-0.0yards-LongSingleTarget"
  value: {
-  dps: 2117.98058
-  tps: 1868.15265
+  dps: 2118.25863
+  tps: 1868.32859
  }
 }
 dps_results: {
