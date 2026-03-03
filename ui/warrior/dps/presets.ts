@@ -177,6 +177,14 @@ export const ArmsTalents = {
 	...ARMS_PRESET_OPTIONS,
 };
 
+export const ArmsKebabTalents = {
+	name: 'Arms - Kebab',
+	data: SavedTalents.create({
+		talentsString: '34005021302010510321-0550000520501203',
+	}),
+	...FURY_PRESET_OPTIONS,
+};
+
 export const DefaultOptions = WarriorOptions.create({
 	classOptions: {
 		queueDelay: 250,
