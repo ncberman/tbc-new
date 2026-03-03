@@ -84,13 +84,13 @@ func (warlock *Warlock) applySuppression() {
 }
 
 func (warlock *Warlock) applyImprovedCorruption() {
-	if warlock.Talents.Suppression == 0 {
+	if warlock.Talents.ImprovedCorruption == 0 {
 		return
 	}
 
 	warlock.AddStaticMod(core.SpellModConfig{
 		Kind:      core.SpellMod_CastTime_Flat,
-		TimeValue: time.Millisecond * -400 * time.Duration(warlock.Talents.ImprovedCorruption),
+		TimeValue: time.Millisecond * (-400 * time.Duration(warlock.Talents.ImprovedCorruption)),
 		ClassMask: WarlockAfflictionSpells,
 	})
 }
