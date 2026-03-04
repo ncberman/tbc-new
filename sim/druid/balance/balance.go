@@ -6,12 +6,6 @@ import (
 	"github.com/wowsims/tbc/sim/druid"
 )
 
-const (
-	WrathBaseEnergyGain     float64 = 15
-	StarsurgeBaseEnergyGain float64 = 20
-	StarfireBaseEnergyGain  float64 = 20
-)
-
 func RegisterBalanceDruid() {
 	core.RegisterAgentFactory(
 		proto.Player_BalanceDruid{},
@@ -52,32 +46,9 @@ func NewBalanceDruid(character *core.Character, options *proto.Player) *BalanceD
 
 type BalanceDruid struct {
 	*druid.Druid
-	// eclipseEnergyBar
 	Options *proto.BalanceDruid_Options
 
-	// EclipseEnergyMap EclipseEnergyMap
-
-	LunarEclipseSpellMod       *core.SpellMod
-	SolarEclipseSpellMod       *core.SpellMod
-	CelestialAlignmentSpellMod *core.SpellMod
-	IncarnationSpellMod        *core.SpellMod
-
 	ManaMetric *core.ResourceMetrics
-
-	AstralCommunion      *druid.DruidSpell
-	AstralStorm          *druid.DruidSpell
-	AstralStormTickSpell *druid.DruidSpell
-	CelestialAlignment   *druid.DruidSpell
-	ChosenOfElune        *druid.DruidSpell
-	Starfall             *druid.DruidSpell
-	Starfire             *druid.DruidSpell
-	Sunfire              *druid.DruidSpell
-	Starsurge            *druid.DruidSpell
-
-	AstralInsight   *core.Aura // Soul of the Forest
-	DreamOfCenarius *core.Aura
-	NaturesGrace    *core.Aura
-	OwlkinFrenzy    *core.Aura
 }
 
 func (moonkin *BalanceDruid) GetDruid() *druid.Druid {
