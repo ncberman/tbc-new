@@ -24,13 +24,14 @@ func (druid *Druid) registerMoonfireSpell() {
 
 func (druid *Druid) registerMoonfireDoTSpell() {
 	druid.Moonfire.RelatedDotSpell = druid.Unit.RegisterSpell(core.SpellConfig{
-		ActionID:       core.ActionID{SpellID: 8921}.WithTag(1),
+		ActionID:       core.ActionID{SpellID: 26988}.WithTag(1),
 		SpellSchool:    core.SpellSchoolArcane,
 		ProcMask:       core.ProcMaskSpellDamage,
 		ClassSpellMask: DruidSpellMoonfireDoT,
 		Flags:          core.SpellFlagPassiveSpell,
 
-		CritMultiplier: druid.DefaultSpellCritMultiplier(),
+		DamageMultiplier: 1,
+		ThreatMultiplier: 1,
 
 		Dot: core.DotConfig{
 			Aura: core.Aura{
@@ -60,7 +61,7 @@ func (druid *Druid) registerMoonfireDoTSpell() {
 
 func (druid *Druid) registerMoonfireImpactSpell() {
 	druid.Moonfire = druid.RegisterSpell(Humanoid|Moonkin, core.SpellConfig{
-		ActionID:       core.ActionID{SpellID: 8921},
+		ActionID:       core.ActionID{SpellID: 26988},
 		SpellSchool:    core.SpellSchoolArcane,
 		ProcMask:       core.ProcMaskSpellDamage,
 		ClassSpellMask: DruidSpellMoonfire,
@@ -75,9 +76,10 @@ func (druid *Druid) registerMoonfireImpactSpell() {
 			},
 		},
 
-		CritMultiplier: druid.DefaultSpellCritMultiplier(),
-
 		BonusCoefficient: MoonfireImpactBonusCoeff,
+		DamageMultiplier: 1,
+		ThreatMultiplier: 1,
+		CritMultiplier:   druid.DefaultSpellCritMultiplier(),
 
 		ApplyEffects: func(sim *core.Simulation, target *core.Unit, spell *core.Spell) {
 			baseDamage := druid.CalcAndRollDamageRange(sim, MoonfireImpactMinDmg, MoonfireImpactMaxDmg)

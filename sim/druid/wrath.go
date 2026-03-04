@@ -7,14 +7,14 @@ import (
 )
 
 const (
-	WrathBonusCoeff = 0.57
+	WrathBonusCoeff = 0.57099997997
 	WrathMinDmg     = 383
 	WrathMaxDmg     = 432
 )
 
 func (druid *Druid) registerWrathSpell() {
 	druid.Wrath = druid.RegisterSpell(Humanoid|Moonkin, core.SpellConfig{
-		ActionID:       core.ActionID{SpellID: 5176},
+		ActionID:       core.ActionID{SpellID: 26985},
 		SpellSchool:    core.SpellSchoolNature,
 		ProcMask:       core.ProcMaskSpellDamage,
 		ClassSpellMask: DruidSpellWrath,
@@ -33,8 +33,9 @@ func (druid *Druid) registerWrathSpell() {
 		},
 
 		BonusCoefficient: WrathBonusCoeff,
-
-		CritMultiplier: druid.DefaultSpellCritMultiplier(),
+		DamageMultiplier: 1,
+		ThreatMultiplier: 1,
+		CritMultiplier:   druid.DefaultSpellCritMultiplier(),
 
 		ApplyEffects: func(sim *core.Simulation, target *core.Unit, spell *core.Spell) {
 			baseDamage := druid.CalcAndRollDamageRange(sim, WrathMinDmg, WrathMaxDmg)
