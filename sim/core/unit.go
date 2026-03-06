@@ -162,8 +162,8 @@ type Unit struct {
 	hardcastAction *PendingAction
 
 	// Cached mana return values per tick.
-	manaTickWhileCombat    float64
-	manaTickWhileNotCombat float64
+	manaTickWhileCasting    float64
+	manaTickWhileNotCasting float64
 
 	CastSpeed           float64
 	meleeAttackSpeed    float64
@@ -211,7 +211,7 @@ func (unit *Unit) getSpellDamageValueImpl(spell *Spell) float64 {
 }
 
 func (unit *Unit) getAttackPowerValueImpl(spell *Spell) float64 {
-	return unit.GetStat(stats.AttackPower) + spell.Unit.PseudoStats.BonusAttackPower
+	return unit.GetStat(stats.AttackPower) + spell.Unit.CurrentTarget.PseudoStats.BonusAttackPower
 }
 
 // Units can be disabled for several reasons:
@@ -369,12 +369,12 @@ func (unit *Unit) processDynamicBonus(sim *Simulation, bonus stats.Stats) {
 			unit.currentMana = unit.MaxMana()
 		}
 	}
-	if bonus[stats.MeleeHasteRating] > 0 {
+	if bonus[stats.MeleeHasteRating] != 0 {
 		unit.updateAttackSpeed()
 		unit.updateMeleeAndRangedHaste()
 		unit.AutoAttacks.UpdateSwingTimers(sim)
 	}
-	if bonus[stats.SpellHasteRating] > 0 {
+	if bonus[stats.SpellHasteRating] != 0 {
 		unit.updateCastSpeed()
 	}
 
@@ -846,6 +846,7 @@ func (unit *Unit) GetMetadata() *proto.UnitMetadata {
 			IsFriendly:      spell.Flags.Matches(SpellFlagHelpful),
 			HasExpectedTick: spell.expectedTickDamageInternal != nil,
 			HasMissileSpeed: spell.MissileSpeed > 0.0,
+			HasRanks:        spell.Rank > 0,
 		}
 	})
 
@@ -913,6 +914,12 @@ func (unit *Unit) GetTotalBlockChanceAsDefender(atkTable *AttackTable) float64 {
 
 func (unit *Unit) GetDefenseReduction() float64 {
 	return math.Floor(unit.stats[stats.DefenseRating]/DefenseRatingPerDefenseLevel) * MissDodgeParryBlockCritChancePerDefense / 100
+}
+
+func (unit *Unit) GetCritImmunityPercent() float64 {
+	return unit.GetDefenseReduction() +
+		unit.GetStat(stats.ResilienceRating)/ResilienceRatingPerCritReductionChance/100 +
+		unit.PseudoStats.ReducedCritTakenChance
 }
 
 func (unit *Unit) GetTotalAvoidanceChance(spell *Spell, atkTable *AttackTable) float64 {

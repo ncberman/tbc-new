@@ -6,7 +6,7 @@ import (
 
 func RegisterAllOnUseCds() {
 
-	//
+	// 
 	// shared.NewSimpleStatActive(13143) // Mark of the Dragon Lord - https://www.wowhead.com/tbc/spell=17252
 	// shared.NewSimpleStatActive(13171) // Smokey's Lighter - https://www.wowhead.com/tbc/spell=17283
 	// shared.NewSimpleStatActive(13213) // Smolderweb's Eye - https://www.wowhead.com/tbc/spell=17330
@@ -66,8 +66,6 @@ func RegisterAllOnUseCds() {
 	// shared.NewSimpleStatActive(25829) // Talisman of the Alliance - https://www.wowhead.com/tbc/spell=33828
 	// shared.NewSimpleStatActive(26055) // Oculus of the Hidden Eye - https://www.wowhead.com/tbc/spell=33012
 	// shared.NewSimpleStatActive(27416) // Fetish of the Fallen - https://www.wowhead.com/tbc/spell=33014
-	// shared.NewSimpleStatActive(27529) // Figurine of the Colossus - https://www.wowhead.com/tbc/spell=33089
-	// shared.NewSimpleStatActive(27770) // Argussian Compass - https://www.wowhead.com/tbc/spell=39228
 	// shared.NewSimpleStatActive(27900) // Jewel of Charismatic Mystique - https://www.wowhead.com/tbc/spell=33486
 	// shared.NewSimpleStatActive(28590) // Ribbon of Sacrifice - https://www.wowhead.com/tbc/spell=38332
 	// shared.NewSimpleStatActive(28727) // Pendant of the Violet Eye - https://www.wowhead.com/tbc/spell=29601
@@ -105,9 +103,6 @@ func RegisterAllOnUseCds() {
 	shared.NewSimpleStatActive(19345) // Aegis of Preservation - https://www.wowhead.com/tbc/spell=23780
 	shared.NewSimpleStatActive(27891) // Adamantine Figurine - https://www.wowhead.com/tbc/spell=33479
 	shared.NewSimpleStatActive(33830) // Ancient Aqir Artifact - https://www.wowhead.com/tbc/spell=43713
-
-	// Armor / AttackPower / SpellDamage
-	shared.NewSimpleStatActive(19337) // The Black Book - https://www.wowhead.com/tbc/spell=23720
 
 	// ArmorPenetration
 	shared.NewSimpleStatActive(28121) // Icon of Unyielding Courage - https://www.wowhead.com/tbc/spell=34106

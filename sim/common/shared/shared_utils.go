@@ -163,7 +163,6 @@ func factory_StatBonusEffect(config ProcStatBonusEffect, extraSpell func(agent c
 					stats.FromProtoMap(effect.ScalingOptions[int32(0)].Stats),
 					time.Millisecond*time.Duration(effect.EffectDurationMs),
 				)
-
 			}
 
 			var dpm *core.DynamicProcManager
@@ -279,13 +278,18 @@ func NewSimpleStatActive(itemID int32) {
 			panic(fmt.Sprintf("No effects data for item with ID: %d", itemID))
 		}
 
-		for _, itemEffect := range itemEffects {
-
+		hasEffect := false
+		for idx, itemEffect := range itemEffects {
 			onUseData := itemEffect.GetOnUse()
+
 			if onUseData == nil {
-				panic(fmt.Sprintf("Item effect for item with ID: %d is not an active effect!", itemID))
+				if !hasEffect && idx == len(itemEffects)-1 {
+					panic(fmt.Sprintf("No active effects found for item with ID: %d!", itemID))
+				}
+				continue
 			}
 
+			hasEffect = true
 			spellConfig := core.SpellConfig{
 				ActionID: core.ActionID{ItemID: itemID},
 			}
@@ -789,6 +793,7 @@ type SpellRankConfig struct {
 	Cost             int32
 	MinDamage        float64
 	MaxDamage        float64
+	DotTickDamage    float64
 	Coefficient      float64
 	ThreatMultiplier float64
 	FlatThreatBonus  float64

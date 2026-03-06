@@ -100,9 +100,9 @@ const SPEC_CONFIG = registerSpecConfig(Spec.SpecDpsWarrior, {
 	},
 
 	presets: {
-		epWeights: [Presets.P1_FURY_EP_PRESET, Presets.P2_FURY_EP_PRESET, Presets.P1_ARMS_EP_PRESET, Presets.P2_ARMS_EP_PRESET],
+		epWeights: [Presets.P1_FURY_EP_PRESET, Presets.P2_FURY_EP_PRESET, Presets.P1_ARMS_EP_PRESET, Presets.P3_ARMS_EP_PRESET],
 		// Preset talents that the user can quickly select.
-		talents: [Presets.FuryTalents, Presets.ArmsTalents],
+		talents: [Presets.FuryTalents, Presets.ArmsTalents, Presets.ArmsKebabTalents],
 		// Preset rotations that the user can quickly select.
 		rotations: [Presets.FURY_DEFAULT_ROTATION, Presets.ARMS_DEFAULT_ROTATION],
 		// Preset gear configurations that the user can quickly select.
@@ -120,32 +120,28 @@ const SPEC_CONFIG = registerSpecConfig(Spec.SpecDpsWarrior, {
 			Presets.P35_BIS_ARMS_PRESET,
 			Presets.P4_BIS_ARMS_PRESET,
 		],
-		builds: [Presets.P1_PRESET_BUILD_FURY, Presets.P1_PRESET_BUILD_ARMS],
+		builds: [
+			Presets.PRESET_BUILD_FURY,
+			Presets.PRESET_BUILD_ARMS,
+			Presets.PRESET_BUILD_ARMS_KEBAB,
+			Presets.P1_PRESET_BUILD_FURY,
+			Presets.P2_PRESET_BUILD_FURY,
+			Presets.P3_PRESET_BUILD_FURY,
+			Presets.P35_PRESET_BUILD_FURY,
+			Presets.P4_PRESET_BUILD_FURY,
+			Presets.P1_PRESET_BUILD_ARMS,
+			Presets.P2_PRESET_BUILD_ARMS,
+			Presets.P3_PRESET_BUILD_ARMS,
+			Presets.P35_PRESET_BUILD_ARMS,
+			Presets.P4_PRESET_BUILD_ARMS,
+		],
 	},
 
 	autoRotation: (_player: Player<Spec.SpecDpsWarrior>): APLRotation => {
 		return Presets.FURY_DEFAULT_ROTATION.rotation.rotation!;
 	},
 
-	raidSimPresets: [
-		{
-			spec: Spec.SpecDpsWarrior,
-			talents: Presets.FuryTalents.data,
-			specOptions: Presets.DefaultOptions,
-			consumables: Presets.DefaultConsumables,
-			defaultFactionRaces: {
-				[Faction.Unknown]: Race.RaceUnknown,
-				[Faction.Alliance]: Race.RaceHuman,
-				[Faction.Horde]: Race.RaceOrc,
-			},
-			defaultGear: {
-				[Faction.Unknown]: {},
-				[Faction.Alliance]: {},
-				[Faction.Horde]: {},
-			},
-			otherDefaults: Presets.OtherDefaults,
-		},
-	],
+	raidSimPresets: [],
 });
 
 export class DpsWarriorSimUI extends IndividualSimUI<Spec.SpecDpsWarrior> {
@@ -162,7 +158,6 @@ export class DpsWarriorSimUI extends IndividualSimUI<Spec.SpecDpsWarrior> {
 					[HandType.HandTypeOneHand, HandType.HandTypeMainHand].includes(mainHandType) &&
 					offHandType &&
 					[HandType.HandTypeOneHand, HandType.HandTypeOffHand].includes(offHandType);
-				console.log(isFury);
 
 				const softCapToModify = softCaps.find(sc => sc.unitStat.equalsPseudoStat(PseudoStat.PseudoStatMeleeHitPercent));
 				if (softCapToModify) {

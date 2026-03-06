@@ -243,7 +243,7 @@ func main() {
 
 	icons, err := database.LoadSpellIcons(helper)
 	if err != nil {
-		panic("error loading icons")
+		panic(fmt.Sprintf("error loading icons: %v", err))
 	}
 
 	addSpellIcons(db, database.SharedSpellsIcons, icons, iconsMap)
@@ -439,8 +439,24 @@ func ApplyGlobalFilters(db *database.WowDatabase) {
 			return false
 		}
 
-		_, uncut, _ := strings.Cut(gem.Name, " ")
-		if slices.Contains([]string{"Crimson Spinel", "Empyrean Sapphire", "Lionseye", "Shadowsong Amethyst", "Pyrestone", "Seaspray Emerald"}, uncut) {
+		prefix, uncut, _ := strings.Cut(gem.Name, " ")
+		if slices.Contains([]string{
+			"Forceful",
+			"Quick",
+			"Reckless",
+			"Purified Shadowsong",
+		}, prefix) {
+			gem.Phase = 5
+		} else if slices.Contains([]string{
+			"Crimson Spinel",
+			"Empyrean Sapphire",
+			"Lionseye",
+			"Shadowsong Amethyst",
+			"Pyrestone",
+			"Seaspray Emerald",
+		}, uncut) {
+			gem.Phase = 3
+		} else if gem.Name == "Charmed Amani Jewel" {
 			gem.Phase = 3
 		} else {
 			gem.Phase = 1
@@ -820,6 +836,7 @@ func addSpellIcons(db *database.WowDatabase, spellIds []int32, icons map[int]dat
 			Name:    iconEntry.Name,
 			Icon:    strings.ToLower(database.GetIconName(iconsMap, iconEntry.FDID)),
 			HasBuff: iconEntry.HasBuff,
+			Rank:    int32(iconEntry.Rank),
 		}
 	}
 }

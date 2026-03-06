@@ -12,7 +12,7 @@ import "google/protobuf/descriptor.proto";
 // increment the version number directly in the proto files, rather than needing
 // to separately increment two constants in the front-end and back-end code.
 extend google.protobuf.MessageOptions {
-	int32 current_version_number = 50000;
+	int32 current_version_number = 50001;
 }
 
 message ProtoVersion {
@@ -25,10 +25,10 @@ message ProtoVersion {
 	// protos need to define an api_version field so that the UI code knows
 	// to up-convert these protos to the new format whenever api_version is
 	// missing (0) or lower than current_version_number.
-	option (current_version_number) = 1;
+	option (current_version_number) = 2;
 
 	// The actual field value is only used within unit tests.
-	int32 saved_version_number = 1;
+	int32 saved_version_number = 2;
 }
 
 message ScalingItemProperties {
@@ -782,6 +782,7 @@ enum OtherAction {
 	OtherActionMove = 20; // Used by movement to be able to show it in timeline
 	OtherActionPrepull = 21; // Indicated prepull specific action
 	OtherActionEncounterStart = 22; // Indicated resources gained or lost at the start of an encounter
+	OtherActionItemSwap = 23; // Used by APL to show current swap set
 }
 
 message ActionID {
@@ -795,6 +796,8 @@ message ActionID {
 	// Distinguishes between different versions of the same action.
 	// Currently the only use for this is Shaman Lightning Overload.
 	int32 tag = 4;
+	// Various ranks of spells
+	int32 rank = 5;
 }
 
 // Custom options for a particular cooldown.

@@ -918,6 +918,9 @@
             },
             "buffs": {
               "type": "string"
+            },
+            "reforge_settings": {
+              "type": "string"
             }
           },
           "additionalProperties": false,
@@ -933,7 +936,8 @@
             "class_spec_options",
             "consumables",
             "other_settings",
-            "buffs"
+            "buffs",
+            "reforge_settings"
           ]
         }
       },
@@ -1028,10 +1032,7 @@
             "discord_message": {
               "type": "string"
             },
-            "healing_message": {
-              "type": "string"
-            },
-            "qe_live_message": {
+            "old_sim_message": {
               "type": "string"
             }
           },
@@ -1040,8 +1041,7 @@
             "title",
             "contribute_message",
             "discord_message",
-            "healing_message",
-            "qe_live_message"
+            "old_sim_message"
           ]
         },
         "notifications": {
@@ -4598,7 +4598,7 @@
                     "tooltip"
                   ]
                 },
-                "warlock_next_exhale_target": {
+                "warlock_cast_assigned_curse": {
                   "type": "object",
                   "properties": {
                     "label": {
@@ -4643,7 +4643,7 @@
                 "custom_rotation",
                 "optimal_rotation_action",
                 "guardian_hotw_dps_rotation",
-                "warlock_next_exhale_target"
+				"warlock_cast_assigned_curse"
               ]
             },
             "values": {
@@ -5079,6 +5079,22 @@
                   ]
                 },
                 "current_mana_percent": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "tooltip": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "label",
+                    "tooltip"
+                  ]
+                },
+                "max_mana": {
                   "type": "object",
                   "properties": {
                     "label": {
@@ -6238,23 +6254,7 @@
                     "tooltip"
                   ]
                 },
-                "warlock_hand_of_guldan_in_flight": {
-                  "type": "object",
-                  "properties": {
-                    "label": {
-                      "type": "string"
-                    },
-                    "tooltip": {
-                      "type": "string"
-                    }
-                  },
-                  "additionalProperties": false,
-                  "required": [
-                    "label",
-                    "tooltip"
-                  ]
-                },
-                "affliction_current_snapshot": {
+				"warlock_assigned_curse_is_active": {
                   "type": "object",
                   "properties": {
                     "label": {
@@ -6439,6 +6439,7 @@
                 "max_health",
                 "current_mana",
                 "current_mana_percent",
+                "max_mana",
                 "current_rage",
                 "max_rage",
                 "current_focus",
@@ -6509,8 +6510,7 @@
                 "shaman_fire_elemental_duration",
                 "cat_excess_energy",
                 "cat_new_savage_roar_duration",
-                "warlock_hand_of_guldan_in_flight",
-                "affliction_current_snapshot",
+				"warlock_assigned_curse_is_active",
                 "protection_paladin_damage_taken_last_global",
                 "aura_remaining_icd",
                 "aura_icd_is_ready",

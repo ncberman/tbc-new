@@ -19,6 +19,7 @@ import P2FuryGear from './gear_sets/p2_fury.gear.json';
 import P3FuryGear from './gear_sets/p3_fury.gear.json';
 import P35FuryGear from './gear_sets/p3.5_fury.gear.json';
 import P4FuryGear from './gear_sets/p4_fury.gear.json';
+import { Phase } from '../../core/constants/other';
 
 // Preset options for this spec.
 // Eventually we will import these values for the raid sim too, so its good to
@@ -81,17 +82,17 @@ export const P1_FURY_EP_PRESET = PresetUtils.makePresetEpWeights(
 	Stats.fromMap(
 		{
 			[Stat.StatStrength]: 1.0,
-			[Stat.StatAgility]: 0.65,
-			[Stat.StatAttackPower]: 0.46,
-			[Stat.StatMeleeHitRating]: 0.57,
-			[Stat.StatMeleeCritRating]: 0.88,
-			[Stat.StatMeleeHasteRating]: 0.9,
+			[Stat.StatAgility]: 0.68,
+			[Stat.StatAttackPower]: 0.45,
+			[Stat.StatMeleeHitRating]: 0.48,
+			[Stat.StatMeleeCritRating]: 0.92,
+			[Stat.StatMeleeHasteRating]: 0.81,
 			[Stat.StatArmorPenetration]: 0.15,
-			[Stat.StatExpertiseRating]: 0.99,
+			[Stat.StatExpertiseRating]: 1.03,
 		},
 		{
-			[PseudoStat.PseudoStatMainHandDps]: 2.65,
-			[PseudoStat.PseudoStatOffHandDps]: 1.5,
+			[PseudoStat.PseudoStatMainHandDps]: 2.79,
+			[PseudoStat.PseudoStatOffHandDps]: 1.47,
 		},
 	),
 	FURY_PRESET_OPTIONS,
@@ -105,13 +106,13 @@ export const P2_FURY_EP_PRESET = PresetUtils.makePresetEpWeights(
 			[Stat.StatAgility]: 0.75,
 			[Stat.StatAttackPower]: 0.45,
 			[Stat.StatMeleeHitRating]: 0.56,
-			[Stat.StatMeleeCritRating]: 1.01,
-			[Stat.StatMeleeHasteRating]: 0.92,
-			[Stat.StatArmorPenetration]: 0.18,
-			[Stat.StatExpertiseRating]: 1.10,
+			[Stat.StatMeleeCritRating]: 0.90,
+			[Stat.StatMeleeHasteRating]: 0.86,
+			[Stat.StatArmorPenetration]: 0.2,
+			[Stat.StatExpertiseRating]: 1.31,
 		},
 		{
-			[PseudoStat.PseudoStatMainHandDps]: 2.73,
+			[PseudoStat.PseudoStatMainHandDps]: 2.8,
 			[PseudoStat.PseudoStatOffHandDps]: 1.5,
 		},
 	),
@@ -125,7 +126,7 @@ export const P1_ARMS_EP_PRESET = PresetUtils.makePresetEpWeights(
 			[Stat.StatStrength]: 1.0,
 			[Stat.StatAgility]: 0.75,
 			[Stat.StatAttackPower]: 0.46,
-			[Stat.StatMeleeHitRating]: 0.50,
+			[Stat.StatMeleeHitRating]: 0.5,
 			[Stat.StatMeleeCritRating]: 1.02,
 			[Stat.StatMeleeHasteRating]: 0.79,
 			[Stat.StatArmorPenetration]: 0.19,
@@ -138,15 +139,15 @@ export const P1_ARMS_EP_PRESET = PresetUtils.makePresetEpWeights(
 	ARMS_PRESET_OPTIONS,
 );
 
-export const P2_ARMS_EP_PRESET = PresetUtils.makePresetEpWeights(
+export const P3_ARMS_EP_PRESET = PresetUtils.makePresetEpWeights(
 	'P3 & P4 - Arms',
 	Stats.fromMap(
 		{
 			[Stat.StatStrength]: 1.0,
-			[Stat.StatAgility]: 0.80,
+			[Stat.StatAgility]: 0.8,
 			[Stat.StatAttackPower]: 0.45,
-			[Stat.StatMeleeHitRating]: 0.56,
-			[Stat.StatMeleeCritRating]: 1.10,
+			[Stat.StatMeleeHitRating]: 1.01,
+			[Stat.StatMeleeCritRating]: 1.1,
 			[Stat.StatMeleeHasteRating]: 0.85,
 			[Stat.StatArmorPenetration]: 0.23,
 			[Stat.StatExpertiseRating]: 1.66,
@@ -176,6 +177,14 @@ export const ArmsTalents = {
 	...ARMS_PRESET_OPTIONS,
 };
 
+export const ArmsKebabTalents = {
+	name: 'Arms - Kebab',
+	data: SavedTalents.create({
+		talentsString: '34005021302010510321-0550000520501203',
+	}),
+	...FURY_PRESET_OPTIONS,
+};
+
 export const DefaultOptions = WarriorOptions.create({
 	classOptions: {
 		queueDelay: 250,
@@ -196,11 +205,97 @@ export const OtherDefaults = {
 	distanceFromTarget: 25,
 };
 
+export const PRESET_BUILD_FURY = PresetUtils.makePresetBuild('Fury', {
+	talents: FuryTalents,
+	rotation: FURY_DEFAULT_ROTATION,
+});
+
+export const PRESET_BUILD_ARMS = PresetUtils.makePresetBuild('Arms', {
+	talents: ArmsTalents,
+	rotation: ARMS_DEFAULT_ROTATION,
+});
+
+export const PRESET_BUILD_ARMS_KEBAB = PresetUtils.makePresetBuild('Arms - Kebab', {
+	talents: ArmsKebabTalents,
+	rotation: ARMS_DEFAULT_ROTATION,
+});
+
+export const P1_PLAYER_SETTINGS = {
+	name: 'P1',
+	playerOptions: OtherDefaults,
+};
+
+export const P3_PLAYER_SETTINGS = {
+	name: 'P3',
+	playerOptions: {
+		...OtherDefaults,
+		profession2: Profession.Jewelcrafting,
+	},
+};
+
 export const P1_PRESET_BUILD_FURY = PresetUtils.makePresetBuild('P1 - Fury', {
 	gear: P1_BIS_FURY_PRESET,
 	talents: FuryTalents,
 	epWeights: P1_FURY_EP_PRESET,
 	rotation: FURY_DEFAULT_ROTATION,
+	settings: {
+		...P1_PLAYER_SETTINGS,
+		reforgeSettings: {
+			maxGemPhase: Phase.Phase1,
+		},
+	},
+});
+
+export const P2_PRESET_BUILD_FURY = PresetUtils.makePresetBuild('P2 - Fury', {
+	gear: P2_BIS_FURY_PRESET,
+	talents: FuryTalents,
+	epWeights: P2_FURY_EP_PRESET,
+	rotation: FURY_DEFAULT_ROTATION,
+	settings: {
+		...P1_PLAYER_SETTINGS,
+		reforgeSettings: {
+			maxGemPhase: Phase.Phase2,
+		},
+	},
+});
+
+export const P3_PRESET_BUILD_FURY = PresetUtils.makePresetBuild('P3 - Fury', {
+	gear: P3_BIS_FURY_PRESET,
+	talents: FuryTalents,
+	epWeights: P2_FURY_EP_PRESET,
+	rotation: FURY_DEFAULT_ROTATION,
+	settings: {
+		...P3_PLAYER_SETTINGS,
+		reforgeSettings: {
+			maxGemPhase: Phase.Phase3,
+		},
+	},
+});
+
+export const P35_PRESET_BUILD_FURY = PresetUtils.makePresetBuild('P3.5 - Fury', {
+	gear: P35_BIS_FURY_PRESET,
+	talents: FuryTalents,
+	epWeights: P2_FURY_EP_PRESET,
+	rotation: FURY_DEFAULT_ROTATION,
+	settings: {
+		...P3_PLAYER_SETTINGS,
+		reforgeSettings: {
+			maxGemPhase: Phase.Phase4,
+		},
+	},
+});
+
+export const P4_PRESET_BUILD_FURY = PresetUtils.makePresetBuild('P4 - Fury', {
+	gear: P4_BIS_FURY_PRESET,
+	talents: FuryTalents,
+	epWeights: P2_FURY_EP_PRESET,
+	rotation: FURY_DEFAULT_ROTATION,
+	settings: {
+		...P3_PLAYER_SETTINGS,
+		reforgeSettings: {
+			maxGemPhase: Phase.Phase5,
+		},
+	},
 });
 
 export const P1_PRESET_BUILD_ARMS = PresetUtils.makePresetBuild('P1 - Arms', {
@@ -208,4 +303,62 @@ export const P1_PRESET_BUILD_ARMS = PresetUtils.makePresetBuild('P1 - Arms', {
 	talents: ArmsTalents,
 	epWeights: P1_ARMS_EP_PRESET,
 	rotation: ARMS_DEFAULT_ROTATION,
+	settings: {
+		...P1_PLAYER_SETTINGS,
+		reforgeSettings: {
+			maxGemPhase: Phase.Phase1,
+		},
+	},
+});
+
+export const P2_PRESET_BUILD_ARMS = PresetUtils.makePresetBuild('P2 - Arms', {
+	gear: P2_BIS_ARMS_PRESET,
+	talents: ArmsTalents,
+	epWeights: P1_ARMS_EP_PRESET,
+	rotation: ARMS_DEFAULT_ROTATION,
+	settings: {
+		...P1_PLAYER_SETTINGS,
+		reforgeSettings: {
+			maxGemPhase: Phase.Phase2,
+		},
+	},
+});
+
+export const P3_PRESET_BUILD_ARMS = PresetUtils.makePresetBuild('P3 - Arms', {
+	gear: P3_BIS_ARMS_PRESET,
+	talents: ArmsTalents,
+	epWeights: P3_ARMS_EP_PRESET,
+	rotation: ARMS_DEFAULT_ROTATION,
+	settings: {
+		...P3_PLAYER_SETTINGS,
+		reforgeSettings: {
+			maxGemPhase: Phase.Phase3,
+		},
+	},
+});
+
+export const P35_PRESET_BUILD_ARMS = PresetUtils.makePresetBuild('P3.5 - Arms', {
+	gear: P35_BIS_ARMS_PRESET,
+	talents: ArmsTalents,
+	epWeights: P3_ARMS_EP_PRESET,
+	rotation: ARMS_DEFAULT_ROTATION,
+	settings: {
+		...P3_PLAYER_SETTINGS,
+		reforgeSettings: {
+			maxGemPhase: Phase.Phase4,
+		},
+	},
+});
+
+export const P4_PRESET_BUILD_ARMS = PresetUtils.makePresetBuild('P4 - Arms', {
+	gear: P4_BIS_ARMS_PRESET,
+	talents: ArmsTalents,
+	epWeights: P3_ARMS_EP_PRESET,
+	rotation: ARMS_DEFAULT_ROTATION,
+	settings: {
+		...P3_PLAYER_SETTINGS,
+		reforgeSettings: {
+			maxGemPhase: Phase.Phase5,
+		},
+	},
 });

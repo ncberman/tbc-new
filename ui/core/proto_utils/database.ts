@@ -14,7 +14,7 @@ import {
 	Stat,
 } from '../proto/common.js';
 import { Consumable, ItemEffectRandPropPoints, SimDatabase } from '../proto/db';
-import { SpellEffect } from '../proto/spell';
+import { ResourceType, SpellEffect } from '../proto/spell';
 import { IconData, UIDatabase, UIEnchant as Enchant, UIGem as Gem, UIItem as Item, UINPC as Npc, UIZone as Zone } from '../proto/ui.js';
 import { distinct } from '../utils.js';
 import { WOWHEAD_EXPANSION_ENV } from '../wowhead';
@@ -29,6 +29,7 @@ const leftoversUrlJson = '/tbc/assets/database/leftover_db.json';
 const leftoversUrlBin = '/tbc/assets/database/leftover_db.bin';
 // When changing this value, don't forget to change the html <link> for preloading!
 const READ_JSON = true;
+const RANK_REGEX = /Rank ([0-9]+)/g;
 
 const iconRequestCache = new CacheHandler<Promise<IconData>>();
 
@@ -167,6 +168,7 @@ export class Database {
 		db.itemIcons.forEach(data => (this.itemIcons[data.id] = data));
 		db.spellIcons.forEach(data => (this.spellIcons[data.id] = data));
 		db.consumables.forEach(consumable => this.consumables.set(consumable.id, consumable));
+		db.spellEffects.forEach(spellEffect => this.spellEffects.set(spellEffect.id, spellEffect));
 	}
 
 	getAllItems(): Array<Item> {
@@ -209,7 +211,24 @@ export class Database {
 			stats.push(Stat.StatNatureResistance);
 			stats.push(Stat.StatShadowResistance);
 		}
-		return this.getConsumablesByType(type).filter(consume => consume.buffsMainStat || stats.some(index => consume.stats[index] > 0));
+
+		return this.getConsumablesByType(type).filter(consume => {
+			// Add consumables that buff Mana as a resource
+			let includesResourceType = false;
+			if (stats.includes(Stat.StatMana) || stats.includes(Stat.StatMP5)) {
+				includesResourceType = consume.effectIds.some(effectId => {
+					const spellEffect = this.getSpellEffect(effectId);
+					if (spellEffect?.miscValue0.oneofKind === 'resourceType') {
+						if (spellEffect.miscValue0.resourceType === ResourceType.ResourceTypeMana) {
+							return true;
+						}
+					}
+					return false;
+				});
+			}
+
+			return consume.buffsMainStat || stats.some(index => consume.stats[index] > 0) || includesResourceType;
+		});
 	}
 	getRandomSuffixById(id: number): ItemRandomSuffix | undefined {
 		return this.randomSuffixes.get(id);
@@ -356,6 +375,7 @@ export class Database {
 			if (!iconRequestCache.has(cacheKey)) iconRequestCache.set(cacheKey, Database.getWowheadSpellTooltipData(spellId, { signal: options?.signal }));
 			db.spellIcons[spellId] = await iconRequestCache.get(cacheKey)!;
 		}
+
 		return db.spellIcons[spellId];
 	}
 
@@ -370,11 +390,18 @@ export class Database {
 		try {
 			const response = await fetch(url, { signal: options?.signal });
 			const json = await response.json();
+			let rank = 0;
+			if (tooltipPostfix === 'spell') {
+				const rankMatches = [...(json['tooltip'] as string).matchAll(RANK_REGEX)];
+				rank = rankMatches.length ? parseInt(rankMatches[0][1]) : 0;
+			}
+
 			return IconData.create({
 				id: id,
 				name: json['name'],
 				icon: json['icon'],
 				hasBuff: json['buff'] !== '',
+				rank,
 			});
 		} catch (e) {
 			if (e instanceof DOMException && e.name === 'AbortError') {
