@@ -8,10 +8,10 @@ import (
 
 func (hunter *Hunter) registerRaptorStrikeSpell() {
 	hunter.RaptorStrike = hunter.RegisterSpell(core.SpellConfig{
-		ActionID:       core.ActionID{SpellID: 27014}.WithTag(1),
+		ActionID:       core.ActionID{SpellID: 27014},
 		SpellSchool:    core.SpellSchoolPhysical,
 		ClassSpellMask: HunterSpellRaptorStrike,
-		ProcMask:       core.ProcMaskMeleeMHSpecial,
+		ProcMask:       core.ProcMaskMeleeMH,
 		Flags:          core.SpellFlagMeleeMetrics | core.SpellFlagNoOnCastComplete,
 
 		MaxRange: core.MaxMeleeRange,
@@ -43,13 +43,9 @@ func (hunter *Hunter) registerRaptorStrikeSpell() {
 
 // Returns true if the regular melee swing should be used, false otherwise.
 func (hunter *Hunter) TryRaptorStrike(sim *core.Simulation, mhSwingSpell *core.Spell) *core.Spell {
-	if mhSwingSpell.ActionID.Tag != 1 {
+	if mhSwingSpell.ActionID.Tag != 1 || !hunter.RaptorStrike.CanCast(sim, hunter.CurrentTarget) {
 		return mhSwingSpell
 	}
 
-	if hunter.RaptorStrike.CanCast(sim, hunter.CurrentTarget) {
-		return hunter.RaptorStrike
-	}
-
-	return mhSwingSpell
+	return hunter.RaptorStrike
 }
