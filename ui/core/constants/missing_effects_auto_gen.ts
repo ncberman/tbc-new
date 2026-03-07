@@ -1801,12 +1801,6 @@ export const MISSING_ITEM_EFFECTS = new Map<number, string[]>([
 		]
 	],
 	[
-		28579, // Romulo's Poison Vial
-		[
-			"Your melee and ranged attacks have a chance to inject poison into your target dealing 332 Nature damage.", // 34587 - https://www.wowhead.com/tbc/spell=34587
-		]
-	],
-	[
 		28590, // Ribbon of Sacrifice
 		[
 			"For the next 20s, your direct heals grant Fecundity to your target, increasing the healing received by the target by up to 30. Fecundity lasts 10s and stacks up to 5 times.", // 38332 - https://www.wowhead.com/tbc/spell=38332
@@ -2597,12 +2591,6 @@ export const MISSING_ITEM_EFFECTS = new Map<number, string[]>([
 		32492, // Ashtongue Talisman of Lethality
 		[
 			"20% chance per combo point for your finishing moves to grant 145 critical strike rating for 10s.", // 40460 - https://www.wowhead.com/tbc/spell=40460
-		]
-	],
-	[
-		32493, // Ashtongue Talisman of Shadows
-		[
-			"Each time your Corruption deals damage, it has a 20% chance to grant you 220 spell damage for 5s.", // 40480 - https://www.wowhead.com/tbc/spell=40480
 		]
 	],
 	[
