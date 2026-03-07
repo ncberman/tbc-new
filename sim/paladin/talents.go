@@ -27,14 +27,14 @@ func (paladin *Paladin) registerTalentSpells() {
 
 	// Retribution Tree
 	if paladin.Talents.SealOfCommand {
-		paladin.registerSealOfCommand()
+		SealOfCommandRanks.RegisterAll(paladin.registerSealOfCommandRank)
 	}
-	if paladin.Talents.SanctityAura {
-		paladin.registerSanctityAura()
-	}
-	if paladin.Talents.Repentance {
-		paladin.registerRepentance()
-	}
+	// if paladin.Talents.SanctityAura {
+	// 	paladin.registerSanctityAura()
+	// }
+	// if paladin.Talents.Repentance {
+	// 	paladin.registerRepentance()
+	// }
 	if paladin.Talents.CrusaderStrike {
 		paladin.registerCrusaderStrike()
 	}

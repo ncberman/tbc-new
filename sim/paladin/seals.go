@@ -868,10 +868,6 @@ func (paladin *Paladin) registerSealOfVengeance(seal seal) {
 //
 // Unleashing this Seal's energy will judge an enemy, instantly causing
 // 228 to 252 Holy damage, 456 to 504 if the target is stunned or incapacitated. (stunned is just damage x2)
-func (paladin *Paladin) registerSealOfCommand() {
-	SealOfCommandRanks.RegisterAll(paladin.registerSealOfCommandRank)
-}
-
 func (paladin *Paladin) registerSealOfCommandRank(seal seal) {
 	minDamage := seal.judge.minDamage
 	maxDamage := seal.judge.maxDamage

@@ -125,7 +125,7 @@ func (paladin *Paladin) registerSpells() {
 	paladin.registerSeals()
 
 	// Auras
-	paladin.registerAuras()
+	// paladin.registerAuras()
 
 	// // Blessings
 	// paladin.registerBlessings()
