@@ -125,6 +125,14 @@ dps_results: {
  }
 }
 dps_results: {
+ key: "TestProtectionWarrior-AllItems-ArcanoweaveVestments"
+ value: {
+  dps: 676.70813
+  tps: 1279.43578
+  dtps: 1542.14963
+ }
+}
+dps_results: {
  key: "TestProtectionWarrior-AllItems-ArgussianCompass-27770"
  value: {
   dps: 689.39884
@@ -733,6 +741,14 @@ dps_results: {
  }
 }
 dps_results: {
+ key: "TestProtectionWarrior-AllItems-ImbuedNetherweave"
+ value: {
+  dps: 686.52896
+  tps: 1296.12145
+  dtps: 1623.75889
+ }
+}
+dps_results: {
  key: "TestProtectionWarrior-AllItems-KissoftheSpider-22954"
  value: {
   dps: 707.68454
@@ -754,6 +770,14 @@ dps_results: {
   dps: 717.25624
   tps: 1338.55585
   dtps: 1305.95178
+ }
+}
+dps_results: {
+ key: "TestProtectionWarrior-AllItems-Mana-EtchedRegalia"
+ value: {
+  dps: 674.27743
+  tps: 1255.3456
+  dtps: 1880.85199
  }
 }
 dps_results: {
@@ -797,6 +821,22 @@ dps_results: {
  }
 }
 dps_results: {
+ key: "TestProtectionWarrior-AllItems-NetherstrikeArmor"
+ value: {
+  dps: 673.64202
+  tps: 1271.61539
+  dtps: 1402.37349
+ }
+}
+dps_results: {
+ key: "TestProtectionWarrior-AllItems-NetherweaveVestments"
+ value: {
+  dps: 657.34121
+  tps: 1228.51599
+  dtps: 1832.92235
+ }
+}
+dps_results: {
  key: "TestProtectionWarrior-AllItems-OgreMauler'sBadge-25628"
  value: {
   dps: 696.62939
@@ -826,6 +866,14 @@ dps_results: {
   dps: 689.39884
   tps: 1291.59099
   dtps: 1316.28468
+ }
+}
+dps_results: {
+ key: "TestProtectionWarrior-AllItems-PrimalMooncloth"
+ value: {
+  dps: 673.62758
+  tps: 1275.84164
+  dtps: 1588.90612
  }
 }
 dps_results: {
@@ -925,6 +973,14 @@ dps_results: {
  }
 }
 dps_results: {
+ key: "TestProtectionWarrior-AllItems-Shadow'sEmbrace"
+ value: {
+  dps: 678.06406
+  tps: 1284.27521
+  dtps: 1642.30575
+ }
+}
+dps_results: {
  key: "TestProtectionWarrior-AllItems-ShadowmoonInsignia-32501"
  value: {
   dps: 685.17655
@@ -962,6 +1018,22 @@ dps_results: {
   dps: 689.39884
   tps: 1291.59099
   dtps: 1316.28468
+ }
+}
+dps_results: {
+ key: "TestProtectionWarrior-AllItems-SoulclothEmbrace"
+ value: {
+  dps: 679.31893
+  tps: 1260.34565
+  dtps: 1638.61935
+ }
+}
+dps_results: {
+ key: "TestProtectionWarrior-AllItems-SpellstrikeInfusion"
+ value: {
+  dps: 702.1722
+  tps: 1317.31833
+  dtps: 1489.03472
  }
 }
 dps_results: {
@@ -1150,11 +1222,35 @@ dps_results: {
  }
 }
 dps_results: {
+ key: "TestProtectionWarrior-AllItems-WhitemendWisdom"
+ value: {
+  dps: 701.91303
+  tps: 1316.73412
+  dtps: 1488.9774
+ }
+}
+dps_results: {
+ key: "TestProtectionWarrior-AllItems-WindhawkArmor"
+ value: {
+  dps: 676.87142
+  tps: 1276.67597
+  dtps: 1452.61257
+ }
+}
+dps_results: {
  key: "TestProtectionWarrior-AllItems-WrathofCenarius-21190"
  value: {
   dps: 717.28971
   tps: 1337.36327
   dtps: 1311.92827
+ }
+}
+dps_results: {
+ key: "TestProtectionWarrior-AllItems-WrathofSpellfire"
+ value: {
+  dps: 674.44292
+  tps: 1250.94892
+  dtps: 1548.64536
  }
 }
 dps_results: {
