@@ -1990,6 +1990,19 @@
 							},
 							"additionalProperties": false,
 							"required": ["title", "tooltip"]
+						},
+						"shaman_shield_procrate": {
+							"type": "object",
+							"properties": {
+								"label": {
+									"type": "string"
+								},
+								"tooltip": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": ["label", "tooltip"]
 						}
 					},
 					"additionalProperties": false,
