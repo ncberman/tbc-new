@@ -18,7 +18,7 @@ func (paladin *Paladin) registerAvengingWrath() {
 	}
 
 	actionID := core.ActionID{SpellID: 31884}
-	aura := paladin.RegisterAura(core.Aura{
+	paladin.AvengingWrathAura = paladin.RegisterAura(core.Aura{
 		Label:    "Avenging Wrath" + paladin.Label,
 		ActionID: actionID,
 		Duration: time.Second * 20,
@@ -26,7 +26,7 @@ func (paladin *Paladin) registerAvengingWrath() {
 		&paladin.PseudoStats.DamageDealtMultiplier, 1.3,
 	)
 
-	spell := paladin.RegisterSpell(core.SpellConfig{
+	paladin.AvengingWrath = paladin.RegisterSpell(core.SpellConfig{
 		ActionID: actionID,
 		SpellSchool: core.SpellSchoolHoly,
 		ProcMask: core.ProcMaskEmpty,
@@ -48,16 +48,13 @@ func (paladin *Paladin) registerAvengingWrath() {
 		},
 
 		ApplyEffects: func(sim *core.Simulation, target *core.Unit, spell *core.Spell) {
-			aura.Activate(sim)
+			paladin.AvengingWrathAura.Activate(sim)
 			paladin.Forbearance.Activate(sim)
 		},
 	})
 
-	paladin.AvengingWrath = spell
-	paladin.AvengingWrathAura = aura
-
 	paladin.AddMajorCooldown(core.MajorCooldown{
-		Spell:    spell,
+		Spell:    paladin.AvengingWrath,
 		Priority: int32(core.CooldownTypeDPS),
 		Type:     core.CooldownTypeDPS,
 	})

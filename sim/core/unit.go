@@ -831,9 +831,19 @@ func (unit *Unit) GetMetadata() *proto.UnitMetadata {
 		Name: unit.Label,
 	}
 
+	// Preserve rank in ActionID metadata so the APL UI can group different ranks
+	// of the same spell/aura under a single submenu.
+	spellRanksByID := make(map[int32]int32)
+
 	metadata.Spells = MapSlice(unit.Spellbook, func(spell *Spell) *proto.SpellStats {
+		spellID := spell.ActionID.ToProto()
+		spellID.Rank = spell.Rank
+		if spell.ActionID.SpellID != 0 && spell.Rank > 0 {
+			spellRanksByID[spell.ActionID.SpellID] = spell.Rank
+		}
+
 		return &proto.SpellStats{
-			Id: spell.ActionID.ToProto(),
+			Id: spellID,
 
 			IsCastable:      spell.Flags.Matches(SpellFlagAPL),
 			IsChanneled:     spell.Flags.Matches(SpellFlagChanneled),
@@ -854,8 +864,13 @@ func (unit *Unit) GetMetadata() *proto.UnitMetadata {
 		return !aura.ActionID.IsEmptyAction()
 	})
 	metadata.Auras = MapSlice(aplAuras, func(aura *Aura) *proto.AuraStats {
+		auraID := aura.ActionID.ToProto()
+		if aura.ActionID.SpellID != 0 {
+			auraID.Rank = spellRanksByID[aura.ActionID.SpellID]
+		}
+
 		return &proto.AuraStats{
-			Id:                 aura.ActionID.ToProto(),
+			Id:                 auraID,
 			MaxStacks:          aura.MaxStacks,
 			HasIcd:             aura.Icd != nil,
 			HasExclusiveEffect: len(aura.ExclusiveEffects) > 0,

@@ -12,25 +12,16 @@ import (
 // Reduces the mana cost of all spells by 50% for 15 sec.
 func (paladin *Paladin) registerDivineIllumination() {
 	actionId := core.ActionID{SpellID: 31842}
-	aura := paladin.RegisterAura(core.Aura{
+	paladin.DivineIlluminationAura = paladin.RegisterAura(core.Aura{
 		Label:    "Divine Illumination" + paladin.Name,
 		ActionID: actionId,
 		Duration: time.Second * 15,
-
-		// TODO: Spell says reduces cost of all spells but wowhead shows it only reduces holy shock.
-		OnGain: func(aura *core.Aura, sim *core.Simulation) {
-			for _, spell := range paladin.Spellbook {
-				spell.Cost.PercentModifier *= 0.5
-			}
-		},
-		OnExpire: func(aura *core.Aura, sim *core.Simulation) {
-			for _, spell := range paladin.Spellbook {
-				spell.Cost.PercentModifier /= 0.5
-			}
-		},
+	}).AttachSpellMod(core.SpellModConfig{
+		Kind:       core.SpellMod_PowerCost_Pct,
+		FloatValue: -0.5,
 	})
 
-	spell := paladin.RegisterSpell(core.SpellConfig{
+	paladin.DivineIlluminationSpell = paladin.RegisterSpell(core.SpellConfig{
 		ActionID: actionId,
 		SpellSchool:    core.SpellSchoolHoly,
 		ProcMask:       core.ProcMaskEmpty,
@@ -45,15 +36,12 @@ func (paladin *Paladin) registerDivineIllumination() {
 		},
 
 		ApplyEffects: func(sim *core.Simulation, target *core.Unit, spell *core.Spell) {
-			aura.Activate(sim)
+			paladin.DivineIlluminationAura.Activate(sim)
 		},
 	})
 
-	paladin.DivineIlluminationSpell = spell
-	paladin.DivineIlluminationAura = aura
-
 	paladin.AddMajorCooldown(core.MajorCooldown{
-		Spell:    spell,
+		Spell:    paladin.DivineIlluminationSpell,
 		Priority: core.CooldownPriorityLow,
 		Type:     core.CooldownTypeMana,
 	})

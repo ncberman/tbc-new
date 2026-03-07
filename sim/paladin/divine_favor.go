@@ -19,34 +19,16 @@ func (paladin *Paladin) registerDivineFavor() {
 		Label:    "Divine Favor" + paladin.Label,
 		ActionID: actionID,
 		Duration: core.NeverExpires,
-		OnGain: func(aura *core.Aura, sim *core.Simulation) {
-			for _, spell := range paladin.HolyLights {
-				spell.BonusCritPercent += 100
-			}
-			for _, spell := range paladin.FlashOfLights {
-				spell.BonusCritPercent += 100
-			}
-			for _, spell := range paladin.HolyShocks {
-				spell.BonusCritPercent += 100
-			}
-		},
-		OnExpire: func(aura *core.Aura, sim *core.Simulation) {
-			for _, spell := range paladin.HolyLights {
-				spell.BonusCritPercent -= 100
-			}
-			for _, spell := range paladin.FlashOfLights {
-				spell.BonusCritPercent -= 100
-			}
-			for _, spell := range paladin.HolyShocks {
-				spell.BonusCritPercent -= 100
-			}
-		},
 		OnCastComplete: func(aura *core.Aura, sim *core.Simulation, spell *core.Spell) {
 			// Consume after Flash of Light, Holy Light, or Holy Shock
 			if spell.Matches(SpellMaskFlashOfLight | SpellMaskHolyLight | SpellMaskHolyShock) {
 				aura.Deactivate(sim)
 			}
 		},
+	}).AttachSpellMod(core.SpellModConfig{
+		Kind:       core.SpellMod_BonusCrit_Percent,
+		ClassMask:  SpellMaskHolyLight | SpellMaskFlashOfLight | SpellMaskHolyShock,
+		FloatValue: 100,
 	})
 
 	divineFavor := paladin.RegisterSpell(core.SpellConfig{

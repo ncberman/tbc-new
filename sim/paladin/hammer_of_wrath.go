@@ -7,6 +7,13 @@ import (
 	"github.com/wowsims/tbc/sim/core"
 )
 
+func (paladin *Paladin) getHammerOfWrathTimer() *core.Timer {
+	if paladin.hammerOfWrathTimer == nil {
+		paladin.hammerOfWrathTimer = paladin.NewTimer()
+	}
+	return paladin.hammerOfWrathTimer
+}
+
 var HammerOfWrathRankMap = shared.SpellRankMap{
 	{Rank: 1, SpellID: 24275, Cost: 235, MinDamage: 316, MaxDamage: 348, Coefficient: 0.429},
 	{Rank: 2, SpellID: 24274, Cost: 290, MinDamage: 412, MaxDamage: 455, Coefficient: 0.429},
@@ -26,17 +33,13 @@ func (paladin *Paladin) registerHammerOfWrath(rankConfig shared.SpellRankConfig)
 	maxDamage := rankConfig.MaxDamage
 	coefficient := rankConfig.Coefficient
 
-	cd := core.Cooldown{
-		Timer:    paladin.NewTimer(),
-		Duration: time.Second * 6,
-	}
-
 	hammerOfWrath := paladin.RegisterSpell(core.SpellConfig{
 		ActionID:       core.ActionID{SpellID: spellID},
 		SpellSchool:    core.SpellSchoolHoly,
 		ProcMask:       core.ProcMaskRangedSpecial,
 		Flags:          core.SpellFlagAPL,
 		ClassSpellMask: SpellMaskHammerOfWrath,
+		Rank:           rankConfig.Rank,
 
 		DamageMultiplier: 1,
 		ThreatMultiplier: 1,
@@ -51,7 +54,10 @@ func (paladin *Paladin) registerHammerOfWrath(rankConfig shared.SpellRankConfig)
 				GCD:      time.Millisecond * 500,
 				CastTime: time.Millisecond * 500,
 			},
-			CD: cd,
+			CD: core.Cooldown{
+				Timer:    paladin.getHammerOfWrathTimer(),
+				Duration: time.Second * 6,
+			},
 		},
 
 		BonusCoefficient: coefficient,
@@ -62,8 +68,7 @@ func (paladin *Paladin) registerHammerOfWrath(rankConfig shared.SpellRankConfig)
 		},
 
 		ApplyEffects: func(sim *core.Simulation, target *core.Unit, spell *core.Spell) {
-			result := spell.CalcDamage(sim, target, sim.Roll(minDamage, maxDamage), spell.OutcomeMeleeSpecialHitAndCrit)
-			spell.DealDamage(sim, result)
+			spell.CalcAndDealDamage(sim, target, sim.Roll(minDamage, maxDamage), spell.OutcomeMeleeSpecialHitAndCrit)
 		},
 	})
 

@@ -8,6 +8,13 @@ import (
 	"github.com/wowsims/tbc/sim/core/proto"
 )
 
+func (paladin *Paladin) getHolyWrathTimer() *core.Timer {
+	if paladin.holyWrathTimer == nil {
+		paladin.holyWrathTimer = paladin.NewTimer()
+	}
+	return paladin.holyWrathTimer
+}
+
 var HolyWrathRankMap = shared.SpellRankMap{
 	{Rank: 1, SpellID: 2812, Cost: 550, MinDamage: 368, MaxDamage: 435, Coefficient: 0.286},
 	{Rank: 2, SpellID: 10318, Cost: 685, MinDamage: 497, MaxDamage: 584, Coefficient: 0.286},
@@ -27,17 +34,13 @@ func (paladin *Paladin) registerHolyWrath(rankConfig shared.SpellRankConfig) {
 	maxDamage := rankConfig.MaxDamage
 	coefficient := rankConfig.Coefficient
 
-	cd := core.Cooldown{
-		Timer:    paladin.NewTimer(),
-		Duration: time.Minute,
-	}
-
 	paladin.HolyWraths = append(paladin.HolyWraths, paladin.RegisterSpell(core.SpellConfig{
 		ActionID:       core.ActionID{SpellID: spellID},
 		SpellSchool:    core.SpellSchoolHoly,
 		ProcMask:       core.ProcMaskSpellDamage,
 		Flags:          core.SpellFlagAPL,
 		ClassSpellMask: SpellMaskHolyWrath,
+		Rank:           rankConfig.Rank,
 
 		DamageMultiplier: 1,
 		ThreatMultiplier: 1,
@@ -51,7 +54,10 @@ func (paladin *Paladin) registerHolyWrath(rankConfig shared.SpellRankConfig) {
 				GCD:      core.GCDDefault,
 				CastTime: time.Second * 2,
 			},
-			CD: cd,
+			CD: core.Cooldown{
+				Timer:    paladin.getHolyWrathTimer(),
+				Duration: time.Minute,
+			},
 		},
 
 		BonusCoefficient: coefficient,

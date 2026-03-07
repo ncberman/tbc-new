@@ -23,6 +23,15 @@ type Paladin struct {
 	CurrentSeal       *core.Aura
 	CurrentJudgement  *core.Spell
 
+	// Timers for spells with multiple ranks
+	consecrationTimer *core.Timer
+	hammerOfWrathTimer *core.Timer
+	holyShieldTimer *core.Timer
+	holyShockTimer *core.Timer
+	holyWrathTimer *core.Timer
+	exorcismTimer *core.Timer
+	avengersShieldTimer *core.Timer
+
 	// Shared spells
 	Judgement         *core.Spell
 	Consecrations     []*core.Spell
@@ -152,18 +161,10 @@ func NewPaladin(character *core.Character, talentsStr string, options *proto.Pal
 		AutoSwingMelee: true,
 	})
 
-	// TBC stat conversions
-	// 1 Strength = 2 Attack Power
 	paladin.AddStatDependency(stats.Strength, stats.AttackPower, 2)
-
-	// Crit from Agility and Intellect
 	paladin.AddStatDependency(stats.Agility, stats.PhysicalCritPercent, core.CritPerAgiMaxLevel[character.Class])
 	paladin.AddStatDependency(stats.Intellect, stats.SpellCritPercent, core.CritPerIntMaxLevel[character.Class])
-
-	// Dodge from Agility
 	paladin.AddStatDependency(stats.Agility, stats.DodgeRating, 1/25.0*core.DodgeRatingPerDodgePercent)
-
-	// Bonus Armor and Armor are treated identically for Paladins
 	paladin.AddStatDependency(stats.BonusArmor, stats.Armor, 1)
 
 	return paladin

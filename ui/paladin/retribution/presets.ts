@@ -38,6 +38,10 @@ export const DefaultTalents = {
 	}),
 };
 
+export const DefaultOptions = RetributionPaladinOptions.create({
+	classOptions: {},
+});
+
 export const DefaultConsumables = ConsumesSpec.create({});
 
 export const OtherDefaults = {

@@ -43,6 +43,7 @@ func (paladin *Paladin) registerHolyLight(rankConfig shared.SpellRankConfig) {
 		SpellSchool:    core.SpellSchoolHoly,
 		ProcMask:       core.ProcMaskSpellHealing,
 		Flags:          core.SpellFlagAPL | core.SpellFlagHelpful,
+		Rank:           rankConfig.Rank,
 		ClassSpellMask: SpellMaskHolyLight,
 
 		DamageMultiplier: 1,
@@ -96,6 +97,7 @@ func (paladin *Paladin) registerFlashOfLight(rankConfig shared.SpellRankConfig) 
 		SpellSchool:    core.SpellSchoolHoly,
 		ProcMask:       core.ProcMaskSpellHealing,
 		Flags:          core.SpellFlagAPL | core.SpellFlagHelpful,
+		Rank:           rankConfig.Rank,
 		ClassSpellMask: SpellMaskFlashOfLight,
 
 		DamageMultiplier: 1,
@@ -151,6 +153,7 @@ func (paladin *Paladin) registerLayOnHands(rankConfig shared.SpellRankConfig) {
 		SpellSchool:    core.SpellSchoolHoly,
 		ProcMask:       core.ProcMaskSpellHealing,
 		Flags:          core.SpellFlagAPL | core.SpellFlagHelpful,
+		Rank:           rankConfig.Rank,
 		ClassSpellMask: SpellMaskLayOnHands,
 
 		DamageMultiplier: 1,

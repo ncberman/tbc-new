@@ -18,6 +18,13 @@ var ExorcismRankMap = shared.SpellRankMap{
 	{Rank: 7, SpellID: 27138, Cost: 340, MinDamage: 626, MaxDamage: 698, Coefficient: 0.429},
 }
 
+func (paladin *Paladin) getExorcismTimer() *core.Timer {
+	if paladin.exorcismTimer == nil {
+		paladin.exorcismTimer = paladin.NewTimer()
+	}
+	return paladin.exorcismTimer
+}
+
 // Exorcism
 // https://www.wowhead.com/tbc/spell=10314
 //
@@ -29,16 +36,12 @@ func (paladin *Paladin) registerExorcism(rankConfig shared.SpellRankConfig) {
 	maxDamage := rankConfig.MaxDamage
 	coefficient := rankConfig.Coefficient
 
-	cd := core.Cooldown{
-		Timer:    paladin.NewTimer(),
-		Duration: time.Second * 15,
-	}
-
 	exorcism := paladin.RegisterSpell(core.SpellConfig{
 		ActionID:       core.ActionID{SpellID: spellID},
 		SpellSchool:    core.SpellSchoolHoly,
 		ProcMask:       core.ProcMaskSpellDamage,
 		Flags:          core.SpellFlagAPL,
+		Rank:           rankConfig.Rank,
 		ClassSpellMask: SpellMaskExorcism,
 
 		DamageMultiplier: 1,
@@ -54,7 +57,10 @@ func (paladin *Paladin) registerExorcism(rankConfig shared.SpellRankConfig) {
 			DefaultCast: core.Cast{
 				GCD: core.GCDDefault,
 			},
-			CD: cd,
+			CD: core.Cooldown{
+				Timer:    paladin.getExorcismTimer(),
+				Duration: time.Second * 15,
+			},
 		},
 
 		BonusCoefficient: coefficient,
@@ -64,8 +70,7 @@ func (paladin *Paladin) registerExorcism(rankConfig shared.SpellRankConfig) {
 		},
 
 		ApplyEffects: func(sim *core.Simulation, target *core.Unit, spell *core.Spell) {
-			result := spell.CalcDamage(sim, target, sim.Roll(minDamage, maxDamage), spell.OutcomeMagicHitAndCrit)
-			spell.DealDamage(sim, result)
+			spell.CalcAndDealDamage(sim, target, sim.Roll(minDamage, maxDamage), spell.OutcomeMagicHitAndCrit)
 		},
 	})
 

@@ -7,6 +7,13 @@ import (
 	"github.com/wowsims/tbc/sim/core"
 )
 
+func (paladin *Paladin) getHolyShockTimer() *core.Timer {
+	if paladin.holyShockTimer == nil {
+		paladin.holyShockTimer = paladin.NewTimer()
+	}
+	return paladin.holyShockTimer
+}
+
 var HolyShockRankMap = shared.SpellRankMap{
 	{Rank: 1, SpellID: 20473, Cost: 335, MinDamage: 277, MaxDamage: 299, Coefficient: 0.429},
 	{Rank: 2, SpellID: 20929, Cost: 410, MinDamage: 379, MaxDamage: 409, Coefficient: 0.429},
@@ -30,17 +37,13 @@ func (paladin *Paladin) registerHolyShock(rankConfig shared.SpellRankConfig) {
 	// Holy Shock heals for 1.267x the damage component of the spell.
 	healingCoeff := 1.267
 
-	cd := core.Cooldown{
-		Timer:    paladin.NewTimer(),
-		Duration: time.Second * 15,
-	}
-
 	holyShock := paladin.RegisterSpell(core.SpellConfig{
 		ActionID:       core.ActionID{SpellID: spellID},
 		SpellSchool:    core.SpellSchoolHoly,
 		ProcMask:       core.ProcMaskSpellDamage,
 		Flags:          core.SpellFlagAPL,
 		ClassSpellMask: SpellMaskHolyShock,
+		Rank:           rankConfig.Rank,
 
 		DamageMultiplier: 1,
 		ThreatMultiplier: 1,
@@ -55,7 +58,10 @@ func (paladin *Paladin) registerHolyShock(rankConfig shared.SpellRankConfig) {
 			DefaultCast: core.Cast{
 				GCD: core.GCDDefault,
 			},
-			CD: cd,
+			CD: core.Cooldown{
+				Timer:    paladin.getHolyShockTimer(),
+				Duration: time.Second * 15,
+			},
 		},
 
 		BonusCoefficient: coefficient,

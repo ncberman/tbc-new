@@ -1,13 +1,19 @@
 package paladin
 
 import (
-	"strconv"
 	"time"
 
 	"github.com/wowsims/tbc/sim/common/shared"
 	"github.com/wowsims/tbc/sim/core"
 	"github.com/wowsims/tbc/sim/core/stats"
 )
+
+func (paladin *Paladin) getHolyShieldTimer() *core.Timer {
+	if paladin.holyShieldTimer == nil {
+		paladin.holyShieldTimer = paladin.NewTimer()
+	}
+	return paladin.holyShieldTimer
+}
 
 var HolyShieldRankMap = shared.SpellRankMap{
 	{Rank: 1, SpellID: 20925, Cost: 135, MinDamage: 59, Coefficient: 0.05, ThreatMultiplier: 1.35},
@@ -23,19 +29,11 @@ var HolyShieldRankMap = shared.SpellRankMap{
 // for each attack blocked while active. Damage caused by Holy Shield causes
 // 35% additional threat. Each block expends a charge. 4 charges.
 func (paladin *Paladin) registerHolyShield(rankConfig shared.SpellRankConfig) {
-	rank := rankConfig.Rank
 	spellID := rankConfig.SpellID
 	cost := rankConfig.Cost
 	value := rankConfig.MinDamage
 	coefficient := rankConfig.Coefficient
 	threatMultiplier := rankConfig.ThreatMultiplier
-
-	cd := core.Cooldown{
-		Timer:    paladin.NewTimer(),
-		Duration: time.Second * 10,
-	}
-
-	blockRating := 30 * core.BlockRatingPerBlockPercent // 30% block chance
 
 	actionID := core.ActionID{SpellID: spellID}
 
@@ -55,17 +53,10 @@ func (paladin *Paladin) registerHolyShield(rankConfig shared.SpellRankConfig) {
 	})
 
 	holyShieldAura := paladin.RegisterAura(core.Aura{
-		Label:     "Holy Shield" + paladin.Label + "Rank" + strconv.Itoa(int(rank)),
+		Label:     "Holy Shield" + paladin.Label + " " + rankConfig.GetRankLabel(),
 		ActionID:  actionID,
 		Duration:  time.Second * 10,
 		MaxStacks: 4,
-
-		OnGain: func(aura *core.Aura, sim *core.Simulation) {
-			aura.Unit.AddStatDynamic(sim, stats.BlockRating, blockRating)
-		},
-		OnExpire: func(aura *core.Aura, sim *core.Simulation) {
-			aura.Unit.AddStatDynamic(sim, stats.BlockRating, -blockRating)
-		},
 
 		OnSpellHitTaken: func(aura *core.Aura, sim *core.Simulation, spell *core.Spell, result *core.SpellResult) {
 			if result.Outcome.Matches(core.OutcomeBlock) {
@@ -73,7 +64,7 @@ func (paladin *Paladin) registerHolyShield(rankConfig shared.SpellRankConfig) {
 				aura.RemoveStack(sim)
 			}
 		},
-	})
+	}).AttachStatBuff(stats.BlockPercent, 0.3)
 
 	holyShieldSpell := paladin.RegisterSpell(core.SpellConfig{
 		ActionID:       actionID,
@@ -81,6 +72,7 @@ func (paladin *Paladin) registerHolyShield(rankConfig shared.SpellRankConfig) {
 		ProcMask:       core.ProcMaskEmpty,
 		Flags:          core.SpellFlagAPL,
 		ClassSpellMask: SpellMaskHolyShield,
+		Rank:           rankConfig.Rank,
 
 		DamageMultiplier: 1,
 		ThreatMultiplier: 1,
@@ -92,7 +84,10 @@ func (paladin *Paladin) registerHolyShield(rankConfig shared.SpellRankConfig) {
 			DefaultCast: core.Cast{
 				GCD: core.GCDDefault,
 			},
-			CD: cd,
+			CD: core.Cooldown{
+				Timer:    paladin.getHolyShieldTimer(),
+				Duration: time.Second * 10,
+			},
 		},
 
 		ApplyEffects: func(sim *core.Simulation, _ *core.Unit, spell *core.Spell) {

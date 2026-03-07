@@ -358,8 +358,11 @@ func (paladin *Paladin) applyImprovedDevotionAura() {
 
 // Precision - Increases your chance to hit with melee weapons and spells by 1/2/3%
 func (paladin *Paladin) applyPrecision() {
-	paladin.AddStat(stats.PhysicalHitPercent, float64(paladin.Talents.Precision))
-	paladin.AddStat(stats.SpellHitPercent, float64(paladin.Talents.Precision))
+	paladin.AddStaticMod(core.SpellModConfig{
+		Kind:       core.SpellMod_BonusHit_Percent,
+		FloatValue: 1 * float64(paladin.Talents.Precision),
+		ProcMask:   core.ProcMaskDirect,
+	})
 }
 
 // Toughness - Increases your armor value from items by 2/4/6/8/10%
@@ -440,8 +443,7 @@ func (paladin *Paladin) applyImprovedSealOfTheCrusader() {
 
 // Deflection - Increases your Parry chance by 1/2/3/4/5%
 func (paladin *Paladin) applyDeflection() {
-	parryBonus := float64(paladin.Talents.Deflection) * core.ParryRatingPerParryPercent
-	paladin.AddStat(stats.ParryRating, parryBonus)
+	paladin.PseudoStats.BaseParryChance += 0.01*float64(paladin.Talents.Deflection)
 }
 
 // Conviction - Increases your chance to get a critical strike with all spells and attacks by 1/2/3/4/5%

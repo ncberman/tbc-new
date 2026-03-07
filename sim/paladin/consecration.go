@@ -1,12 +1,18 @@
 package paladin
 
 import (
-	"strconv"
 	"time"
 
 	"github.com/wowsims/tbc/sim/common/shared"
 	"github.com/wowsims/tbc/sim/core"
 )
+
+func (paladin *Paladin) getConsecrationTimer() *core.Timer {
+	if paladin.consecrationTimer == nil {
+		paladin.consecrationTimer = paladin.NewTimer()
+	}
+	return paladin.consecrationTimer
+}
 
 var ConsecrationRankMap = shared.SpellRankMap{
 	{Rank: 1, SpellID: 26573, Cost: 120, MinDamage: 8, MaxDamage: 8, Coefficient: 0.119},
@@ -22,16 +28,10 @@ var ConsecrationRankMap = shared.SpellRankMap{
 //
 // Consecrates the land beneath the Paladin, doing X Holy damage over 8 sec to enemies who enter the area.
 func (paladin *Paladin) registerConsecration(rankConfig shared.SpellRankConfig) {
-	rank := rankConfig.Rank
 	spellID := rankConfig.SpellID
 	cost := rankConfig.Cost
 	minDamage := rankConfig.MinDamage
 	coefficient := rankConfig.Coefficient
-
-	cd := core.Cooldown{
-		Timer:    paladin.NewTimer(),
-		Duration: 8 * time.Second,
-	}
 
 	consecration := paladin.RegisterSpell(core.SpellConfig{
 		ActionID:       core.ActionID{SpellID: spellID},
@@ -39,6 +39,7 @@ func (paladin *Paladin) registerConsecration(rankConfig shared.SpellRankConfig) 
 		ProcMask:       core.ProcMaskSpellDamage,
 		Flags:          core.SpellFlagAPL,
 		ClassSpellMask: SpellMaskConsecration,
+		Rank:           rankConfig.Rank,
 
 		DamageMultiplier: 1,
 		ThreatMultiplier: 1,
@@ -52,14 +53,17 @@ func (paladin *Paladin) registerConsecration(rankConfig shared.SpellRankConfig) 
 			DefaultCast: core.Cast{
 				GCD: core.GCDDefault,
 			},
-			CD: cd,
+			CD: core.Cooldown{
+				Timer:    paladin.getConsecrationTimer(),
+				Duration: 8 * time.Second,
+			},
 		},
 
 		Dot: core.DotConfig{
 			IsAOE: true,
 			Aura: core.Aura{
 				ActionID: core.ActionID{SpellID: spellID},
-				Label:    "Consecration" + paladin.Label + " Rank " + strconv.Itoa(int(rank)),
+				Label:    "Consecration" + paladin.Label + " " + rankConfig.GetRankLabel(),
 			},
 			NumberOfTicks:    8,
 			TickLength:       time.Second * 1,
