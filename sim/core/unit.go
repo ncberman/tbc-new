@@ -32,8 +32,8 @@ const (
 type DynamicDamageTakenModifier func(sim *Simulation, spell *Spell, result *SpellResult, isPeriodic bool)
 type DynamicHealingTakenModifier func(sim *Simulation, spell *Spell, result *SpellResult)
 
-type GetSpellDamageValue func(spell *Spell) float64
-type GetAttackPowerValue func(spell *Spell) float64
+type GetSpellDamageValue func(spell *Spell, target *Unit) float64
+type GetAttackPowerValue func(spell *Spell, target *Unit) float64
 
 // Unit is an abstraction of a Character/Boss/Pet/etc, containing functionality
 // shared by all of them.
@@ -205,13 +205,13 @@ type Unit struct {
 	SpellsInFlight map[*Spell]int32
 }
 
-func (unit *Unit) getSpellDamageValueImpl(spell *Spell) float64 {
+func (unit *Unit) getSpellDamageValueImpl(spell *Spell, _ *Unit) float64 {
 	return spell.Unit.GetStat(stats.SpellDamage) + spell.BonusSpellDamage + spell.SpellSchoolBonusDamage()
 
 }
 
-func (unit *Unit) getAttackPowerValueImpl(spell *Spell) float64 {
-	return unit.GetStat(stats.AttackPower) + spell.Unit.CurrentTarget.PseudoStats.BonusAttackPower
+func (unit *Unit) getAttackPowerValueImpl(spell *Spell, target *Unit) float64 {
+	return unit.GetStat(stats.AttackPower) + target.PseudoStats.BonusAttackPower + spell.Unit.AttackTables[target.UnitIndex].MobTypeBonusStats[target.MobType][stats.RangedAttackPower]
 }
 
 // Units can be disabled for several reasons:
@@ -369,12 +369,12 @@ func (unit *Unit) processDynamicBonus(sim *Simulation, bonus stats.Stats) {
 			unit.currentMana = unit.MaxMana()
 		}
 	}
-	if bonus[stats.MeleeHasteRating] > 0 {
+	if bonus[stats.MeleeHasteRating] != 0 {
 		unit.updateAttackSpeed()
 		unit.updateMeleeAndRangedHaste()
 		unit.AutoAttacks.UpdateSwingTimers(sim)
 	}
-	if bonus[stats.SpellHasteRating] > 0 {
+	if bonus[stats.SpellHasteRating] != 0 {
 		unit.updateCastSpeed()
 	}
 
@@ -831,19 +831,9 @@ func (unit *Unit) GetMetadata() *proto.UnitMetadata {
 		Name: unit.Label,
 	}
 
-	// Preserve rank in ActionID metadata so the APL UI can group different ranks
-	// of the same spell/aura under a single submenu.
-	spellRanksByID := make(map[int32]int32)
-
 	metadata.Spells = MapSlice(unit.Spellbook, func(spell *Spell) *proto.SpellStats {
-		spellID := spell.ActionID.ToProto()
-		spellID.Rank = spell.Rank
-		if spell.ActionID.SpellID != 0 && spell.Rank > 0 {
-			spellRanksByID[spell.ActionID.SpellID] = spell.Rank
-		}
-
 		return &proto.SpellStats{
-			Id: spellID,
+			Id: spell.ActionID.ToProto(),
 
 			IsCastable:      spell.Flags.Matches(SpellFlagAPL),
 			IsChanneled:     spell.Flags.Matches(SpellFlagChanneled),
@@ -864,13 +854,8 @@ func (unit *Unit) GetMetadata() *proto.UnitMetadata {
 		return !aura.ActionID.IsEmptyAction()
 	})
 	metadata.Auras = MapSlice(aplAuras, func(aura *Aura) *proto.AuraStats {
-		auraID := aura.ActionID.ToProto()
-		if aura.ActionID.SpellID != 0 {
-			auraID.Rank = spellRanksByID[aura.ActionID.SpellID]
-		}
-
 		return &proto.AuraStats{
-			Id:                 auraID,
+			Id:                 aura.ActionID.ToProto(),
 			MaxStacks:          aura.MaxStacks,
 			HasIcd:             aura.Icd != nil,
 			HasExclusiveEffect: len(aura.ExclusiveEffects) > 0,
