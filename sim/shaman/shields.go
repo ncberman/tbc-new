@@ -38,7 +38,7 @@ func (shaman *Shaman) startShieldProcPeriodicAction(sim *core.Simulation) {
 func (shaman *Shaman) registerWaterShieldSpell() {
 	manaReturned := 204.0
 	mp5 := 50.0
-	if shaman.CouldHaveSetBonus(ItemSetTidefuryRegalia, 4) {
+	if shaman.CouldHaveSetBonus(ItemSetTidefuryRaiment, 4) {
 		manaReturned += 56
 	}
 

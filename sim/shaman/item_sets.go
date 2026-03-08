@@ -8,9 +8,9 @@ import (
 	"github.com/wowsims/tbc/sim/core/stats"
 )
 
-var ItemSetTidefuryRegalia = core.NewItemSet(core.ItemSet{
+var ItemSetTidefuryRaiment = core.NewItemSet(core.ItemSet{
 	ID:   630,
-	Name: "Tidefury Regalia",
+	Name: "Tidefury Raiment",
 	Bonuses: map[int32]core.ApplySetBonus{
 		2: func(agent core.Agent, setBonusAura *core.Aura) {
 			// Your Chain Lightning Spell now only loses 17% of its damage per jump.

@@ -956,6 +956,13 @@ dps_results: {
  }
 }
 dps_results: {
+ key: "TestEnhancement-AllItems-TidefuryRaiment"
+ value: {
+  dps: 1612.52977
+  tps: 1464.8675
+ }
+}
+dps_results: {
  key: "TestEnhancement-AllItems-TomeofDiabolicRemedy-33828"
  value: {
   dps: 1915.99293
