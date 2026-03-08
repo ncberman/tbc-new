@@ -1006,6 +1006,13 @@ dps_results: {
  }
 }
 dps_results: {
+ key: "TestElemental-AllItems-TotemofLightning-28066"
+ value: {
+  dps: 1738.70084
+  tps: 1371.15721
+ }
+}
+dps_results: {
  key: "TestElemental-AllItems-TotemoftheStorm-23199"
  value: {
   dps: 1765.73305
