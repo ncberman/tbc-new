@@ -9,19 +9,19 @@ import (
 
 func init() {
 	// Communal Totem of Lightning
-	// core.NewItemEffect(186071, func(agent core.Agent) {
-	// 	character := agent.GetCharacter()
+	core.NewItemEffect(186071, func(agent core.Agent) {
+		character := agent.GetCharacter()
 
-	// 	aura := core.MakePermanent(character.RegisterAura(core.Aura{
-	// 		Label: "Increased Lightning Damage",
-	// 	}).AttachSpellMod(core.SpellModConfig{
-	// 		Kind:       core.SpellMod_BaseDamage_Flat,
-	// 		FloatValue: 10.0,
-	// 		ClassMask:  SpellMaskLightningBolt | SpellMaskChainLightning | SpellMaskOverload,
-	// 	}))
+		aura := core.MakePermanent(character.RegisterAura(core.Aura{
+			Label: "Increased Lightning Damage",
+		}).AttachSpellMod(core.SpellModConfig{
+			Kind:       core.SpellMod_BaseDamage_Flat,
+			FloatValue: 10.0,
+			ClassMask:  SpellMaskLightningBolt | SpellMaskChainLightning | SpellMaskOverload,
+		}))
 
-	// 	character.ItemSwap.RegisterProc(186071, aura)
-	// })
+		character.ItemSwap.RegisterProc(186071, aura)
+	})
 
 	// Skycall Totem
 	core.NewItemEffect(33506, func(agent core.Agent) {

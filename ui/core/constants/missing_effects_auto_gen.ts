@@ -3254,6 +3254,12 @@ export const MISSING_ITEM_EFFECTS = new Map<number, string[]>([
 			"", // 52172 - https://www.wowhead.com/tbc/spell=52172
 		]
 	],
+	[
+		186073, // Communal Totem of the Storm
+		[
+			"Reduces the mana cost of Stormstrike by 5.", // 352522 - https://www.wowhead.com/tbc/spell=352522
+		]
+	],
 ])
 
 export const MISSING_ENCHANT_EFFECTS = new Map<number, string[]>([

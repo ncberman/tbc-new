@@ -305,6 +305,13 @@ dps_results: {
  }
 }
 dps_results: {
+ key: "TestElemental-AllItems-CommunalTotemofLightning-186071"
+ value: {
+  dps: 1750.56994
+  tps: 1381.54927
+ }
+}
+dps_results: {
  key: "TestElemental-AllItems-Coren'sLuckyCoin-38289"
  value: {
   dps: 1706.4731
