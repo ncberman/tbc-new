@@ -1,8 +1,6 @@
 package priest
 
 import (
-	"time"
-
 	"github.com/wowsims/tbc/sim/core"
 	"github.com/wowsims/tbc/sim/core/proto"
 )
@@ -19,7 +17,8 @@ type Priest struct {
 	ShadowfiendAura *core.Aura
 	ShadowfiendPet  *Shadowfiend
 
-	Shadowfiend *core.Spell
+	Shadowfiend    *core.Spell
+	InnerFocusAura *core.Aura
 
 	ShadowWordPain  []*core.Spell
 	MindBlast       []*core.Spell
@@ -30,13 +29,9 @@ type Priest struct {
 	VampiricTouch   []*core.Spell
 }
 
-type TargetDoTInfo struct {
-	Swp time.Duration
-	VT  time.Duration
-}
-
 type SelfBuffs struct {
 	UseShadowfiend bool
+	PreShadowform  bool
 }
 
 func (priest *Priest) GetCharacter() *core.Character {
@@ -53,11 +48,27 @@ func (priest *Priest) Initialize() {
 	ShadowWordDeathRankMap.RegisterAll(priest.registerShadowWordDeathSpell)
 	VampiricTouchRankMap.RegisterAll(priest.registerVampiricTouchSpell)
 	priest.registerShadowfiendSpell()
-	// priest.registerVampiricTouchSpell()
 	// priest.registerPowerInfusionSpell()
 }
 
 func (priest *Priest) ApplyTalents() {
+	// Discipline
+	priest.applyInnerFocus()
+	priest.applyMeditation()
+	priest.applyMentalAgility()
+
+	// Shadow
+	priest.applyDarkness()
+	priest.applyShadowFocus()
+	priest.applyImprovedShadowWordPain()
+	priest.applyFocusedMind()
+	priest.applyShadowAffinity()
+	priest.applyShadowPower()
+	//priest.applyShadowWeaving()
+	//priest.applyMisery()
+	priest.applyShadowform()
+	priest.applyVampiricEmbrace()
+	priest.applyImprovedMindBlast()
 }
 
 func (priest *Priest) Reset(_ *core.Simulation) {
@@ -87,18 +98,15 @@ type PriestAgent interface {
 }
 
 func NewPriest(character *core.Character, options *proto.Player) *Priest {
+	classOptions := options.GetPriest().GetOptions().GetClassOptions()
 	selfBuffs := SelfBuffs{
 		UseShadowfiend: true,
+		PreShadowform:  classOptions.GetPreShadowform(),
 	}
 
 	basePriest := New(character, selfBuffs, options.TalentsString)
 	basePriest.Latency = float64(basePriest.ChannelClipDelay.Milliseconds())
-	/*	priest := &Priest{
-			Priest:  basePriest,
-			options: priestOptions.Options,
-		}
 
-		return priest*/
 	return basePriest
 }
 
@@ -146,7 +154,9 @@ const (
 		PriestSpellPowerInfusion |
 		PriestSpellShadowWordDeath |
 		PriestSpellShadowWordPain |
-		PriestSpellVampiricEmbrace
+		PriestSpellVampiricEmbrace |
+		PriestSpellShadowFiend |
+		PriestSpellShadowform
 	PriestShadowSpells = PriestSpellDevouringPlague |
 		PriestSpellShadowWordDeath |
 		PriestSpellShadowform |

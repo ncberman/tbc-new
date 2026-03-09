@@ -313,15 +313,6 @@ export class ActionId {
 					} else if (tag == 77486) {
 						name += ' (Mastery)';
 					}
-				} else {
-					// Gurthalak, Voice of the Deeps
-					if (tag === 0) {
-						name += ' (LFR)';
-					} else if (tag === 1) {
-						name += ' (Normal)';
-					} else if (tag === 2) {
-						name += ' (Heroic)';
-					}
 				}
 				break;
 			case 'Mind Sear':
@@ -472,7 +463,7 @@ export class ActionId {
 				break;
 			case 'Berserking':
 				if (tag > 0) {
-					name += ` (${10 + ((tag - 1) * 5)}%)`;
+					name += ` (${10 + (tag - 1) * 5}%)`;
 				}
 				break;
 			case 'Elemental Mastery':

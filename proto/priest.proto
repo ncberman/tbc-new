@@ -86,6 +86,7 @@ message PriestOptions {
 	}
 	Armor armor = 1;
 	bool use_shadowfiend = 2;
+	bool pre_shadowform = 3;
 }
 
 

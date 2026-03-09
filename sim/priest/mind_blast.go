@@ -23,8 +23,6 @@ var MindBlastRankMap = shared.SpellRankMap{
 }
 
 func (priest *Priest) registerMindBlastSpell(rankConfig shared.SpellRankConfig) {
-	// Improved Mind Blast (Shadow Tier 2): -0.5s CD per rank, max 5 ranks = -2.5s
-	cdReduction := time.Duration(priest.Talents.ImprovedMindBlast) * 500 * time.Millisecond
 	cdTimer := priest.NewTimer()
 
 	spell := priest.RegisterSpell(core.SpellConfig{
@@ -44,7 +42,7 @@ func (priest *Priest) registerMindBlastSpell(rankConfig shared.SpellRankConfig) 
 			},
 			CD: core.Cooldown{
 				Timer:    cdTimer,
-				Duration: 8*time.Second - cdReduction,
+				Duration: 8 * time.Second,
 			},
 		},
 
