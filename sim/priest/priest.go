@@ -28,6 +28,7 @@ type Priest struct {
 	DevouringPlague *core.Spell
 	VampiricEmbrace *core.Spell
 	VampiricTouch   []*core.Spell
+	Smite           []*core.Spell
 }
 
 type TargetDoTInfo struct {
@@ -52,12 +53,27 @@ func (priest *Priest) Initialize() {
 	ShadowWordPainRankMap.RegisterAll(priest.registerShadowWordPainSpell)
 	ShadowWordDeathRankMap.RegisterAll(priest.registerShadowWordDeathSpell)
 	VampiricTouchRankMap.RegisterAll(priest.registerVampiricTouchSpell)
+	SmiteRankMap.RegisterAll(priest.registerSmiteSpell)
 	priest.registerShadowfiendSpell()
 	// priest.registerVampiricTouchSpell()
 	// priest.registerPowerInfusionSpell()
 }
 
 func (priest *Priest) ApplyTalents() {
+	priest.applyHolySpecialization()
+}
+
+func (priest *Priest) applyHolySpecialization() {
+	if priest.Talents.HolySpecialization == 0 {
+		return
+	}
+
+	// Holy Specialization: +1% crit per rank for all Holy spells
+	priest.AddStaticMod(core.SpellModConfig{
+		Kind:       core.SpellMod_BonusCrit_Percent,
+		ClassMask:  PriestSpellHolyFire | PriestSpellHolyNova | PriestSpellSmite,
+		FloatValue: 1 * float64(priest.Talents.HolySpecialization),
+	})
 }
 
 func (priest *Priest) Reset(_ *core.Simulation) {
@@ -136,6 +152,7 @@ const (
 	PriestSpellVampiricEmbrace
 	PriestSpellVampiricTouch
 	PriestSpellFade
+	PriestSpellSmite
 
 	PriestSpellLast
 	PriestSpellsAll    = PriestSpellLast<<1 - 1
