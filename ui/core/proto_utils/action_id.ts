@@ -303,16 +303,12 @@ export class ActionId {
 				}
 				break;
 			case 'Mind Flay':
-				if (this.spellId === 15407) {
-					if (tag == 1) {
-						name += ' (1 Tick)';
-					} else if (tag == 2) {
-						name += ' (2 Tick)';
-					} else if (tag == 3) {
-						name += ' (3 Tick)';
-					} else if (tag == 77486) {
-						name += ' (Mastery)';
-					}
+				if (tag == 1) {
+					name += ' (1 Tick)';
+				} else if (tag == 2) {
+					name += ' (2 Tick)';
+				} else if (tag == 3) {
+					name += ' (3 Tick)';
 				}
 				break;
 			case 'Mind Sear':

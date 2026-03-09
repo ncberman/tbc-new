@@ -172,19 +172,14 @@ func (priest *Priest) applyShadowPower() {
 	})
 }
 
-/*
-// ---------------------------------------------------------------------------
-// Shadow Weaving (5 ranks)
-// Shadow spell hits have a 20% per rank chance to apply a stacking debuff on
-// the target: +2% shadow damage taken per stack, up to 5 stacks (10% max).
-// The debuff lasts 15 s and is refreshed on each successful proc.
-// ---------------------------------------------------------------------------
 func (priest *Priest) applyShadowWeaving() {
 	if priest.Talents.ShadowWeaving == 0 {
 		return
 	}
 
-	swAura := core.ShadowWeavingAura(priest.CurrentTarget, 0)
+	swAuras := priest.NewEnemyAuraArray(func(target *core.Unit) *core.Aura {
+		return core.ShadowWeavingAura(target)
+	})
 	procChance := 0.20 * float64(priest.Talents.ShadowWeaving)
 
 	priest.MakeProcTriggerAura(core.ProcTrigger{
@@ -194,47 +189,42 @@ func (priest *Priest) applyShadowWeaving() {
 		Outcome:        core.OutcomeLanded,
 		ProcChance:     procChance,
 		Handler: func(sim *core.Simulation, spell *core.Spell, result *core.SpellResult) {
-			swAura.Activate(sim)
-			swAura.AddStack(sim)
-		},
-	})
-
-	// Also proc on periodic (DoT) ticks — SW:P and VT ticks can both apply Shadow Weaving.
-	priest.MakeProcTriggerAura(core.ProcTrigger{
-		Name:           "Shadow Weaving Trigger (DoT)",
-		ClassSpellMask: PriestShadowSpells,
-		Callback:       core.CallbackOnPeriodicDamageDealt,
-		ProcChance:     procChance,
-		Handler: func(sim *core.Simulation, spell *core.Spell, result *core.SpellResult) {
-			swAura.Activate(sim)
-			swAura.AddStack(sim)
+			swAuras.Get(result.Target).Activate(sim)
+			swAuras.Get(result.Target).AddStack(sim)
 		},
 	})
 }
 
-// ---------------------------------------------------------------------------
-// Misery (5 ranks)
-// SW:P, Vampiric Touch, and Mind Flay applications cause the target to take
-// increased spell damage equal to 1% per rank from all schools for 24 s.
-// ---------------------------------------------------------------------------
 func (priest *Priest) applyMisery() {
 	if priest.Talents.Misery == 0 {
 		return
 	}
 
-	miseryAura := core.MiseryAura(priest.CurrentTarget, priest.Talents.Misery)
+	miseryAuras := priest.NewEnemyAuraArray(func(target *core.Unit) *core.Aura {
+		return core.MiseryAura(target, priest.Talents.Misery)
+	})
 
 	priest.MakeProcTriggerAura(core.ProcTrigger{
 		Name:           "Misery Trigger",
 		ClassSpellMask: PriestSpellShadowWordPain | PriestSpellVampiricTouch | PriestSpellMindFlay,
-		Callback:       core.CallbackOnSpellHitDealt,
 		Outcome:        core.OutcomeLanded,
+		Callback:       core.CallbackOnSpellHitDealt,
 		Handler: func(sim *core.Simulation, spell *core.Spell, result *core.SpellResult) {
-			miseryAura.Activate(sim)
+			aura := miseryAuras.Get(result.Target)
+			dotDuration := spell.Dot(result.Target).RemainingDuration(sim)
+			currentRemaining := aura.RemainingDuration(sim)
+
+			if dotDuration > currentRemaining {
+				aura.Duration = dotDuration
+			} else {
+				aura.Duration = currentRemaining
+			}
+
+			aura.Activate(sim)
+
 		},
 	})
 }
-*/
 
 // ---------------------------------------------------------------------------
 // Shadowform
