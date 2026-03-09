@@ -935,9 +935,9 @@ dps_results: {
 dps_results: {
  key: "TestProtectionWarrior-AllItems-RodoftheSunKing-29996"
  value: {
-  dps: 717.40844
-  tps: 1337.1199
-  dtps: 1300.36595
+  dps: 701.72193
+  tps: 1316.3168
+  dtps: 1307.70916
  }
 }
 dps_results: {

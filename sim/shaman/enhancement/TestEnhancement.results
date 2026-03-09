@@ -760,6 +760,13 @@ dps_results: {
  }
 }
 dps_results: {
+ key: "TestEnhancement-AllItems-RodoftheSunKing-29996"
+ value: {
+  dps: 1945.29984
+  tps: 1819.19344
+ }
+}
+dps_results: {
  key: "TestEnhancement-AllItems-Romulo'sPoisonVial-28579"
  value: {
   dps: 1956.38904

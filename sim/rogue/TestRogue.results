@@ -769,8 +769,8 @@ dps_results: {
 dps_results: {
  key: "TestRogue-AllItems-RodoftheSunKing-29996"
  value: {
-  dps: 1984.75943
-  tps: 1409.17919
+  dps: 1972.57203
+  tps: 1400.52614
  }
 }
 dps_results: {
