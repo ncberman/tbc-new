@@ -1343,16 +1343,54 @@ func applyPetBuffEffects(petAgent PetAgent, raidBuffs *proto.RaidBuffs, partyBuf
 	individualBuffs = googleProto.Clone(individualBuffs).(*proto.IndividualBuffs)
 
 	//Todo: Only cancel the buffs that are supposed to be cancelled
-	// Check beta when pets are better implemented?
-	raidBuffs = &proto.RaidBuffs{}
-	partyBuffs = &proto.PartyBuffs{}
-	individualBuffs = &proto.IndividualBuffs{}
+	// Check beta when pets are better implemented?  I removed the clearing to allow all buffs to flow to presummoned pets and only auras to dynamic pets.
+	//raidBuffs = &proto.RaidBuffs{}
+	//partyBuffs = &proto.PartyBuffs{}
+	//individualBuffs = &proto.IndividualBuffs{}
 
 	if !petAgent.GetPet().enabledOnStart {
-		// What do we do with permanent pets that are not enabled at start?
+		// Temporarily summoned pets (e.g. Shadowfiend) are not present at the
+		// start of the fight, so they miss targeted buffs like Battle Shout and
+		// Blessing of Might. They do receive passive ambient effects — auras,
+		// totems, and similar effects that apply to everything in range.
+		applyBuffEffects(petAgent, &proto.RaidBuffs{}, &proto.PartyBuffs{
+			// Auras
+			FerociousInspiration: partyBuffs.FerociousInspiration,
+			BloodPact:            partyBuffs.BloodPact,
+			MoonkinAura:          partyBuffs.MoonkinAura,
+			LeaderOfThePack:      partyBuffs.LeaderOfThePack,
+			SanctityAura:         partyBuffs.SanctityAura,
+			DevotionAura:         partyBuffs.DevotionAura,
+			RetributionAura:      partyBuffs.RetributionAura,
+			TrueshotAura:         partyBuffs.TrueshotAura,
+			DraeneiRacialMelee:   partyBuffs.DraeneiRacialMelee,
+			DraeneiRacialCaster:  partyBuffs.DraeneiRacialCaster,
+
+			// Atiesh
+			AtieshDruid:   partyBuffs.AtieshDruid,
+			AtieshMage:    partyBuffs.AtieshMage,
+			AtieshPriest:  partyBuffs.AtieshPriest,
+			AtieshWarlock: partyBuffs.AtieshWarlock,
+
+			// Totems
+			ManaSpringTotem:                      partyBuffs.ManaSpringTotem,
+			ManaTideTotems:                       partyBuffs.ManaTideTotems,
+			TotemOfWrath:                         partyBuffs.TotemOfWrath,
+			WrathOfAirTotem:                      partyBuffs.WrathOfAirTotem,
+			SnapshotImprovedWrathOfAirTotem:      partyBuffs.SnapshotImprovedWrathOfAirTotem,
+			GraceOfAirTotem:                      partyBuffs.GraceOfAirTotem,
+			StrengthOfEarthTotem:                 partyBuffs.StrengthOfEarthTotem,
+			SnapshotImprovedStrengthOfEarthTotem: partyBuffs.SnapshotImprovedStrengthOfEarthTotem,
+			TranquilAirTotem:                     partyBuffs.TranquilAirTotem,
+			WindfuryTotem:                        partyBuffs.WindfuryTotem,
+			TotemTwisting:                        partyBuffs.TotemTwisting,
+
+			// Excluded: Battle Shout, Commanding Shout (require targeted cast),Drums (active consumable use), necklace item buffs.
+		}, &proto.IndividualBuffs{})
+	} else {
+		applyBuffEffects(petAgent, raidBuffs, partyBuffs, individualBuffs)
 	}
 
-	applyBuffEffects(petAgent, raidBuffs, partyBuffs, individualBuffs)
 }
 
 // Used for approximating cooldowns applied by other players to you, such as

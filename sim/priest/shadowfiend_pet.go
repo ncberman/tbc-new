@@ -64,7 +64,7 @@ func (priest *Priest) NewShadowfiend() *Shadowfiend {
 func (priest *Priest) shadowfiendStatInheritance() core.PetStatInheritance {
 	return func(ownerStats stats.Stats) stats.Stats {
 		return stats.Stats{
-			stats.AttackPower: ownerStats[stats.ShadowDamage] * 0.57,
+			stats.AttackPower: (ownerStats[stats.SpellDamage] + ownerStats[stats.ShadowDamage]) * 0.57,
 		}
 	}
 }
