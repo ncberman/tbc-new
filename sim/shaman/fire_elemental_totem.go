@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/wowsims/tbc/sim/core"
-	"github.com/wowsims/tbc/sim/core/proto"
 )
 
 func (shaman *Shaman) registerFireElementalTotem() {
@@ -41,11 +40,8 @@ func (shaman *Shaman) registerFireElementalTotem() {
 		},
 
 		ApplyEffects: func(sim *core.Simulation, target *core.Unit, _ *core.Spell) {
-			if shaman.Totems.Fire != proto.FireTotem_NoFireTotem {
-				shaman.TotemExpirations[FireTotem] = sim.CurrentTime + fireElementalAura.Duration
-			}
-
 			shaman.cancelFireTotems(sim)
+			shaman.TotemExpirations[FireTotem] = sim.CurrentTime + fireElementalAura.Duration
 
 			shaman.FireElemental.Disable(sim)
 			shaman.FireElemental.EnableWithTimeout(sim, shaman.FireElemental, fireElementalAura.Duration)
