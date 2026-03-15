@@ -37,7 +37,9 @@ func NewShaman(character *core.Character, talents string, selfBuffs SelfBuffs) *
 	shaman.AddStat(stats.AttackPower, -20)
 
 	shaman.FireElemental = shaman.NewFireElemental()
-	//shaman.EarthElemental = shaman.NewEarthElemental()
+	shaman.EarthElemental = shaman.NewEarthElemental()
+
+	shaman.WindfuryAPBonus = 475.0 //Base Windfury Bonus
 
 	return shaman
 }
@@ -73,6 +75,8 @@ const (
 // Shaman represents a shaman character.
 type Shaman struct {
 	core.Character
+
+	WindfuryAPBonus float64
 
 	Talents   *proto.ShamanTalents
 	SelfBuffs SelfBuffs
@@ -115,6 +119,7 @@ type Shaman struct {
 	SearingTotem       *core.Spell
 	TremorTotem        *core.Spell
 	FireNovaTotemPA    *core.PendingAction
+	SearingReplaced    bool // Used for cancelling searing dot if the totem is replaced during prepull
 
 	EarthTotemAura *core.Aura
 	WaterTotemAura *core.Aura
@@ -139,7 +144,7 @@ func (shaman *Shaman) AddRaidBuffs(raidBuffs *proto.RaidBuffs) {
 func (shaman *Shaman) Initialize() {
 	shaman.registerChainLightningSpell()
 	shaman.registerFireElementalTotem()
-	//shaman.registerEarthElementalTotem()
+	shaman.registerEarthElementalTotem()
 	shaman.registerLightningBoltSpell()
 	shaman.registerShieldsSpells()
 	shaman.registerMagmaTotemSpell()
@@ -161,10 +166,10 @@ func (shaman *Shaman) ApplyTalents() {
 }
 
 func (shaman *Shaman) Reset(sim *core.Simulation) {
-	shaman.TotemExpirations[FireTotem] = -core.NeverExpires
-	shaman.TotemExpirations[AirTotem] = -core.NeverExpires
-	shaman.TotemExpirations[EarthTotem] = -core.NeverExpires
-	shaman.TotemExpirations[WaterTotem] = -core.NeverExpires
+	shaman.TotemExpirations[FireTotem] = -10 * time.Hour
+	shaman.TotemExpirations[AirTotem] = -10 * time.Hour
+	shaman.TotemExpirations[EarthTotem] = -10 * time.Hour
+	shaman.TotemExpirations[WaterTotem] = -10 * time.Hour
 }
 
 func (shaman *Shaman) OnEncounterStart(sim *core.Simulation) {

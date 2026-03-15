@@ -161,14 +161,17 @@ func applyBuffEffects(agent Agent, raidBuffs *proto.RaidBuffs, partyBuffs *proto
 	}
 
 	if partyBuffs.BattleShout != proto.TristateEffect_TristateEffectMissing {
-		MakePermanent(BattleShoutAura(
+		boomingVoicePoints := int32(5)
+		aura := BattleShoutAura(
 			char,
 			false,
-			5,
+			boomingVoicePoints,
 			TernaryFloat64(IsImproved(partyBuffs.BattleShout), 1.25, 1.0),
 			partyBuffs.BsSolarianSapphire,
 			false,
-		))
+		)
+
+		ApplyFixedUptimeAura(aura, 1, aura.Duration+1, -1)
 	}
 
 	if partyBuffs.BloodPact != proto.TristateEffect_TristateEffectMissing {
@@ -184,13 +187,17 @@ func applyBuffEffects(agent Agent, raidBuffs *proto.RaidBuffs, partyBuffs *proto
 	}
 
 	if partyBuffs.CommandingShout != proto.TristateEffect_TristateEffectMissing {
-		MakePermanent(CommandingShoutAura(
+		boomingVoicePoints := int32(5)
+
+		aura := MakePermanent(CommandingShoutAura(
 			char,
 			false,
-			5,
+			boomingVoicePoints,
 			TernaryFloat64(IsImproved(partyBuffs.CommandingShout), 1.25, 1.0),
 			false,
 		))
+
+		ApplyFixedUptimeAura(aura, 1, aura.Duration, -1)
 	}
 
 	if partyBuffs.DevotionAura != proto.TristateEffect_TristateEffectMissing {
@@ -246,7 +253,7 @@ func applyBuffEffects(agent Agent, raidBuffs *proto.RaidBuffs, partyBuffs *proto
 	}
 
 	if partyBuffs.StrengthOfEarthTotem != proto.TristateEffect_TristateEffectMissing {
-		StrengthOfEarthTotemAura(char, IsImproved(partyBuffs.StrengthOfEarthTotem))
+		StrengthOfEarthTotemAura(char, TernaryInt32(IsImproved(partyBuffs.StrengthOfEarthTotem), 2, 0), partyBuffs.SoeEnhancement_2Pt4)
 	}
 
 	if partyBuffs.TotemOfWrath > 0 {
@@ -441,29 +448,36 @@ func ShadowProtectionAura(char *Character) *Aura {
 // /////////////////////////////////////////////////////////////////////////
 var BattleShoutCategory = "BattleShout"
 
-func BattleShoutAura(char *Character, isPlayer bool, boomingVoicePoints int32, commandingPresenceMultiplier float64, hasSolarianSapphire bool, hasT2 bool) *Aura {
+func GetBattleShoutValue(boomingVoicePoints int32, commandingPresenceMultiplier float64, hasSolarianSapphire bool, hasT2 bool, isPrepull bool) float64 {
 	baseApBuff := 306.0
 	apBuff := baseApBuff
-	if hasSolarianSapphire {
-		apBuff += 70
+	if isPrepull {
+		if hasSolarianSapphire {
+			apBuff += 70
+		}
+		if hasT2 {
+			apBuff += 30
+		}
 	}
-	if hasT2 {
-		apBuff += 30
-	}
-	nonPlayerApBuff := apBuff * commandingPresenceMultiplier
+	return apBuff * commandingPresenceMultiplier
+}
+
+func BattleShoutAura(char *Character, isPlayer bool, boomingVoicePoints int32, commandingPresenceMultiplier float64, hasSolarianSapphire bool, hasT2 bool) *Aura {
+	prepullApBuff := GetBattleShoutValue(boomingVoicePoints, commandingPresenceMultiplier, hasSolarianSapphire, hasT2, true)
+	apBuff := GetBattleShoutValue(boomingVoicePoints, commandingPresenceMultiplier, hasSolarianSapphire, hasT2, false)
 
 	var ee *ExclusiveEffect
 	aura := char.GetOrRegisterAura(Aura{
 		Label:      fmt.Sprintf("Battle Shout (%s)", Ternary(isPlayer, "Player", "External")),
 		ActionID:   ActionID{SpellID: 2048}.WithTag(TernaryInt32(isPlayer, 0, 1)),
-		Duration:   time.Duration(float64(time.Minute*2) * (1 + 0.25*float64(boomingVoicePoints))),
+		Duration:   time.Duration(float64(time.Minute*2) * (1 + 0.1*float64(boomingVoicePoints))),
 		BuildPhase: CharacterBuildPhaseBuffs,
 		OnGain: func(aura *Aura, sim *Simulation) {
-			ee.SetPriority(sim, TernaryFloat64(sim.CurrentTime <= 0, nonPlayerApBuff, baseApBuff*commandingPresenceMultiplier))
+			ee.SetPriority(sim, TernaryFloat64(sim.CurrentTime > 0, apBuff, prepullApBuff))
 		},
 	})
 
-	ee = aura.NewExclusiveEffect(BattleShoutCategory, false, ExclusiveEffect{
+	ee = aura.NewExclusiveEffect(BattleShoutCategory, true, ExclusiveEffect{
 		Priority: 0,
 		OnGain: func(ee *ExclusiveEffect, sim *Simulation) {
 			ee.Aura.Unit.AddStatDynamic(sim, stats.AttackPower, ee.Priority)
@@ -493,26 +507,32 @@ func BloodPactAura(char *Character, improved bool) *Aura {
 
 var CommandingShoutCategory = "CommandingShout"
 
-func CommandingShoutAura(char *Character, isPlayer bool, boomingVoicePoints int32, commandingPresenceMultiplier float64, hasT6Tank2P bool) *Aura {
+func GetCommandingShoutValue(boomingVoicePoints int32, commandingPresenceMultiplier float64, hasT6Tank2P bool, isPrepull bool) float64 {
 	baseHpBuff := 1080.0
-	if hasT6Tank2P {
-		baseHpBuff += 170
+	if isPrepull {
+		if hasT6Tank2P {
+			baseHpBuff += 170
+		}
 	}
+	return baseHpBuff * commandingPresenceMultiplier
+}
 
-	nonPlayerHpBuff := baseHpBuff * commandingPresenceMultiplier
+func CommandingShoutAura(char *Character, isPlayer bool, boomingVoicePoints int32, commandingPresenceMultiplier float64, hasT6Tank2P bool) *Aura {
+	prepullHpBuff := GetCommandingShoutValue(boomingVoicePoints, commandingPresenceMultiplier, hasT6Tank2P, true)
+	hpBuff := GetCommandingShoutValue(boomingVoicePoints, commandingPresenceMultiplier, hasT6Tank2P, false)
 
 	var ee *ExclusiveEffect
 	aura := char.GetOrRegisterAura(Aura{
 		Label:      fmt.Sprintf("Commanding Shout (%s)", Ternary(isPlayer, "Player", "External")),
 		ActionID:   ActionID{SpellID: 469}.WithTag(TernaryInt32(isPlayer, 0, 1)),
-		Duration:   time.Duration(float64(time.Minute*2) * (1 + 0.25*float64(boomingVoicePoints))),
+		Duration:   time.Duration(float64(time.Minute*2) * (1 + 0.1*float64(boomingVoicePoints))),
 		BuildPhase: CharacterBuildPhaseBuffs,
 		OnGain: func(aura *Aura, sim *Simulation) {
-			ee.SetPriority(sim, TernaryFloat64(sim.CurrentTime <= 0, nonPlayerHpBuff, baseHpBuff*commandingPresenceMultiplier))
+			ee.SetPriority(sim, TernaryFloat64(sim.CurrentTime > 0, hpBuff, prepullHpBuff))
 		},
 	})
 
-	ee = aura.NewExclusiveEffect(CommandingShoutCategory, false, ExclusiveEffect{
+	ee = aura.NewExclusiveEffect(CommandingShoutCategory, true, ExclusiveEffect{
 		Priority: 0,
 		OnGain: func(ee *ExclusiveEffect, sim *Simulation) {
 			ee.Aura.Unit.AddStatDynamic(sim, stats.Health, ee.Priority)
@@ -553,7 +573,6 @@ func FerociousInspiration(char *Character, count int32) *Aura {
 func LeaderOfThePackAura(char *Character, improved bool) *Aura {
 	statsConfig := []StatConfig{
 		{stats.PhysicalCritPercent, 5, false},
-		{stats.RangedCritPercent, 5, false},
 	}
 
 	if improved {
@@ -708,19 +727,24 @@ func ManaSpringTotemAura(char *Character, improved bool) *Aura {
 	})
 }
 
-var StrengthOfEarthTotemCategory = "StrengthOfEarthTotem"
+const (
+	StrengthOfEarthTotemCategory      = "StrengthOfEarthTotem"
+	StrengthOfEarthTotemBaseValue     = 86.0
+	StrengthOfEarthTotemImprovedValue = 12.0
+)
 
-func StrengthOfEarthTotemAura(char *Character, isImproved bool) *Aura {
-	strBuff := 86.0
-	if isImproved {
-		strBuff *= 1.15
-	}
+var StrengthOfEarthMultipliers = []float64{1, 1.08, 1.15}
 
+func StrengthOfEarthTotemValue(enhancingTotemsPoints int32, hasEnh2pT4 bool) float64 {
+	return (86.0 + TernaryFloat64(hasEnh2pT4, StrengthOfEarthTotemImprovedValue, 0)) * StrengthOfEarthMultipliers[enhancingTotemsPoints]
+}
+
+func StrengthOfEarthTotemAura(char *Character, enhancingTotemsPoints int32, hasEnh2pT4 bool) *Aura {
 	return makeStatBuff(char, BuffConfig{
 		Label:    "Strength of Earth Totem",
 		ActionID: ActionID{SpellID: 25528},
 		Stats: []StatConfig{
-			{stats.Strength, strBuff, false},
+			{stats.Strength, StrengthOfEarthTotemValue(enhancingTotemsPoints, hasEnh2pT4), false},
 		},
 		ExclusiveCategory: StrengthOfEarthTotemCategory,
 	})
@@ -950,7 +974,6 @@ func DraneiRacialAura(char *Character, caster bool) *Aura {
 			ActionID: ActionID{SpellID: 6562},
 			Stats: []StatConfig{
 				{stats.PhysicalHitPercent, 1, false},
-				{stats.RangedHitPercent, 1, false},
 			},
 			ExclusiveCategory: "Heroic Presence",
 		})
@@ -1197,26 +1220,38 @@ func registerPowerInfusionCD(char *Character, numPowerInfusions int32) {
 func PowerInfusionAura(char *Character, actionTag int32) *Aura {
 	actionID := ActionID{SpellID: 10060, Tag: actionTag}
 
-	return char.GetOrRegisterAura(Aura{
+	aura := char.GetOrRegisterAura(Aura{
 		Label:    "PowerInfusion-" + actionID.String(),
 		Tag:      PowerInfusionAuraTag,
 		ActionID: actionID,
 		Duration: PowerInfusionDuration,
-		OnGain: func(aura *Aura, sim *Simulation) {
-			if char.HasManaBar() {
-				char.PseudoStats.SpellCostPercentModifier -= 20
-			}
-			if !char.HasActiveAuraWithTag(BloodlustAuraTag) {
-				char.MultiplyCastSpeed(sim, 1.2)
+	})
+
+	aura.NewExclusiveEffect("ManaCost", true, ExclusiveEffect{
+		Priority: -20,
+		OnGain: func(ee *ExclusiveEffect, sim *Simulation) {
+			if ee.Aura.Unit.HasManaBar() {
+				ee.Aura.Unit.PseudoStats.SpellCostPercentModifier -= 20
 			}
 		},
-		OnExpire: func(aura *Aura, sim *Simulation) {
-			if char.HasManaBar() {
-				char.PseudoStats.SpellCostPercentModifier += 20
+		OnExpire: func(ee *ExclusiveEffect, sim *Simulation) {
+			if ee.Aura.Unit.HasManaBar() {
+				ee.Aura.Unit.PseudoStats.SpellCostPercentModifier += 20
 			}
-			if !char.HasActiveAuraWithTag(BloodlustAuraTag) {
-				char.MultiplyCastSpeed(sim, 1/1.2)
-			}
+		},
+	})
+	multiplyCastSpeedEffect(aura, 1.2)
+	return aura
+}
+
+func multiplyCastSpeedEffect(aura *Aura, multiplier float64) *ExclusiveEffect {
+	return aura.NewExclusiveEffect("MultiplyCastSpeed", false, ExclusiveEffect{
+		Priority: multiplier,
+		OnGain: func(ee *ExclusiveEffect, sim *Simulation) {
+			ee.Aura.Unit.MultiplyCastSpeed(sim, multiplier)
+		},
+		OnExpire: func(ee *ExclusiveEffect, sim *Simulation) {
+			ee.Aura.Unit.MultiplyCastSpeed(sim, 1/multiplier)
 		},
 	})
 }
@@ -1338,59 +1373,39 @@ func applyPetBuffEffects(petAgent PetAgent, raidBuffs *proto.RaidBuffs, partyBuf
 	if petAgent.GetPet().IsGuardian() {
 		return
 	}
-	raidBuffs = googleProto.Clone(raidBuffs).(*proto.RaidBuffs)
-	partyBuffs = googleProto.Clone(partyBuffs).(*proto.PartyBuffs)
-	individualBuffs = googleProto.Clone(individualBuffs).(*proto.IndividualBuffs)
 
-	//Todo: Only cancel the buffs that are supposed to be cancelled
-	// Check beta when pets are better implemented?  I removed the clearing to allow all buffs to flow to presummoned pets and only auras to dynamic pets.
-	//raidBuffs = &proto.RaidBuffs{}
-	//partyBuffs = &proto.PartyBuffs{}
-	//individualBuffs = &proto.IndividualBuffs{}
+	// We need to modify the buffs a bit because some things are applied to pets by
+	// the owner during combat (Bloodlust) or don't make sense for a pet.
+	raidBuffs = googleProto.Clone(raidBuffs).(*proto.RaidBuffs)
+	raidBuffs.Bloodlust = false
+	raidBuffs.Thorns = proto.TristateEffect_TristateEffectMissing
+
+	partyBuffs = googleProto.Clone(partyBuffs).(*proto.PartyBuffs)
+	// Pets can't get extra attacks, doh!
+	partyBuffs.WindfuryTotem = proto.TristateEffect_TristateEffectMissing
+
+	individualBuffs = googleProto.Clone(individualBuffs).(*proto.IndividualBuffs)
+	individualBuffs.Innervates = 0
+	individualBuffs.PowerInfusions = 0
+
+	// Pets don't benefit from buffs that are ratings, e.g. crit rating or haste rating.
+	partyBuffs.Drums = proto.Drums_DrumsUnknown
+	partyBuffs.LeaderOfThePack = MinTristate(partyBuffs.LeaderOfThePack, proto.TristateEffect_TristateEffectRegular)
+	partyBuffs.MoonkinAura = MinTristate(partyBuffs.MoonkinAura, proto.TristateEffect_TristateEffectRegular)
+	partyBuffs.BraidedEterniumChain = false
 
 	if !petAgent.GetPet().enabledOnStart {
-		// Temporarily summoned pets (e.g. Shadowfiend) are not present at the
-		// start of the fight, so they miss targeted buffs like Battle Shout and
-		// Blessing of Might. They do receive passive ambient effects — auras,
-		// totems, and similar effects that apply to everything in range.
-		applyBuffEffects(petAgent, &proto.RaidBuffs{}, &proto.PartyBuffs{
-			// Auras
-			FerociousInspiration: partyBuffs.FerociousInspiration,
-			BloodPact:            partyBuffs.BloodPact,
-			MoonkinAura:          partyBuffs.MoonkinAura,
-			LeaderOfThePack:      partyBuffs.LeaderOfThePack,
-			SanctityAura:         partyBuffs.SanctityAura,
-			DevotionAura:         partyBuffs.DevotionAura,
-			RetributionAura:      partyBuffs.RetributionAura,
-			TrueshotAura:         partyBuffs.TrueshotAura,
-			DraeneiRacialMelee:   partyBuffs.DraeneiRacialMelee,
-			DraeneiRacialCaster:  partyBuffs.DraeneiRacialCaster,
+		// Auras etc still apply, but not targeted buffs (usually)
+		partyBuffs.ChainOfTheTwilightOwl = false
+		partyBuffs.EyeOfTheNight = false
+		partyBuffs.JadePendantOfBlasting = false
 
-			// Atiesh
-			AtieshDruid:   partyBuffs.AtieshDruid,
-			AtieshMage:    partyBuffs.AtieshMage,
-			AtieshPriest:  partyBuffs.AtieshPriest,
-			AtieshWarlock: partyBuffs.AtieshWarlock,
-
-			// Totems
-			ManaSpringTotem:                      partyBuffs.ManaSpringTotem,
-			ManaTideTotems:                       partyBuffs.ManaTideTotems,
-			TotemOfWrath:                         partyBuffs.TotemOfWrath,
-			WrathOfAirTotem:                      partyBuffs.WrathOfAirTotem,
-			SnapshotImprovedWrathOfAirTotem:      partyBuffs.SnapshotImprovedWrathOfAirTotem,
-			GraceOfAirTotem:                      partyBuffs.GraceOfAirTotem,
-			StrengthOfEarthTotem:                 partyBuffs.StrengthOfEarthTotem,
-			SnapshotImprovedStrengthOfEarthTotem: partyBuffs.SnapshotImprovedStrengthOfEarthTotem,
-			TranquilAirTotem:                     partyBuffs.TranquilAirTotem,
-			WindfuryTotem:                        partyBuffs.WindfuryTotem,
-			TotemTwisting:                        partyBuffs.TotemTwisting,
-
-			// Excluded: Battle Shout, Commanding Shout (require targeted cast),Drums (active consumable use), necklace item buffs.
-		}, &proto.IndividualBuffs{})
-	} else {
-		applyBuffEffects(petAgent, raidBuffs, partyBuffs, individualBuffs)
+		// Only individual buff that would apply is Unleashed Rage.
+		individualBuffs = &proto.IndividualBuffs{}
+		individualBuffs.UnleashedRage = true
 	}
 
+	applyBuffEffects(petAgent, raidBuffs, partyBuffs, individualBuffs)
 }
 
 // Used for approximating cooldowns applied by other players to you, such as
@@ -1510,7 +1525,8 @@ func registerBloodlustCD(character *Character) {
 		Priority: CooldownPriorityBloodlust,
 		Type:     CooldownTypeDPS,
 		ShouldActivate: func(sim *Simulation, character *Character) bool {
-			return !character.HasActiveAura(SatedAuraLabel)
+			// Haste portion doesn't stack with Power Infusion, so prefer to wait.
+			return !character.HasActiveAuraWithTag(PowerInfusionAuraTag) && !character.HasActiveAura(SatedAuraLabel)
 		},
 	})
 }
@@ -1537,7 +1553,6 @@ func BloodlustAura(character *Character, actionTag int32) *Aura {
 		Duration: BloodlustDuration,
 		OnGain: func(aura *Aura, sim *Simulation) {
 			aura.Unit.MultiplyAttackSpeed(sim, 1.3)
-			aura.Unit.MultiplyCastSpeed(sim, 1.3)
 			for _, pet := range character.Pets {
 				if pet.IsEnabled() && !pet.IsGuardian() {
 					pet.GetAura(aura.Label).Activate(sim)
@@ -1547,10 +1562,9 @@ func BloodlustAura(character *Character, actionTag int32) *Aura {
 		},
 		OnExpire: func(aura *Aura, sim *Simulation) {
 			aura.Unit.MultiplyAttackSpeed(sim, 1/1.3)
-			aura.Unit.MultiplyCastSpeed(sim, 1/1.3)
 		},
 	})
-
+	multiplyCastSpeedEffect(aura, 1.3)
 	return aura
 }
 
