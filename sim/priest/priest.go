@@ -1,6 +1,7 @@
 package priest
 
 import (
+	"github.com/wowsims/tbc/sim/common/shared"
 	"github.com/wowsims/tbc/sim/core"
 	"github.com/wowsims/tbc/sim/core/proto"
 )
@@ -48,18 +49,31 @@ func (priest *Priest) AddPartyBuffs(_ *proto.PartyBuffs) {
 }
 
 func (priest *Priest) Initialize() {
-	MindBlastRankMap.RegisterAll(priest.registerMindBlastSpell)
+	mindblastCDTimer := priest.NewTimer()
+	shadowWordDeathCDTimer := priest.NewTimer()
+
+	MindBlastRankMap.RegisterAll(func(rankConfig shared.SpellRankConfig) {
+		priest.registerMindBlastSpell(rankConfig, mindblastCDTimer)
+	})
 	ShadowWordPainRankMap.RegisterAll(priest.registerShadowWordPainSpell)
-	ShadowWordDeathRankMap.RegisterAll(priest.registerShadowWordDeathSpell)
+	ShadowWordDeathRankMap.RegisterAll(func(rankConfig shared.SpellRankConfig) {
+		priest.registerShadowWordDeathSpell(rankConfig, shadowWordDeathCDTimer)
+	})
 	SmiteRankMap.RegisterAll(priest.registerSmiteSpell)
 	priest.registerShadowfiendSpell()
+
 	if priest.Race == proto.Race_RaceNightElf {
-		StarshardsRankMap.RegisterAll(priest.registerStarshardsSpell)
+		starshardsCDTimer := priest.NewTimer()
+		StarshardsRankMap.RegisterAll(func(rankConfig shared.SpellRankConfig) {
+			priest.registerStarshardsSpell(rankConfig, starshardsCDTimer)
+		})
 	}
 	if priest.Race == proto.Race_RaceUndead {
-		DevouringPlagueRankMap.RegisterAll(priest.registerDevouringPlagueSpell)
+		devouringPlagueCDTimer := priest.NewTimer()
+		DevouringPlagueRankMap.RegisterAll(func(rankConfig shared.SpellRankConfig) {
+			priest.registerDevouringPlagueSpell(rankConfig, devouringPlagueCDTimer)
+		})
 	}
-
 }
 
 func (priest *Priest) ApplyTalents() {

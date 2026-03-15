@@ -21,9 +21,8 @@ var DevouringPlagueRankMap = shared.SpellRankMap{
 	{Rank: 7, SpellID: 25467, Cost: 1145, DotTickDamage: 152, Coefficient: 0.1},
 }
 
-func (priest *Priest) registerDevouringPlagueSpell(rankConfig shared.SpellRankConfig) {
+func (priest *Priest) registerDevouringPlagueSpell(rankConfig shared.SpellRankConfig, cdTimer *core.Timer) {
 	healthMetrics := priest.NewHealthMetrics(core.ActionID{SpellID: rankConfig.SpellID}.WithTag(1))
-	cdTimer := priest.NewTimer()
 
 	spell := priest.RegisterSpell(core.SpellConfig{
 		ActionID:       core.ActionID{SpellID: rankConfig.SpellID},

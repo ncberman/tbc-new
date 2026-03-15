@@ -21,8 +21,7 @@ var StarshardsRankMap = shared.SpellRankMap{
 	{Rank: 8, SpellID: 25446, Cost: 0, DotTickDamage: 157, Coefficient: 0.167},
 }
 
-func (priest *Priest) registerStarshardsSpell(rankConfig shared.SpellRankConfig) {
-	cdTimer := priest.NewTimer()
+func (priest *Priest) registerStarshardsSpell(rankConfig shared.SpellRankConfig, cdTimer *core.Timer) {
 
 	spell := priest.RegisterSpell(core.SpellConfig{
 		ActionID:       core.ActionID{SpellID: rankConfig.SpellID},

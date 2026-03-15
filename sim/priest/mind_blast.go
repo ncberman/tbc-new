@@ -1,7 +1,6 @@
 package priest
 
 import (
-	//"fmt"
 	"time"
 
 	"github.com/wowsims/tbc/sim/common/shared"
@@ -22,8 +21,7 @@ var MindBlastRankMap = shared.SpellRankMap{
 	{Rank: 11, SpellID: 25375, Cost: 450, MinDamage: 711, MaxDamage: 752, Coefficient: 0.42857},
 }
 
-func (priest *Priest) registerMindBlastSpell(rankConfig shared.SpellRankConfig) {
-	cdTimer := priest.NewTimer()
+func (priest *Priest) registerMindBlastSpell(rankConfig shared.SpellRankConfig, cdTimer *core.Timer) {
 
 	spell := priest.RegisterSpell(core.SpellConfig{
 		ActionID:       core.ActionID{SpellID: rankConfig.SpellID},
