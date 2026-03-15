@@ -75,6 +75,12 @@ func (shaman *Shaman) registerWindfuryTotemSpell() {
 		Duration: time.Second * 10,
 	})
 
+	wfPartyWeaponBuffTrackingAura := shaman.RegisterAura(core.Aura{
+		Label:    "Windfury Party Weapon Buff Tracking Aura",
+		Duration: time.Second * 10,
+		ActionID: core.ActionID{SpellID: 25580, Tag: 1},
+	})
+
 	wfAura := shaman.RegisterAura(core.Aura{
 		Label:    "Windfury Totem (Self)",
 		ActionID: config.ActionID,
@@ -88,6 +94,7 @@ func (shaman *Shaman) registerWindfuryTotemSpell() {
 		TickImmediately: true,
 		Priority:        core.ActionPriorityAuto,
 		OnAction: func(sim *core.Simulation) {
+			wfPartyWeaponBuffTrackingAura.Activate(sim)
 			wfIntermediateAuraForExclusitivity.Activate(sim)
 		},
 	})
@@ -121,7 +128,7 @@ func (shaman *Shaman) registerWindfuryTotemSpell() {
 
 func (shaman *Shaman) registerStrengthOfEarthTotemSpell() {
 	duration := time.Second * 120
-	value := 86 * []float64{1, 1.08, 1.15}[shaman.Talents.EnhancingTotems]
+	value := core.StrengthOfEarthTotemValue(shaman.Talents.EnhancingTotems, shaman.CouldHaveSetBonus(ItemSetCycloneHarness, 2))
 	config := shaman.newTotemSpellConfig(300, 25528, SpellMaskBasicTotem)
 	buffAura := shaman.RegisterAura(core.Aura{
 		Label:    "Strength Of Earth Totem (Self)",

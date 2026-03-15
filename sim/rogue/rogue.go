@@ -248,7 +248,7 @@ func RegisterRogue() {
 	core.RegisterAgentFactory(
 		proto.Player_Rogue{},
 		proto.Spec_SpecRogue,
-		func(character *core.Character, options *proto.Player) core.Agent {
+		func(character *core.Character, options *proto.Player, _ *proto.Raid) core.Agent {
 			return NewRogue(character, options, options.TalentsString)
 		},
 		func(player *proto.Player, spec interface{}) {
@@ -304,5 +304,4 @@ const (
 	RogueSpellLethality      = RogueSpellSinisterStrike | RogueSpellGouge | RogueSpellBackstab | RogueSpellGhostlyStrike | RogueSpellMutilateHit | RogueSpellShiv | RogueSpellHemorrhage
 	RogueSpellDirectFinisher = RogueSpellEnvenom | RogueSpellEviscerate
 	RogueSpellFinisher       = RogueSpellDirectFinisher | RogueSpellSliceAndDice | RogueSpellRupture | RogueSpellExposeArmor
-	RogueSpellCanCrit        = RogueSpellLethality | RogueSpellDirectFinisher
 )

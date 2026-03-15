@@ -262,14 +262,16 @@ export class ReforgeOptimizer {
 
 		this.bindToggleExperimental(group);
 
-		if (this.softCapsConfig?.length)
-			tippy(startReforgeOptimizationButton, {
-				theme: 'suggest-reforges-softcaps',
-				placement: 'bottom',
-				maxWidth: 310,
-				interactive: true,
-				onShow: instance => instance.setContent(this.buildReforgeButtonTooltip()),
-			});
+		tippy(startReforgeOptimizationButton, {
+			theme: 'suggest-reforges-softcaps',
+			placement: 'bottom',
+			maxWidth: 310,
+			interactive: true,
+			onShow: instance => {
+				if (!this.softCapsConfig?.length) return false;
+				instance.setContent(this.buildReforgeButtonTooltip());
+			},
+		});
 
 		tippy(contextMenuButton, {
 			placement: 'bottom',
@@ -833,7 +835,7 @@ export class ReforgeOptimizer {
 								})
 							: null;
 
-						const tooltipText = rootStat ? this.statTooltips[rootStat] : null;
+						const tooltipText = rootStat !== null ? this.statTooltips[rootStat] : null;
 						const statTooltipRef = ref<HTMLButtonElement>();
 
 						const row = (
@@ -1082,10 +1084,14 @@ export class ReforgeOptimizer {
 		const constraints = this.buildYalpsConstraints(this.updatedGear!, baseStats);
 
 		// After building variables and constraints we check for unique gems being used
+		// and add SocketBonusLink constraints for the all-or-nothing socket bonus variables.
 		for (const coefficients of variables.values()) {
 			for (const key of coefficients.keys()) {
 				if (key.startsWith('UniqueGem_') && !constraints.has(key)) {
 					constraints.set(key, lessEq(1));
+				}
+				if (key.startsWith('SocketBonusLink_') && !constraints.has(key)) {
+					constraints.set(key, lessEq(0));
 				}
 			}
 		}
@@ -1159,7 +1165,7 @@ export class ReforgeOptimizer {
 		for (const slot of gear.getItemSlots()) {
 			const item = gear.getEquippedItem(slot);
 
-			if (!item || this.getFrozenItemSlot(slot)) {
+			if (!item || !item.gemSockets.length || this.getFrozenItemSlot(slot)) {
 				continue;
 			}
 
@@ -1172,7 +1178,9 @@ export class ReforgeOptimizer {
 				socketBonusNormalization -= 1;
 			}
 
-			const distributedSocketBonus = new Stats(scaledItem.item.socketBonus).scale(1.0 / socketBonusNormalization).getBuffedStats();
+			const socketBonusStats = new Stats(scaledItem.item.socketBonus);
+			const distributedSocketBonus = socketBonusStats.scale(1.0 / socketBonusNormalization).getBuffedStats();
+			const fullSocketBonus = socketBonusStats.getBuffedStats();
 
 			// First determine whether the socket bonus should be obviously matched in order to save on brute force computation.
 			let forceSocketBonus: boolean = false;
@@ -1183,6 +1191,43 @@ export class ReforgeOptimizer {
 			}
 
 			if (ReforgeOptimizer.includesCappedStat(socketBonusAsCoeff, reforgeCaps, reforgeSoftCaps) && socketBonusNormalization > 1) {
+				forceSocketBonus = true;
+			}
+
+			const dummyVariables = new Map<string, YalpsCoefficients>();
+			dummyVariables.set('matched', new Map<string, number>());
+			dummyVariables.set('unmatched', new Map<string, number>());
+
+			for (const socketColor of socketColors.values()) {
+				if (![GemColor.GemColorRed, GemColor.GemColorBlue, GemColor.GemColorYellow, GemColor.GemColorPrismatic].includes(socketColor)) {
+					continue;
+				}
+
+				const matchedCoeffs = dummyVariables.get('matched')!;
+				const bestMatchedGemData = gemsToInclude.get(socketColor)?.at(0);
+
+				for (const [key, value] of bestMatchedGemData?.coefficients.entries() || []) {
+					matchedCoeffs.set(key, (matchedCoeffs.get(key) || 0) + value);
+				}
+
+				for (const [key, value] of socketBonusAsCoeff.entries()) {
+					matchedCoeffs.set(key, (matchedCoeffs.get(key) || 0) + value);
+				}
+
+				const unmatchedCoeffs = dummyVariables.get('unmatched')!;
+				const bestUnmatchedGemData = gemsToInclude.get(GemColor.GemColorPrismatic)?.at(0);
+
+				for (const [key, value] of bestUnmatchedGemData?.coefficients.entries() || []) {
+					unmatchedCoeffs.set(key, (unmatchedCoeffs.get(key) || 0) + value);
+				}
+			}
+
+			const scoredDummyVariables = this.updateReforgeScores(dummyVariables, preCapEPs);
+
+			if (
+				scoredDummyVariables.get('matched')!.get('score')! >= scoredDummyVariables.get('unmatched')!.get('score')! &&
+				(socketBonusNormalization > 1 || !ReforgeOptimizer.includesCappedStat(scoredDummyVariables.get('matched')!, reforgeCaps, reforgeSoftCaps))
+			) {
 				forceSocketBonus = true;
 			}
 
@@ -1217,8 +1262,12 @@ export class ReforgeOptimizer {
 								coefficients.set(`GemColorCompare_${compareColorGreater}_${compareColorLesser}`, compareValue);
 							}
 
-							for (const [stat, value] of distributedSocketBonus.entries()) {
-								this.applyReforgeStat(coefficients, stat, value, preCapEPs);
+							if (forceSocketBonus) {
+								for (const [stat, value] of distributedSocketBonus.entries()) {
+									this.applyReforgeStat(coefficients, stat, value, preCapEPs);
+								}
+							} else {
+								coefficients.set(`SocketBonusLink_${slot}_${socketIdx}`, -1);
 							}
 						} else if (!forceSocketBonus && socketColors.length) {
 							socketColors?.forEach(() => {
@@ -1238,6 +1287,23 @@ export class ReforgeOptimizer {
 					}
 				}
 			});
+
+			if (!forceSocketBonus && socketBonusNormalization > 0) {
+				const socketBonusKey = `SocketBonus_${slot}`;
+				const socketBonusCoefficients = new Map<string, number>();
+
+				for (const [stat, value] of fullSocketBonus.entries()) {
+					this.applyReforgeStat(socketBonusCoefficients, stat, value, preCapEPs);
+				}
+
+				socketColors.forEach((socketColor, socketIdx) => {
+					if ([GemColor.GemColorRed, GemColor.GemColorBlue, GemColor.GemColorYellow, GemColor.GemColorPrismatic].includes(socketColor)) {
+						socketBonusCoefficients.set(`SocketBonusLink_${slot}_${socketIdx}`, 1);
+					}
+				});
+
+				variables.set(socketBonusKey, socketBonusCoefficients);
+			}
 		}
 
 		return variables;
@@ -1262,10 +1328,11 @@ export class ReforgeOptimizer {
 
 			for (const gem of allGemsOfColor) {
 				const isJC = gem.requiredProfession == Profession.Jewelcrafting;
+				const statCount = gem.stats.filter(stat => stat > 0).length;
 				if (
 					(isJC && !hasJC) ||
 					!gemMatchesSocket(gem, socketColor) ||
-					sum(gem.stats) <= 0 ||
+					statCount == 0 ||
 					gem.phase > this.maxGemPhase ||
 					gem.quality < ItemQuality.ItemQualityRare
 				) {
@@ -1279,10 +1346,9 @@ export class ReforgeOptimizer {
 					if (statValue == 0) {
 						continue;
 					}
-
 					if (
 						!epStats.includes(statIdx) &&
-						statIdx != Stat.StatStamina &&
+						(statIdx != Stat.StatStamina || (!this.isTankSpec && statIdx == Stat.StatStamina && statCount == 1)) &&
 						!(statIdx == Stat.StatHealingPower && epStats.includes(Stat.StatSpellDamage))
 					) {
 						allStatsValid = false;
@@ -1317,7 +1383,6 @@ export class ReforgeOptimizer {
 			for (const gemData of filteredGemDataForColor) {
 				const cappedStatKeys = ReforgeOptimizer.getCappedStatKeys(gemData.coefficients, reforgeCaps, reforgeSoftCaps);
 
-				// console.log(gemData.gem.name, [...cappedStatKeys], gemData.isJC, foundUncappedJCGem, cappedStatKeys.length == 0, foundUncappedNormalGem);
 				if ((!gemData.isJC || !foundUncappedJCGem) && (cappedStatKeys.length == 0 || !foundUncappedNormalGem)) {
 					includedGemDataForColor.push(gemData);
 				}

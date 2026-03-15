@@ -116,7 +116,7 @@ func RegisterPriest() {
 	core.RegisterAgentFactory(
 		proto.Player_Priest{},
 		proto.Spec_SpecPriest,
-		func(character *core.Character, options *proto.Player) core.Agent {
+		func(character *core.Character, options *proto.Player, _ *proto.Raid) core.Agent {
 			return NewPriest(character, options)
 		},
 		func(player *proto.Player, spec interface{}) {
