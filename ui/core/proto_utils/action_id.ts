@@ -583,6 +583,11 @@ export class ActionId {
 					name += ' (Malefic)';
 				}
 				break;
+			case 'Raptor Strike':
+				if (tag == 2) {
+					name += ' (Cooldown)';
+				}
+				break;
 			default:
 				if (tag === -1) {
 					name += ' (External)';

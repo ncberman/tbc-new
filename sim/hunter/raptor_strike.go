@@ -39,6 +39,12 @@ func (hunter *Hunter) registerRaptorStrikeSpell() {
 			spell.CalcAndDealDamage(sim, target, baseDamage, spell.OutcomeMeleeSpecialHitAndCrit)
 		},
 	})
+
+	hunter.RegisterAura(core.Aura{
+		Label:    "Raptor Strike",
+		ActionID: core.ActionID{SpellID: 27014}.WithTag(2),
+		Icd:      &hunter.RaptorStrike.CD,
+	})
 }
 
 // Returns true if the regular melee swing should be used, false otherwise.

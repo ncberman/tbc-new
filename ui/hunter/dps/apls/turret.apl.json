@@ -1,34 +1,53 @@
 {
 	"type": "TypeAPL",
+	"prepullActions": [{ "action": { "castSpell": { "spellId": { "spellId": 27044, "rank": 8 } } }, "doAtValue": { "const": { "val": "-20s" } } }],
 	"priorityList": [
 		{ "action": { "groupReference": { "groupName": "Mana management" } } },
-		{ "action": { "autocastOtherCooldowns": {} } },
+		{
+			"action": {
+				"condition": { "cmp": { "op": "OpGe", "lhs": { "currentTime": {} }, "rhs": { "const": { "val": "5s" } } } },
+				"autocastOtherCooldowns": {}
+			}
+		},
 		{ "action": { "castSpell": { "spellId": { "spellId": 34026 } } } },
 		{
 			"action": {
 				"condition": {
 					"cmp": {
 						"op": "OpLe",
-						"lhs": { "spellCastTime": { "spellId": { "spellId": 27021, "rank": 6 } } },
-						"rhs": { "autoTimeToNext": { "autoType": "RangedAuto" } }
+						"lhs": { "spellCastTime": { "spellId": { "spellId": 34120, "rank": 1 } } },
+						"rhs": { "math": { "op": "OpAdd", "lhs": { "autoTimeToNext": { "autoType": "RangedAuto" } }, "rhs": { "const": { "val": "0.3s" } } } }
+					}
+				},
+				"castSpell": { "spellId": { "spellId": 34120, "rank": 1 } }
+			}
+		},
+		{
+			"action": {
+				"condition": {
+					"and": {
+						"vals": [
+							{ "variableRef": { "name": "Use Multi-Shot" } },
+							{
+								"cmp": {
+									"op": "OpLe",
+									"lhs": { "spellCastTime": { "spellId": { "spellId": 27021, "rank": 6 } } },
+									"rhs": {
+										"math": {
+											"op": "OpAdd",
+											"lhs": { "autoTimeToNext": { "autoType": "RangedAuto" } },
+											"rhs": { "const": { "val": "0.3s" } }
+										}
+									}
+								}
+							}
+						]
 					}
 				},
 				"castSpell": { "spellId": { "spellId": 27021, "rank": 6 } }
 			}
 		},
-		{ "action": { "castSpell": { "spellId": { "spellId": 27019, "rank": 9 } } } },
-		{
-			"action": {
-				"condition": {
-					"cmp": {
-						"op": "OpLe",
-						"lhs": { "spellCastTime": { "spellId": { "spellId": 34120, "rank": 1 } } },
-						"rhs": { "autoTimeToNext": { "autoType": "RangedAuto" } }
-					}
-				},
-				"castSpell": { "spellId": { "spellId": 34120, "rank": 1 } }
-			}
-		}
+		{ "action": { "condition": { "variableRef": { "name": "Use Arcane Shot" } }, "castSpell": { "spellId": { "spellId": 27019, "rank": 9 } } } }
 	],
 	"groups": [
 		{
@@ -64,7 +83,9 @@
 		}
 	],
 	"valueVariables": [
-		{ "name": "ManaLow", "value": { "const": { "val": "30%" } } },
-		{ "name": "ManaHigh", "value": { "const": { "val": "50%" } } }
+		{ "name": "ManaLow", "value": { "const": { "val": "10%" } } },
+		{ "name": "ManaHigh", "value": { "const": { "val": "30%" } } },
+		{ "name": "Use Multi-Shot", "value": { "const": { "val": "true" } } },
+		{ "name": "Use Arcane Shot", "value": { "const": { "val": "true" } } }
 	]
 }

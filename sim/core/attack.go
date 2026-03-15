@@ -522,6 +522,9 @@ func (unit *Unit) EnableAutoAttacks(agent Agent, options AutoAttackOptions) {
 			spell.WaitTravelTime(sim, func(sim *Simulation) {
 				spell.DealDamage(sim, result)
 			})
+
+			// Have to react an extra time here to allow for movement actions (melee weaving)
+			unit.ReactToEvent(sim, false, true)
 		},
 	}
 
