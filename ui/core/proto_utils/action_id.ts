@@ -521,6 +521,11 @@ export class ActionId {
 					name += ' (Normalized)';
 				}
 				break;
+			case 'Sunder Armor':
+				if (tag == 1) {
+					name += ' (Devastate)';
+				}
+				break;
 			case 'Improved Berserker Rage':
 			case 'Improved Overpower':
 				name += ` (${tag}/2)`;
