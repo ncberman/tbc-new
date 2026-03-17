@@ -41,6 +41,8 @@ func createMorogrimPreset(raidPrefix string, raidSize int32, bossHealth float64,
 			DamageSpread:  morogrimMeleeDamageSpread,
 
 			ParryHaste: true,
+
+			TargetInputs: morogrimTargetInputs(),
 		},
 
 		AI: makeMorogrimAI(),
@@ -49,6 +51,17 @@ func createMorogrimPreset(raidPrefix string, raidSize int32, bossHealth float64,
 	core.AddPresetEncounter(bossName, []string{
 		raidPrefix + "/" + bossName,
 	})
+}
+
+func morogrimTargetInputs() []*proto.TargetInput {
+	return []*proto.TargetInput{
+		{
+			Label:     "Disable Tidal Wave 400% Attack Speed Slow",
+			Tooltip:   "This will disable the attack speed slow from Tidal Wave.",
+			InputType: proto.InputType_Bool,
+			BoolValue: false,
+		},
+	}
 }
 
 func makeMorogrimAI() core.AIFactory {
@@ -80,19 +93,23 @@ func (ai *MorogrimAI) Initialize(target *core.Target, config *proto.Target) {
 	ai.MainTank = ai.BossUnit.CurrentTarget
 
 	// Register relevant spells and auras
-	ai.registerTidalWave()
+	ai.registerTidalWave(config.TargetInputs[0].BoolValue)
 	ai.registerEarthquake()
 	ai.registerThrash()
 }
 
-func (ai *MorogrimAI) registerTidalWave() {
+func (ai *MorogrimAI) registerTidalWave(disableSlow bool) {
 	duration := time.Second * 15
 
-	ai.TidalWaveAura = ai.Target.RegisterAura(core.Aura{
+	ai.TidalWaveAura = ai.MainTank.RegisterAura(core.Aura{
 		Label:    "Tidal Wave",
 		ActionID: core.ActionID{SpellID: 37730},
 		Duration: duration,
-	}).AttachMultiplyMeleeSpeed(1.0 / 4)
+	})
+
+	if !disableSlow {
+		ai.TidalWaveAura.AttachMultiplyMeleeSpeed(1.0 / 4.0)
+	}
 
 	rollTidalWaveCD := func(sim *core.Simulation) time.Duration {
 		return duration + core.DurationFromSeconds(sim.Roll(0, 45))
