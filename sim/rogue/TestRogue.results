@@ -228,6 +228,13 @@ dps_results: {
  }
 }
 dps_results: {
+ key: "TestRogue-AllItems-Biznicks247x128Accurascope-2523"
+ value: {
+  dps: 1890.29534
+  tps: 1342.10969
+ }
+}
+dps_results: {
  key: "TestRogue-AllItems-BlackenedNaaruSliver-34427"
  value: {
   dps: 2009.16291
@@ -356,8 +363,8 @@ dps_results: {
 dps_results: {
  key: "TestRogue-AllItems-Deathmantle"
  value: {
-  dps: 1764.60993
-  tps: 1252.87305
+  dps: 1819.09384
+  tps: 1291.55663
  }
 }
 dps_results: {
@@ -957,13 +964,6 @@ dps_results: {
  }
 }
 dps_results: {
- key: "TestRogue-AllItems-StabilizedEterniumScope-2523"
- value: {
-  dps: 1890.29534
-  tps: 1342.10969
- }
-}
-dps_results: {
  key: "TestRogue-AllItems-Starkiller'sBauble-30340"
  value: {
   dps: 1840.56554
@@ -1108,6 +1108,13 @@ dps_results: {
  value: {
   dps: 1838.02717
   tps: 1304.99929
+ }
+}
+dps_results: {
+ key: "TestRogue-AllItems-Warp-SpringCoil-30450"
+ value: {
+  dps: 1885.67018
+  tps: 1338.82583
  }
 }
 dps_results: {
