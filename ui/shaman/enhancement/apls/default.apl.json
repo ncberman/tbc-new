@@ -5,7 +5,7 @@
 		{ "action": { "castSpell": { "spellId": { "spellId": 25528, "rank": 6 } } }, "doAtValue": { "const": { "val": "-5s" } } },
 		{ "action": { "castSpell": { "spellId": { "spellId": 25570, "rank": 5 } } }, "doAtValue": { "const": { "val": "-4s" } } },
 		{ "action": { "castSpell": { "spellId": { "spellId": 25359, "rank": 3 } } }, "doAtValue": { "const": { "val": "-2s" } } },
-		{ "action": { "castSpell": { "spellId": { "spellId": 25530, "rank": 7 } } }, "doAtValue": { "const": { "val": "-1s" } } }
+		{ "action": { "castSpell": { "spellId": { "spellId": 25537, "rank": 7 } } }, "doAtValue": { "const": { "val": "-1s" } } }
 	],
 	"priorityList": [
 		{
@@ -121,17 +121,43 @@
 							"or": {
 								"vals": [
 									{
-										"cmp": {
-											"op": "OpLe",
-											"lhs": { "auraRemainingTime": { "auraId": { "spellId": 25359, "rank": 3 } } },
-											"rhs": { "const": { "val": "5s" } }
+										"and": {
+											"vals": [
+												{
+													"cmp": {
+														"op": "OpEq",
+														"lhs": { "variablePlaceholder": { "name": "Twist Windfury Totem?" } },
+														"rhs": { "variableRef": { "name": "No" } }
+													}
+												},
+												{
+													"cmp": {
+														"op": "OpLe",
+														"lhs": { "auraRemainingTime": { "auraId": { "spellId": 25359, "rank": 3 } } },
+														"rhs": { "const": { "val": "5s" } }
+													}
+												}
+											]
 										}
 									},
 									{
 										"and": {
 											"vals": [
-												{ "variablePlaceholder": { "name": "Twist Windfury Totem?" } },
-												{ "variablePlaceholder": { "name": "Pause twisting when" } }
+												{
+													"cmp": {
+														"op": "OpEq",
+														"lhs": { "variablePlaceholder": { "name": "Twist Windfury Totem?" } },
+														"rhs": { "variableRef": { "name": "Yes" } }
+													}
+												},
+												{ "not": { "val": { "variablePlaceholder": { "name": "Pause twisting when" } } } },
+												{
+													"cmp": {
+														"op": "OpLe",
+														"lhs": { "auraRemainingTime": { "auraId": { "spellId": 25359, "rank": 3 } } },
+														"rhs": { "const": { "val": "5s" } }
+													}
+												}
 											]
 										}
 									}
@@ -174,7 +200,8 @@
 											"lhs": { "variablePlaceholder": { "name": "Twist Fire Nova?" } },
 											"rhs": { "variableRef": { "name": "Yes" } }
 										}
-									}
+									},
+									{ "not": { "val": { "variableRef": { "name": "Mana below 10%" } } } }
 								]
 							}
 						},
