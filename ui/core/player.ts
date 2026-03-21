@@ -49,6 +49,8 @@ import {
 	UIGem as Gem,
 	UIItem as Item,
 	UIItem_FactionRestriction,
+	IndividualSimSettings,
+	ReforgeSettings,
 } from './proto/ui';
 import { ActionId } from './proto_utils/action_id';
 import { Database } from './proto_utils/database';
@@ -67,7 +69,9 @@ import {
 	getMetaGemEffectEP,
 	getTalentTreePoints,
 	isPVPItem,
+	migrateOldProto,
 	newUnitReference,
+	ProtoConversionMap,
 	raceToFaction,
 	SpecClasses,
 	SpecOptions,
@@ -1507,8 +1511,8 @@ export class Player<SpecType extends Spec> {
 		return Mechanics.CHARACTER_LEVEL * 5;
 	}
 
-	static updateProtoVersion(proto: PlayerProto) {
-		if (!(proto.apiVersion < CURRENT_API_VERSION)) {
+	static updateProtoVersion(playerProto: PlayerProto) {
+		if (!(playerProto.apiVersion < CURRENT_API_VERSION)) {
 			return;
 		}
 	}

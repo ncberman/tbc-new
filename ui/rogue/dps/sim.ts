@@ -4,7 +4,20 @@ import { IndividualSimUI, registerSpecConfig } from '../../core/individual_sim_u
 import { Player } from '../../core/player';
 import { PlayerClasses } from '../../core/player_classes';
 import { APLRotation } from '../../core/proto/apl';
-import { Debuffs, Faction, IndividualBuffs, ItemSlot, PartyBuffs, PseudoStat, Race, RaidBuffs, Spec, Stat, TristateEffect } from '../../core/proto/common';
+import {
+	Debuffs,
+	Drums,
+	Faction,
+	IndividualBuffs,
+	ItemSlot,
+	PartyBuffs,
+	PseudoStat,
+	Race,
+	RaidBuffs,
+	Spec,
+	Stat,
+	TristateEffect,
+} from '../../core/proto/common';
 import { UnitStat } from '../../core/proto_utils/stats';
 import { defaultExposeWeaknessSettings, defaultRaidBuffMajorDamageCooldowns } from '../../core/proto_utils/utils';
 
@@ -66,6 +79,7 @@ const SPEC_CONFIG = registerSpecConfig(Spec.SpecRogue, {
 			windfuryTotem: TristateEffect.TristateEffectImproved,
 			leaderOfThePack: TristateEffect.TristateEffectRegular,
 			totemTwisting: true,
+			drums: Drums.DrumsOfBattle,
 		}),
 		individualBuffs: IndividualBuffs.create({
 			blessingOfKings: true,

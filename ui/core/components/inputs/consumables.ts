@@ -1,5 +1,5 @@
 import { Player } from '../../player';
-import { Class, ConsumesSpec, ItemSlot, Profession, Spec, Stat, TristateEffect } from '../../proto/common';
+import { Class, ConsumesSpec, Drums, ItemSlot, Profession, Spec, Stat, TristateEffect } from '../../proto/common';
 import { Consumable } from '../../proto/db';
 import { ActionId } from '../../proto_utils/action_id';
 import { EventID, TypedEvent } from '../../typed_event';
@@ -292,17 +292,17 @@ export const makeOHImbueInput = makeConsumeInputFactory({
 
 export const GreaterDrumsBattle = {
 	actionId: ActionId.fromItemId(185848),
-	value: 351355,
+	value: Drums.DrumsOfBattle,
 };
 
 export const GreaterDrumsRestoration = {
 	actionId: ActionId.fromItemId(185850),
-	value: 351358,
+	value: Drums.DrumsOfRestoration,
 };
 
 export const GreaterDrumsWar = {
 	actionId: ActionId.fromItemId(185852),
-	value: 351360,
+	value: Drums.DrumsOfWar,
 };
 
 export const DRUMS_CONFIG = [
@@ -311,7 +311,10 @@ export const DRUMS_CONFIG = [
 	{ config: GreaterDrumsWar, stats: [Stat.StatAttackPower, Stat.StatSpellDamage] },
 ] as ConsumableStatOption<number>[];
 
-export const makeDrumsInput = makeConsumeInputFactory({ consumesFieldName: 'drumsId' });
+export const makeDrumsInput = makeConsumeInputFactory({
+	consumesFieldName: 'drumsId',
+	showWhen: (player: Player<any>) => player.hasProfession(Profession.Leatherworking),
+});
 
 ///////////////////////////////////////////////////////////////////////////
 //                                   PET

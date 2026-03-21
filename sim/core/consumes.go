@@ -576,18 +576,9 @@ func (character *Character) newEzThroDynamiteTwo(sharedTimer *Timer) *Spell {
 }
 
 func registerDrumsCD(agent Agent, consumables *proto.ConsumesSpec, sharedTimer *Timer) {
-	if consumables.DrumsId > 0 {
+	if consumables.DrumsId > 0 && int(consumables.DrumsId) < len(proto.Drums_value) {
 		character := agent.GetCharacter()
-		var drum proto.Drums
-		switch consumables.DrumsId {
-		case 351355:
-			drum = proto.Drums_DrumsOfBattle
-		case 351360:
-			drum = proto.Drums_DrumsOfWar
-		case 351358:
-			drum = proto.Drums_DrumsOfRestoration
-		}
-		config := drumsSpellConfig(character, drum, false)
+		config := drumsSpellConfig(character, consumables.DrumsId, false)
 		config.Cast = CastConfig{
 			DefaultCast: Cast{
 				CastTime: time.Second,

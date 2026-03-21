@@ -4,6 +4,7 @@ import {
 	Class,
 	ConsumesSpec,
 	Debuffs,
+	Drums,
 	IndividualBuffs,
 	PartyBuffs,
 	Profession,
@@ -141,7 +142,7 @@ export const DefaultConsumables = ConsumesSpec.create({
 	potId: 22838, // Haste Potion
 	flaskId: 22854, // Flask of Relentless Assault
 	foodId: 27658, // Roasted Clefthoof
-	drumsId: 351355,
+	drumsId: Drums.DrumsOfBattle,
 	conjuredId: 22788,
 	explosiveId: 30217,
 	superSapper: true,
