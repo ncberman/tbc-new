@@ -112,7 +112,8 @@ func (ai *MorogrimAI) registerTidalWave(disableSlow bool) {
 	}
 
 	rollTidalWaveCD := func(sim *core.Simulation) time.Duration {
-		return duration + core.DurationFromSeconds(sim.Roll(0, 45))
+		// The median across 100 logs is ~30s, with a minimum of ~22s.
+		return duration + core.DurationFromSeconds(sim.Roll(10, 30))
 	}
 
 	ai.TidalWave = ai.BossUnit.RegisterSpell(core.SpellConfig{
@@ -145,7 +146,8 @@ func (ai *MorogrimAI) registerTidalWave(disableSlow bool) {
 	})
 
 	ai.BossUnit.RegisterResetEffect(func(sim *core.Simulation) {
-		ai.TidalWave.CD.Set(rollTidalWaveCD(sim))
+		// The median across 100 logs is ~16s, with a minimum of ~11s.
+		ai.TidalWave.CD.Set(core.DurationFromSeconds(12 + sim.Roll(0, 8)))
 	})
 }
 
