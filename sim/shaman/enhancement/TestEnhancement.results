@@ -111,8 +111,8 @@ dps_results: {
 dps_results: {
  key: "TestEnhancement-AllItems-Annihilator-12798"
  value: {
-  dps: 1633.00322
-  tps: 1541.22829
+  dps: 1635.30476
+  tps: 1541.44915
  }
 }
 dps_results: {
@@ -412,22 +412,22 @@ dps_results: {
 dps_results: {
  key: "TestEnhancement-AllItems-Dragonmaw-28438"
  value: {
-  dps: 1888.55998
-  tps: 1790.17151
+  dps: 1888.06878
+  tps: 1790.21582
  }
 }
 dps_results: {
  key: "TestEnhancement-AllItems-Dragonstrike-28439"
  value: {
-  dps: 1925.58587
-  tps: 1827.49244
+  dps: 1928.05313
+  tps: 1830.35183
  }
 }
 dps_results: {
  key: "TestEnhancement-AllItems-DrakefistHammer-28437"
  value: {
-  dps: 1868.20348
-  tps: 1769.89711
+  dps: 1879.71654
+  tps: 1780.69168
  }
 }
 dps_results: {

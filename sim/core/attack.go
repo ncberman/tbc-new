@@ -580,9 +580,9 @@ func (aa *AutoAttacks) reset(_ *Simulation) {
 		aa.mh.swingAt = 0
 
 		if aa.IsDualWielding {
-			aa.oh.updateSwingDuration(aa.mh.curSwingSpeed)
+			aa.oh.updateSwingDuration(aa.oh.unit.TotalMeleeHasteMultiplier())
 			aa.oh.previousSwing = -aa.OffhandSwingSpeed()
-			aa.oh.swingAt = DurationFromSeconds(aa.mh.SwingSpeed / 2)
+			aa.oh.swingAt = DurationFromSeconds(aa.oh.SwingSpeed / 2)
 		}
 
 	}
@@ -617,11 +617,11 @@ func (aa *AutoAttacks) startPull(sim *Simulation) {
 
 		if aa.IsDualWielding {
 			if aa.oh.swingAt == NeverExpires {
-				aa.oh.swingAt = DurationFromSeconds(aa.mh.SwingSpeed / 2)
+				aa.oh.swingAt = DurationFromSeconds(aa.oh.SwingSpeed / 2)
 			}
 			if aa.oh.IsInRange() {
 				aa.oh.enabled = true
-				aa.oh.addWeaponAttack(sim, aa.mh.curSwingSpeed)
+				aa.oh.addWeaponAttack(sim, aa.oh.unit.TotalMeleeHasteMultiplier())
 			}
 
 		}

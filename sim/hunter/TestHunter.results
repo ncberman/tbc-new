@@ -327,9 +327,9 @@ dps_results: {
 dps_results: {
  key: "TestHunter-AllItems-Blinkstrike-31332"
  value: {
-  dps: 3121.64687
-  tps: 2130.29697
-  dtps: 13.70269
+  dps: 3116.83123
+  tps: 2125.8712
+  dtps: 13.70772
  }
 }
 dps_results: {
@@ -471,9 +471,9 @@ dps_results: {
 dps_results: {
  key: "TestHunter-AllItems-Despair-28573"
  value: {
-  dps: 3176.22635
-  tps: 2191.01345
-  dtps: 13.34283
+  dps: 3169.22777
+  tps: 2183.49596
+  dtps: 13.25546
  }
 }
 dps_results: {
@@ -759,9 +759,9 @@ dps_results: {
 dps_results: {
  key: "TestHunter-AllItems-Heartrazor-29962"
  value: {
-  dps: 3143.44502
-  tps: 2155.33571
-  dtps: 13.64525
+  dps: 3130.81717
+  tps: 2141.16912
+  dtps: 13.5148
  }
 }
 dps_results: {
@@ -839,17 +839,17 @@ dps_results: {
 dps_results: {
  key: "TestHunter-AllItems-LionheartChampion-28429"
  value: {
-  dps: 3237.33339
-  tps: 2238.70586
-  dtps: 13.20792
+  dps: 3236.48826
+  tps: 2239.82013
+  dtps: 13.16822
  }
 }
 dps_results: {
  key: "TestHunter-AllItems-LionheartExecutioner-28430"
  value: {
-  dps: 3239.78403
-  tps: 2241.1565
-  dtps: 13.20792
+  dps: 3239.0103
+  tps: 2242.34217
+  dtps: 13.16822
  }
 }
 dps_results: {
@@ -1176,9 +1176,9 @@ dps_results: {
 dps_results: {
  key: "TestHunter-AllItems-StaffoftheQirajiProphets-21128"
  value: {
-  dps: 3147.67556
-  tps: 2150.13891
-  dtps: 13.37289
+  dps: 3144.01093
+  tps: 2152.10546
+  dtps: 13.32748
  }
 }
 dps_results: {
@@ -1280,9 +1280,9 @@ dps_results: {
 dps_results: {
  key: "TestHunter-AllItems-TheNightBlade-31331"
  value: {
-  dps: 3122.113
-  tps: 2137.19394
-  dtps: 13.52269
+  dps: 3102.24919
+  tps: 2114.33268
+  dtps: 13.37815
  }
 }
 dps_results: {
@@ -1328,9 +1328,9 @@ dps_results: {
 dps_results: {
  key: "TestHunter-AllItems-Thunderfury,BlessedBladeoftheWindseeker-19019"
  value: {
-  dps: 3127.42905
-  tps: 2128.21461
-  dtps: 13.53466
+  dps: 3106.46299
+  tps: 2110.23283
+  dtps: 13.17813
  }
 }
 dps_results: {
