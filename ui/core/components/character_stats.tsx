@@ -432,6 +432,7 @@ export class CharacterStats extends Component {
 		let rootRatingValue = rootStat !== null ? deltaStats.getStat(rootStat) : null;
 		let percentDecimals = 2;
 		let derivedPercentOrPointsValue = unitStat.convertDefaultUnitsToPercent(deltaStats.getUnitStat(unitStat));
+		let displayPrefix = '';
 		let displaySuffix = i18n.t('sidebar.character_stats.percent_suffix');
 
 		if (unitStat.equalsStat(Stat.StatDefenseRating) && includeBase) {
@@ -479,6 +480,7 @@ export class CharacterStats extends Component {
 			)
 		) {
 			if (rootRatingValue !== null) {
+				displayPrefix = '+';
 				displaySuffix = '';
 				percentDecimals = 0;
 				derivedPercentOrPointsValue = rootRatingValue;
@@ -489,7 +491,8 @@ export class CharacterStats extends Component {
 		const hideRootRating =
 			(rootRatingValue === null || (rootRatingValue === 0 && derivedPercentOrPointsValue !== null)) && !unitStat.equalsStat(Stat.StatDefenseRating);
 		const rootRatingString = hideRootRating ? '' : String(Math.round(rootRatingValue!));
-		const percentOrPointsString = derivedPercentOrPointsValue === null ? '' : `${derivedPercentOrPointsValue.toFixed(percentDecimals)}` + displaySuffix;
+		const percentOrPointsString =
+			derivedPercentOrPointsValue === null ? '' : displayPrefix + `${derivedPercentOrPointsValue.toFixed(percentDecimals)}` + displaySuffix;
 		const wrappedPercentOrPointsString = hideRootRating || derivedPercentOrPointsValue === null ? percentOrPointsString : ` (${percentOrPointsString})`;
 		return rootRatingString + wrappedPercentOrPointsString;
 	}
