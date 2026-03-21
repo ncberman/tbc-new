@@ -602,7 +602,7 @@ func registerDrumsCD(agent Agent, consumables *proto.ConsumesSpec, sharedTimer *
 				if character.AutoAttacks.AutoSwingRanged {
 					castTime := character.ApplyCastSpeedForSpell(cast.CastTime, spell)
 					if sim.CurrentTime+castTime > character.AutoAttacks.NextAttackAt() {
-						character.AutoAttacks.DelayRangedUntil(sim, sim.CurrentTime+castTime)
+						character.AutoAttacks.DelayRangedUntil(sim, sim.CurrentTime+castTime+1)
 					}
 				}
 			},
