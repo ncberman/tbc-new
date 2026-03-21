@@ -101,6 +101,10 @@ export const SIMPLE_ROTATION = DpsWarrior_Rotation.create({
 	bloodlustTiming: 5,
 });
 export const SIMPLE_DEFAULT_ROTATION = PresetUtils.makePresetSimpleRotation('Simple', Spec.SpecDpsWarrior, SIMPLE_ROTATION);
+export const SIMPLE_ARMS_DEFAULT_ROTATION = PresetUtils.makePresetSimpleRotation('Simple', Spec.SpecDpsWarrior, {
+	...SIMPLE_ROTATION,
+	spec: DpsWarriorSpec.DpsWarriorSpecArms,
+});
 
 // Preset options for EP weights
 export const P1_FURY_EP_PRESET = PresetUtils.makePresetEpWeights(
@@ -242,13 +246,13 @@ export const PRESET_BUILD_FURY = PresetUtils.makePresetBuild('Fury', {
 export const PRESET_BUILD_ARMS = PresetUtils.makePresetBuild('Arms', {
 	talents: ArmsTalents,
 	rotationType: APLRotation_Type.TypeSimple,
-	rotation: SIMPLE_DEFAULT_ROTATION,
+	rotation: SIMPLE_ARMS_DEFAULT_ROTATION,
 });
 
 export const PRESET_BUILD_ARMS_KEBAB = PresetUtils.makePresetBuild('Arms - Kebab', {
 	talents: ArmsKebabTalents,
 	rotationType: APLRotation_Type.TypeSimple,
-	rotation: SIMPLE_DEFAULT_ROTATION,
+	rotation: SIMPLE_ARMS_DEFAULT_ROTATION,
 });
 
 export const P1_PLAYER_SETTINGS: PresetUtils.PresetSettings = {
@@ -374,7 +378,7 @@ export const P1_PRESET_BUILD_ARMS = PresetUtils.makePresetBuild('P1 - Arms', {
 	talents: ArmsTalents,
 	epWeights: P1_ARMS_EP_PRESET,
 	rotationType: APLRotation_Type.TypeSimple,
-	rotation: SIMPLE_DEFAULT_ROTATION,
+	rotation: SIMPLE_ARMS_DEFAULT_ROTATION,
 	settings: P1_PLAYER_SETTINGS,
 });
 
@@ -383,7 +387,7 @@ export const P2_PRESET_BUILD_ARMS = PresetUtils.makePresetBuild('P2 - Arms', {
 	talents: ArmsTalents,
 	epWeights: P1_ARMS_EP_PRESET,
 	rotationType: APLRotation_Type.TypeSimple,
-	rotation: SIMPLE_DEFAULT_ROTATION,
+	rotation: SIMPLE_ARMS_DEFAULT_ROTATION,
 	settings: P2_PLAYER_SETTINGS,
 });
 
@@ -392,7 +396,7 @@ export const P3_PRESET_BUILD_ARMS = PresetUtils.makePresetBuild('P3 - Arms', {
 	talents: ArmsTalents,
 	epWeights: P3_ARMS_EP_PRESET,
 	rotationType: APLRotation_Type.TypeSimple,
-	rotation: SIMPLE_DEFAULT_ROTATION,
+	rotation: SIMPLE_ARMS_DEFAULT_ROTATION,
 	settings: P3_PLAYER_SETTINGS,
 });
 
@@ -401,7 +405,7 @@ export const P35_PRESET_BUILD_ARMS = PresetUtils.makePresetBuild('P3.5 - Arms', 
 	talents: ArmsTalents,
 	epWeights: P3_ARMS_EP_PRESET,
 	rotationType: APLRotation_Type.TypeSimple,
-	rotation: SIMPLE_DEFAULT_ROTATION,
+	rotation: SIMPLE_ARMS_DEFAULT_ROTATION,
 	settings: P35_PLAYER_SETTINGS,
 });
 
@@ -410,6 +414,6 @@ export const P4_PRESET_BUILD_ARMS = PresetUtils.makePresetBuild('P4 - Arms', {
 	talents: ArmsTalents,
 	epWeights: P3_ARMS_EP_PRESET,
 	rotationType: APLRotation_Type.TypeSimple,
-	rotation: SIMPLE_DEFAULT_ROTATION,
+	rotation: SIMPLE_ARMS_DEFAULT_ROTATION,
 	settings: P4_PLAYER_SETTINGS,
 });
