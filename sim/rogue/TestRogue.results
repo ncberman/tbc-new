@@ -172,6 +172,13 @@ dps_results: {
  }
 }
 dps_results: {
+ key: "TestRogue-AllItems-BattlecastGarb"
+ value: {
+  dps: 1619.58646
+  tps: 1149.90638
+ }
+}
+dps_results: {
  key: "TestRogue-AllItems-Battlemaster'sAlacrity-35326"
  value: {
   dps: 1820.08734
@@ -356,8 +363,8 @@ dps_results: {
 dps_results: {
  key: "TestRogue-AllItems-Deathmantle"
  value: {
-  dps: 1730.87591
-  tps: 1228.9219
+  dps: 1804.50796
+  tps: 1281.20065
  }
 }
 dps_results: {
@@ -512,6 +519,13 @@ dps_results: {
  value: {
   dps: 1848.70285
   tps: 1312.57903
+ }
+}
+dps_results: {
+ key: "TestRogue-AllItems-FelSkin"
+ value: {
+  dps: 1749.4874
+  tps: 1242.13606
  }
 }
 dps_results: {
@@ -985,6 +999,13 @@ dps_results: {
  }
 }
 dps_results: {
+ key: "TestRogue-AllItems-StrengthoftheClefthoof"
+ value: {
+  dps: 1595.64714
+  tps: 1132.90947
+ }
+}
+dps_results: {
  key: "TestRogue-AllItems-SwiftWindfireDiamond"
  value: {
   dps: 1841.27784
@@ -1108,6 +1129,13 @@ dps_results: {
  value: {
   dps: 1820.08734
   tps: 1292.26201
+ }
+}
+dps_results: {
+ key: "TestRogue-AllItems-Warp-SpringCoil-30450"
+ value: {
+  dps: 1866.74412
+  tps: 1325.38833
  }
 }
 dps_results: {
