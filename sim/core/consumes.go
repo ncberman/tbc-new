@@ -587,7 +587,7 @@ func registerDrumsCD(agent Agent, consumables *proto.ConsumesSpec, sharedTimer *
 		config := drumsSpellConfig(character, consumables.DrumsId, false)
 		config.Cast = CastConfig{
 			DefaultCast: Cast{
-				CastTime: time.Second,
+				CastTime: TernaryDuration(consumables.DrumsId <= proto.Drums_GreaterDrumsOfWar, 0, time.Second),
 				GCD:      GCDDefault,
 			},
 			CD: Cooldown{
@@ -597,6 +597,14 @@ func registerDrumsCD(agent Agent, consumables *proto.ConsumesSpec, sharedTimer *
 			SharedCD: Cooldown{
 				Timer:    sharedTimer,
 				Duration: time.Minute * 2,
+			},
+			ModifyCast: func(sim *Simulation, spell *Spell, cast *Cast) {
+				if character.AutoAttacks.AutoSwingRanged {
+					castTime := character.ApplyCastSpeedForSpell(cast.CastTime, spell)
+					if sim.CurrentTime+castTime > character.AutoAttacks.NextAttackAt() {
+						character.AutoAttacks.DelayRangedUntil(sim, sim.CurrentTime+castTime)
+					}
+				}
 			},
 		}
 		spell := character.RegisterSpell(config)

@@ -429,9 +429,12 @@ enum TristateEffect {
 
 enum Drums {
 	DrumsUnknown = 0;
-	DrumsOfBattle = 1;
-	DrumsOfRestoration = 2;
-	DrumsOfWar = 3;
+	GreaterDrumsOfBattle = 1;
+	GreaterDrumsOfRestoration = 2;
+	GreaterDrumsOfWar = 3;
+	LesserDrumsOfBattle = 4;
+	LesserDrumsOfRestoration = 5;
+	LesserDrumsOfWar = 6;
 }
 
 enum StrengthOfEarthType {

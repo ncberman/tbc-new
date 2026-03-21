@@ -18,7 +18,7 @@ import * as InputHelpers from '../input_helpers';
 import { IconPickerStatOption, PickerStatOptions } from './stat_options';
 import { Party } from '../../party';
 import { IconEnumPicker } from '../pickers/icon_enum_picker';
-import { GreaterDrumsBattle, GreaterDrumsRestoration, GreaterDrumsWar } from './consumables';
+import { GreaterDrumsBattle, GreaterDrumsRestoration, GreaterDrumsWar, LesserDrumsBattle, LesserDrumsRestoration, LesserDrumsWar } from './consumables';
 
 ///////////////////////////////////////////////////////////////////////////
 //                                 RAID BUFFS
@@ -180,7 +180,7 @@ export const WindfuryTotem = makeTristatePartyBuffInput({
 });
 export const DrumsBuff = InputHelpers.makePartyBuffEnumIconInput({
 	fieldName: 'drums',
-	values: [{ color: 'gray', value: Drums.DrumsUnknown }, GreaterDrumsBattle, GreaterDrumsWar, GreaterDrumsRestoration],
+	values: [{ color: 'gray', value: Drums.DrumsUnknown }, LesserDrumsBattle, LesserDrumsWar, LesserDrumsRestoration],
 	label: 'Drums',
 });
 

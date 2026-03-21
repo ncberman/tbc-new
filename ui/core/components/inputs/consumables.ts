@@ -302,23 +302,42 @@ export const makeOHImbueInput = makeConsumeInputFactory({
 
 export const GreaterDrumsBattle = {
 	actionId: ActionId.fromItemId(185848),
-	value: Drums.DrumsOfBattle,
+	value: Drums.GreaterDrumsOfBattle,
 };
 
 export const GreaterDrumsRestoration = {
 	actionId: ActionId.fromItemId(185850),
-	value: Drums.DrumsOfRestoration,
+	value: Drums.GreaterDrumsOfRestoration,
 };
 
 export const GreaterDrumsWar = {
 	actionId: ActionId.fromItemId(185852),
-	value: Drums.DrumsOfWar,
+	value: Drums.GreaterDrumsOfWar,
+};
+
+export const LesserDrumsBattle = {
+	actionId: ActionId.fromItemId(29529),
+	value: Drums.LesserDrumsOfBattle,
+};
+
+export const LesserDrumsRestoration = {
+	actionId: ActionId.fromItemId(29531),
+	value: Drums.LesserDrumsOfRestoration,
+};
+
+export const LesserDrumsWar = {
+	actionId: ActionId.fromItemId(29528),
+	value: Drums.LesserDrumsOfWar,
 };
 
 export const DRUMS_CONFIG = [
-	{ config: GreaterDrumsBattle, stats: [] },
-	{ config: GreaterDrumsRestoration, stats: [Stat.StatMana] },
-	{ config: GreaterDrumsWar, stats: [Stat.StatAttackPower, Stat.StatSpellDamage] },
+	// Uncomment when P4 drops
+	// { config: GreaterDrumsBattle, stats: [] },
+	// { config: GreaterDrumsRestoration, stats: [Stat.StatMana] },
+	// { config: GreaterDrumsWar, stats: [Stat.StatAttackPower, Stat.StatSpellDamage] },
+	{ config: LesserDrumsBattle, stats: [] },
+	{ config: LesserDrumsRestoration, stats: [Stat.StatMana] },
+	{ config: LesserDrumsWar, stats: [Stat.StatAttackPower, Stat.StatSpellDamage] },
 ] as ConsumableStatOption<number>[];
 
 export const makeDrumsInput = makeConsumeInputFactory({
