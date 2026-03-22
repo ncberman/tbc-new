@@ -59,11 +59,9 @@ type Druid struct {
 	BearFormAura             *core.Aura
 	CatFormAura              *core.Aura
 	DashAura                 *core.Aura
-	FaerieFireAuras          core.AuraArray
 	FrenziedRegenerationAura *core.Aura
 	MoonkinFormAura          *core.Aura
 	ProwlAura                *core.Aura
-	NaturesGrace             *core.Aura
 
 	form DruidForm
 }
@@ -83,7 +81,7 @@ const (
 	DruidSpellMangleBear
 	DruidSpellMangleCat
 	DruidSpellMaul
-	DruidSpellMoonfire
+	DruidSpellMoonfireInitial
 	DruidSpellMoonfireDoT
 	DruidSpellRake
 	DruidSpellRavage
@@ -105,7 +103,9 @@ const (
 	DruidSpellCenarionWard
 
 	DruidSpellLast
-	DruidSpellsAll               = DruidSpellLast<<1 - 1
+	DruidSpellsAll = DruidSpellLast<<1 - 1
+
+	DruidSpellMoonfire           = DruidSpellMoonfireInitial | DruidSpellMoonfireDoT
 	DruidSpellDoT                = DruidSpellMoonfireDoT | DruidSpellInsectSwarm
 	DruidSpellHoT                = DruidSpellRejuvenation | DruidSpellLifebloom | DruidSpellRegrowth
 	DruidSpellInstant            = DruidSpellBarkskin | DruidSpellMoonfire | DruidSpellFearieFire | DruidSpellBarkskin
@@ -199,7 +199,8 @@ func (druid *Druid) RegisterBaselineSpells() {
 	// druid.registerHealingTouchSpell()
 	// druid.registerHurricaneSpell()
 	// druid.registerNaturesSwiftness()
-	// druid.registerFaerieFireSpell()
+	druid.registerFaerieFireSpell()
+	// druid.registerFaerieFireFeralSpell()
 	// druid.registerTranquilityCD()
 	// druid.registerRejuvenationSpell()
 

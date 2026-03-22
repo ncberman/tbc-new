@@ -54,13 +54,13 @@ func (druid *Druid) applyWrathOfCenarius() {
 
 	druid.AddStaticMod(core.SpellModConfig{
 		ClassMask:  DruidSpellWrath,
-		Kind:       core.SpellMod_DamageDone_Pct,
+		Kind:       core.SpellMod_BonusCoeffecient_Flat,
 		FloatValue: 0.02 * float64(druid.Talents.WrathOfCenarius),
 	})
 
 	druid.AddStaticMod(core.SpellModConfig{
 		ClassMask:  DruidSpellStarfire,
-		Kind:       core.SpellMod_DamageDone_Pct,
+		Kind:       core.SpellMod_BonusCoeffecient_Flat,
 		FloatValue: 0.04 * float64(druid.Talents.WrathOfCenarius),
 	})
 }
@@ -97,10 +97,12 @@ func (druid *Druid) applyMoonfury() {
 		return
 	}
 
+	value := 0.02 * float64(druid.Talents.Moonfury)
+
 	druid.AddStaticMod(core.SpellModConfig{
-		ClassMask:  DruidSpellWrath | DruidSpellStarfire | DruidSpellMoonfire,
+		ClassMask:  DruidSpellWrath | DruidSpellStarfire | DruidSpellMoonfire | DruidSpellMoonfireDoT,
 		Kind:       core.SpellMod_DamageDone_Pct,
-		FloatValue: 0.02 * float64(druid.Talents.Moonfury),
+		FloatValue: value,
 	})
 }
 
@@ -121,17 +123,7 @@ func (druid *Druid) applyNaturesGrace() {
 		return
 	}
 
-	druid.MakeProcTriggerAura(core.ProcTrigger{
-		Name:           "Nature's Grace Trigger",
-		Duration:       core.NeverExpires,
-		ClassSpellMask: DruidSpellWrath | DruidSpellStarfire | DruidSpellMoonfire,
-		Outcome:        core.OutcomeCrit,
-		Handler: func(sim *core.Simulation, spell *core.Spell, result *core.SpellResult) {
-			druid.NaturesGrace.Activate(sim)
-		},
-	})
-
-	druid.NaturesGrace = druid.RegisterAura(core.Aura{
+	aura := druid.RegisterAura(core.Aura{
 		Label:    "Nature's Grace",
 		ActionID: core.ActionID{SpellID: 16886},
 		Duration: time.Second * 3,
@@ -146,6 +138,16 @@ func (druid *Druid) applyNaturesGrace() {
 		ClassMask: DruidSpellStarfire | DruidSpellWrath,
 		Kind:      core.SpellMod_CastTime_Flat,
 		TimeValue: time.Millisecond * time.Duration(-500),
+	})
+
+	druid.MakeProcTriggerAura(core.ProcTrigger{
+		Name:           "Nature's Grace Trigger",
+		Duration:       core.NeverExpires,
+		ClassSpellMask: DruidSpellWrath | DruidSpellStarfire,
+		Outcome:        core.OutcomeCrit,
+		Handler: func(sim *core.Simulation, spell *core.Spell, result *core.SpellResult) {
+			aura.Activate(sim)
+		},
 	})
 }
 
@@ -242,7 +244,7 @@ func (druid *Druid) applyImprovedMoonfire() {
 	// 5% per point damage increase to Moonfire and its DoT
 	druid.AddStaticMod(core.SpellModConfig{
 		ClassMask:  DruidSpellMoonfire | DruidSpellMoonfireDoT,
-		Kind:       core.SpellMod_DamageDone_Pct,
+		Kind:       core.SpellMod_DamageDone_Flat,
 		FloatValue: 0.05 * float64(druid.Talents.ImprovedMoonfire),
 	})
 
