@@ -672,6 +672,7 @@ const valueKindFactories: { [f in ValidAPLValueKind]: ValueKindConfig<APLValueIm
 		submenu: ['boss'],
 		shortDescription: i18n.t('rotation_tab.apl.values.spell_is_casting.tooltip'),
 		newValue: APLValueBossSpellIsCasting.create,
+		includeIf: (_: Player<any>, isPrepull: boolean) => !isPrepull,
 		fields: [
 			AplHelpers.unitFieldConfig('targetUnit', 'targets'),
 			AplHelpers.actionIdFieldConfig('spellId', 'non_instant_spells', 'targetUnit', 'currentTarget'),
@@ -682,6 +683,7 @@ const valueKindFactories: { [f in ValidAPLValueKind]: ValueKindConfig<APLValueIm
 		submenu: ['boss'],
 		shortDescription: i18n.t('rotation_tab.apl.values.spell_time_to_ready.tooltip'),
 		newValue: APLValueBossSpellTimeToReady.create,
+		includeIf: (_: Player<any>, isPrepull: boolean) => !isPrepull,
 		fields: [AplHelpers.unitFieldConfig('targetUnit', 'targets'), AplHelpers.actionIdFieldConfig('spellId', 'spells', 'targetUnit', 'currentTarget')],
 	}),
 	bossCurrentTarget: inputBuilder({
@@ -689,6 +691,7 @@ const valueKindFactories: { [f in ValidAPLValueKind]: ValueKindConfig<APLValueIm
 		submenu: ['boss'],
 		shortDescription: i18n.t('rotation_tab.apl.values.boss_current_target.tooltip'),
 		newValue: APLValueBossCurrentTarget.create,
+		includeIf: (_: Player<any>, isPrepull: boolean) => !isPrepull,
 		fields: [AplHelpers.unitFieldConfig('targetUnit', 'targets')],
 	}),
 
@@ -893,6 +896,7 @@ const valueKindFactories: { [f in ValidAPLValueKind]: ValueKindConfig<APLValueIm
 		shortDescription: i18n.t('rotation_tab.apl.values.generic_resource.tooltip'),
 		newValue: APLValueCurrentGenericResource.create,
 		fields: [],
+		includeIf: (_player: Player<any>, isPrepull: boolean) => !isPrepull,
 		dynamicStringResolver: (value: string, player: Player<any>) => '',
 	}),
 
