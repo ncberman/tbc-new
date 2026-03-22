@@ -4388,19 +4388,6 @@
 									"additionalProperties": false,
 									"required": ["label", "tooltip"]
 								},
-								"unit_movement_speed": {
-									"type": "object",
-									"properties": {
-										"label": {
-											"type": "string"
-										},
-										"tooltip": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": ["label", "tooltip"]
-								},
 								"current_health": {
 									"type": "object",
 									"properties": {
@@ -5566,7 +5553,6 @@
 								"boss_current_target",
 								"unit_is_moving",
 								"distance_to_unit",
-								"unit_movement_speed",
 								"current_health",
 								"current_health_percent",
 								"max_health",
