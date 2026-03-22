@@ -103,6 +103,7 @@ import {
 	APLValueAutoTimeSinceLast,
 	APLValueWarlockAssignedCurseIsActive,
 	APLValueWarlockIsAssignedCurse,
+	APLValueUnitMovementSpeed,
 } from '../../proto/apl.js';
 import { Class, Spec } from '../../proto/common.js';
 import { ShamanTotems_TotemType as TotemType } from '../../proto/shaman.js';
@@ -695,6 +696,13 @@ const valueKindFactories: { [f in ValidAPLValueKind]: ValueKindConfig<APLValueIm
 		submenu: ['unit'],
 		shortDescription: i18n.t('rotation_tab.apl.values.distance_to_unit.tooltip'),
 		newValue: APLValueUnitDistance.create,
+		fields: [AplHelpers.unitFieldConfig('sourceUnit', 'aura_sources')],
+	}),
+	unitMovementSpeed: inputBuilder({
+		label: i18n.t('rotation_tab.apl.values.unit_movement_speed.label'),
+		submenu: ['unit'],
+		shortDescription: i18n.t('rotation_tab.apl.values.unit_movement_speed.tooltip'),
+		newValue: APLValueUnitMovementSpeed.create,
 		fields: [AplHelpers.unitFieldConfig('sourceUnit', 'aura_sources')],
 	}),
 

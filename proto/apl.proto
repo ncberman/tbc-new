@@ -100,7 +100,7 @@ message APLAction {
 }
 
 
-// NextIndex: 130
+// NextIndex: 131
 message APLValue {
 	UUID uuid = 85;
 
@@ -149,6 +149,7 @@ message APLValue {
 
 		// Unit values
 		APLValueUnitIsMoving unit_is_moving = 72;
+		APLValueUnitMovementSpeed unit_movement_speed = 130;
 		APLValueUnitDistance unit_distance = 105;
 
         // GCD values
@@ -495,6 +496,9 @@ message APLValueBossCurrentTarget {
     UnitReference target_unit = 1;
 }
 message APLValueUnitIsMoving {
+    UnitReference source_unit = 1;
+}
+message APLValueUnitMovementSpeed {
     UnitReference source_unit = 1;
 }
 message APLValueUnitDistance {
