@@ -1328,6 +1328,48 @@ dps_results: {
  }
 }
 dps_results: {
+ key: "TestEnhancement-Settings-Draenei-p1-DefaultTalents-Sync OH Swings-default-FullBuffs-0.0yards-LongMultiTarget"
+ value: {
+  dps: 4811.66482
+  tps: 2881.6742
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Draenei-p1-DefaultTalents-Sync OH Swings-default-FullBuffs-0.0yards-LongSingleTarget"
+ value: {
+  dps: 1930.02275
+  tps: 1833.32566
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Draenei-p1-DefaultTalents-Sync OH Swings-default-FullBuffs-0.0yards-ShortSingleTarget"
+ value: {
+  dps: 2062.16662
+  tps: 1945.76495
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Draenei-p1-DefaultTalents-Sync OH Swings-default-NoBuffs-0.0yards-LongMultiTarget"
+ value: {
+  dps: 1497.7812
+  tps: 1237.12918
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Draenei-p1-DefaultTalents-Sync OH Swings-default-NoBuffs-0.0yards-LongSingleTarget"
+ value: {
+  dps: 695.29153
+  tps: 664.30426
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Draenei-p1-DefaultTalents-Sync OH Swings-default-NoBuffs-0.0yards-ShortSingleTarget"
+ value: {
+  dps: 868.56798
+  tps: 843.60495
+ }
+}
+dps_results: {
  key: "TestEnhancement-Settings-Draenei-p1-Sub-Elemental-Standard-default-FullBuffs-0.0yards-LongMultiTarget"
  value: {
   dps: 4638.35422
@@ -1367,6 +1409,48 @@ dps_results: {
  value: {
   dps: 863.53439
   tps: 837.97408
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Draenei-p1-Sub-Elemental-Sync OH Swings-default-FullBuffs-0.0yards-LongMultiTarget"
+ value: {
+  dps: 4584.32939
+  tps: 2944.09588
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Draenei-p1-Sub-Elemental-Sync OH Swings-default-FullBuffs-0.0yards-LongSingleTarget"
+ value: {
+  dps: 1961.69852
+  tps: 1862.61524
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Draenei-p1-Sub-Elemental-Sync OH Swings-default-FullBuffs-0.0yards-ShortSingleTarget"
+ value: {
+  dps: 2134.90258
+  tps: 2008.43504
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Draenei-p1-Sub-Elemental-Sync OH Swings-default-NoBuffs-0.0yards-LongMultiTarget"
+ value: {
+  dps: 1366.4438
+  tps: 1221.18955
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Draenei-p1-Sub-Elemental-Sync OH Swings-default-NoBuffs-0.0yards-LongSingleTarget"
+ value: {
+  dps: 674.13236
+  tps: 660.56852
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Draenei-p1-Sub-Elemental-Sync OH Swings-default-NoBuffs-0.0yards-ShortSingleTarget"
+ value: {
+  dps: 851.99303
+  tps: 826.76614
  }
 }
 dps_results: {
@@ -1412,6 +1496,48 @@ dps_results: {
  }
 }
 dps_results: {
+ key: "TestEnhancement-Settings-Draenei-p1-Sub-Restoration ILS-Sync OH Swings-default-FullBuffs-0.0yards-LongMultiTarget"
+ value: {
+  dps: 4811.66482
+  tps: 2881.6742
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Draenei-p1-Sub-Restoration ILS-Sync OH Swings-default-FullBuffs-0.0yards-LongSingleTarget"
+ value: {
+  dps: 1930.02275
+  tps: 1833.32566
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Draenei-p1-Sub-Restoration ILS-Sync OH Swings-default-FullBuffs-0.0yards-ShortSingleTarget"
+ value: {
+  dps: 2062.16662
+  tps: 1945.76495
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Draenei-p1-Sub-Restoration ILS-Sync OH Swings-default-NoBuffs-0.0yards-LongMultiTarget"
+ value: {
+  dps: 1497.7812
+  tps: 1237.12918
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Draenei-p1-Sub-Restoration ILS-Sync OH Swings-default-NoBuffs-0.0yards-LongSingleTarget"
+ value: {
+  dps: 695.29153
+  tps: 664.30426
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Draenei-p1-Sub-Restoration ILS-Sync OH Swings-default-NoBuffs-0.0yards-ShortSingleTarget"
+ value: {
+  dps: 868.56798
+  tps: 843.60495
+ }
+}
+dps_results: {
  key: "TestEnhancement-Settings-Orc-p1-DefaultTalents-Standard-default-FullBuffs-0.0yards-LongMultiTarget"
  value: {
   dps: 4271.21728
@@ -1451,6 +1577,48 @@ dps_results: {
  value: {
   dps: 995.18796
   tps: 867.37059
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Orc-p1-DefaultTalents-Sync OH Swings-default-FullBuffs-0.0yards-LongMultiTarget"
+ value: {
+  dps: 4228.68755
+  tps: 2494.98684
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Orc-p1-DefaultTalents-Sync OH Swings-default-FullBuffs-0.0yards-LongSingleTarget"
+ value: {
+  dps: 2036.67684
+  tps: 1833.03195
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Orc-p1-DefaultTalents-Sync OH Swings-default-FullBuffs-0.0yards-ShortSingleTarget"
+ value: {
+  dps: 2218.09549
+  tps: 1977.07725
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Orc-p1-DefaultTalents-Sync OH Swings-default-NoBuffs-0.0yards-LongMultiTarget"
+ value: {
+  dps: 1902.22408
+  tps: 1245.82141
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Orc-p1-DefaultTalents-Sync OH Swings-default-NoBuffs-0.0yards-LongSingleTarget"
+ value: {
+  dps: 823.69528
+  tps: 714.41648
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Orc-p1-DefaultTalents-Sync OH Swings-default-NoBuffs-0.0yards-ShortSingleTarget"
+ value: {
+  dps: 980.76623
+  tps: 854.16068
  }
 }
 dps_results: {
@@ -1496,6 +1664,48 @@ dps_results: {
  }
 }
 dps_results: {
+ key: "TestEnhancement-Settings-Orc-p1-Sub-Elemental-Sync OH Swings-default-FullBuffs-0.0yards-LongMultiTarget"
+ value: {
+  dps: 4526.89465
+  tps: 2974.5597
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Orc-p1-Sub-Elemental-Sync OH Swings-default-FullBuffs-0.0yards-LongSingleTarget"
+ value: {
+  dps: 2094.74126
+  tps: 1909.66397
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Orc-p1-Sub-Elemental-Sync OH Swings-default-FullBuffs-0.0yards-ShortSingleTarget"
+ value: {
+  dps: 2258.61163
+  tps: 2021.07996
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Orc-p1-Sub-Elemental-Sync OH Swings-default-NoBuffs-0.0yards-LongMultiTarget"
+ value: {
+  dps: 1930.82389
+  tps: 1276.75151
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Orc-p1-Sub-Elemental-Sync OH Swings-default-NoBuffs-0.0yards-LongSingleTarget"
+ value: {
+  dps: 807.74908
+  tps: 707.27798
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Orc-p1-Sub-Elemental-Sync OH Swings-default-NoBuffs-0.0yards-ShortSingleTarget"
+ value: {
+  dps: 996.77753
+  tps: 872.82335
+ }
+}
+dps_results: {
  key: "TestEnhancement-Settings-Orc-p1-Sub-Restoration ILS-Standard-default-FullBuffs-0.0yards-LongMultiTarget"
  value: {
   dps: 4271.21728
@@ -1535,6 +1745,48 @@ dps_results: {
  value: {
   dps: 995.18796
   tps: 867.37059
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Orc-p1-Sub-Restoration ILS-Sync OH Swings-default-FullBuffs-0.0yards-LongMultiTarget"
+ value: {
+  dps: 4228.68755
+  tps: 2494.98684
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Orc-p1-Sub-Restoration ILS-Sync OH Swings-default-FullBuffs-0.0yards-LongSingleTarget"
+ value: {
+  dps: 2036.67684
+  tps: 1833.03195
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Orc-p1-Sub-Restoration ILS-Sync OH Swings-default-FullBuffs-0.0yards-ShortSingleTarget"
+ value: {
+  dps: 2218.09549
+  tps: 1977.07725
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Orc-p1-Sub-Restoration ILS-Sync OH Swings-default-NoBuffs-0.0yards-LongMultiTarget"
+ value: {
+  dps: 1902.22408
+  tps: 1245.82141
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Orc-p1-Sub-Restoration ILS-Sync OH Swings-default-NoBuffs-0.0yards-LongSingleTarget"
+ value: {
+  dps: 823.69528
+  tps: 714.41648
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Orc-p1-Sub-Restoration ILS-Sync OH Swings-default-NoBuffs-0.0yards-ShortSingleTarget"
+ value: {
+  dps: 980.76623
+  tps: 854.16068
  }
 }
 dps_results: {
@@ -1580,6 +1832,48 @@ dps_results: {
  }
 }
 dps_results: {
+ key: "TestEnhancement-Settings-Troll-p1-DefaultTalents-Sync OH Swings-default-FullBuffs-0.0yards-LongMultiTarget"
+ value: {
+  dps: 4727.93475
+  tps: 2855.45748
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Troll-p1-DefaultTalents-Sync OH Swings-default-FullBuffs-0.0yards-LongSingleTarget"
+ value: {
+  dps: 1914.6529
+  tps: 1821.92971
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Troll-p1-DefaultTalents-Sync OH Swings-default-FullBuffs-0.0yards-ShortSingleTarget"
+ value: {
+  dps: 2067.35122
+  tps: 1953.30332
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Troll-p1-DefaultTalents-Sync OH Swings-default-NoBuffs-0.0yards-LongMultiTarget"
+ value: {
+  dps: 1472.20791
+  tps: 1236.81362
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Troll-p1-DefaultTalents-Sync OH Swings-default-NoBuffs-0.0yards-LongSingleTarget"
+ value: {
+  dps: 703.41323
+  tps: 672.63087
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Troll-p1-DefaultTalents-Sync OH Swings-default-NoBuffs-0.0yards-ShortSingleTarget"
+ value: {
+  dps: 865.18371
+  tps: 841.06235
+ }
+}
+dps_results: {
  key: "TestEnhancement-Settings-Troll-p1-Sub-Elemental-Standard-default-FullBuffs-0.0yards-LongMultiTarget"
  value: {
   dps: 4486.85919
@@ -1622,6 +1916,48 @@ dps_results: {
  }
 }
 dps_results: {
+ key: "TestEnhancement-Settings-Troll-p1-Sub-Elemental-Sync OH Swings-default-FullBuffs-0.0yards-LongMultiTarget"
+ value: {
+  dps: 4428.44608
+  tps: 2992.99401
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Troll-p1-Sub-Elemental-Sync OH Swings-default-FullBuffs-0.0yards-LongSingleTarget"
+ value: {
+  dps: 1944.81962
+  tps: 1848.58177
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Troll-p1-Sub-Elemental-Sync OH Swings-default-FullBuffs-0.0yards-ShortSingleTarget"
+ value: {
+  dps: 2134.4671
+  tps: 2015.49486
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Troll-p1-Sub-Elemental-Sync OH Swings-default-NoBuffs-0.0yards-LongMultiTarget"
+ value: {
+  dps: 1350.48418
+  tps: 1216.00987
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Troll-p1-Sub-Elemental-Sync OH Swings-default-NoBuffs-0.0yards-LongSingleTarget"
+ value: {
+  dps: 673.21923
+  tps: 655.01973
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Troll-p1-Sub-Elemental-Sync OH Swings-default-NoBuffs-0.0yards-ShortSingleTarget"
+ value: {
+  dps: 852.28718
+  tps: 822.03665
+ }
+}
+dps_results: {
  key: "TestEnhancement-Settings-Troll-p1-Sub-Restoration ILS-Standard-default-FullBuffs-0.0yards-LongMultiTarget"
  value: {
   dps: 4777.08182
@@ -1661,6 +1997,48 @@ dps_results: {
  value: {
   dps: 874.38931
   tps: 850.32933
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Troll-p1-Sub-Restoration ILS-Sync OH Swings-default-FullBuffs-0.0yards-LongMultiTarget"
+ value: {
+  dps: 4727.93475
+  tps: 2855.45748
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Troll-p1-Sub-Restoration ILS-Sync OH Swings-default-FullBuffs-0.0yards-LongSingleTarget"
+ value: {
+  dps: 1914.6529
+  tps: 1821.92971
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Troll-p1-Sub-Restoration ILS-Sync OH Swings-default-FullBuffs-0.0yards-ShortSingleTarget"
+ value: {
+  dps: 2067.35122
+  tps: 1953.30332
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Troll-p1-Sub-Restoration ILS-Sync OH Swings-default-NoBuffs-0.0yards-LongMultiTarget"
+ value: {
+  dps: 1472.20791
+  tps: 1236.81362
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Troll-p1-Sub-Restoration ILS-Sync OH Swings-default-NoBuffs-0.0yards-LongSingleTarget"
+ value: {
+  dps: 703.41323
+  tps: 672.63087
+ }
+}
+dps_results: {
+ key: "TestEnhancement-Settings-Troll-p1-Sub-Restoration ILS-Sync OH Swings-default-NoBuffs-0.0yards-ShortSingleTarget"
+ value: {
+  dps: 865.18371
+  tps: 841.06235
  }
 }
 dps_results: {

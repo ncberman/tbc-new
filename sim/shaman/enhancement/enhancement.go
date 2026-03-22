@@ -84,12 +84,6 @@ func (enh *EnhancementShaman) Initialize() {
 	enh.RegisterFrostbrandImbue(enh.GetImbueProcMask(proto.ShamanImbue_FrostbrandWeapon))
 	enh.RegisterFlametongueImbue(enh.GetImbueProcMask(proto.ShamanImbue_FlametongueWeapon))
 	enh.RegisterWindfuryImbue(enh.GetImbueProcMask(proto.ShamanImbue_WindfuryWeapon))
-
-	if enh.ItemSwap.IsEnabled() {
-		enh.RegisterItemSwapCallback(core.AllMeleeWeaponSlots(), func(_ *core.Simulation, slot proto.ItemSlot) {
-			enh.ApplySyncType(proto.ShamanSyncType_Auto)
-		})
-	}
 }
 
 func (enh *EnhancementShaman) Reset(sim *core.Simulation) {
@@ -116,6 +110,9 @@ func (enh *EnhancementShaman) ApplySyncType(syncType proto.ShamanSyncType) {
 			if aa := &enh.AutoAttacks; aa.OffhandSwingAt()-sim.CurrentTime > FlurryICD {
 				if nextMHSwingAt := sim.CurrentTime + aa.MainhandSwingSpeed(); nextMHSwingAt != aa.OffhandSwingAt() {
 					aa.SetOffhandSwingAt(nextMHSwingAt)
+					if sim.Log != nil {
+						enh.Unit.Log(sim, "(Weapon Sync) Syncing OH with MH, setting next OH swing to %s", nextMHSwingAt)
+					}
 				}
 			}
 			return mhSwingSpell
@@ -125,6 +122,9 @@ func (enh *EnhancementShaman) ApplySyncType(syncType proto.ShamanSyncType) {
 			if aa := &enh.AutoAttacks; aa.OffhandSwingAt()-sim.CurrentTime > FlurryICD {
 				if nextMHSwingAt := sim.CurrentTime + aa.MainhandSwingSpeed() + 100*time.Millisecond; nextMHSwingAt > aa.OffhandSwingAt() {
 					aa.SetOffhandSwingAt(nextMHSwingAt)
+					if sim.Log != nil {
+						enh.Unit.Log(sim, "(Weapon Sync) Delaying OH swing, setting next OH swing to %s", nextMHSwingAt)
+					}
 				}
 			}
 			return mhSwingSpell
