@@ -886,7 +886,7 @@ func (aa *AutoAttacks) RandomizeMeleeTiming(sim *Simulation) {
 		return
 	}
 
-	randomAutoOffset := DurationFromSeconds(sim.RollWithLabel(0, .5, "Melee Timing"))
+	randomAutoOffset := time.Duration(sim.RandomFloat("Melee Timing")*float64(aa.character.ReactionTime.Milliseconds())) * time.Millisecond
 	aa.DelayMeleeBy(sim, randomAutoOffset)
 }
 
