@@ -12,12 +12,11 @@ import (
 )
 
 type BuffConfig struct {
-	Label                string
-	ActionID             ActionID
-	Duration             time.Duration
-	Stats                []StatConfig
-	ExclusiveCategory    string
-	HideBonusFromUIStats bool
+	Label             string
+	ActionID          ActionID
+	Duration          time.Duration
+	Stats             []StatConfig
+	ExclusiveCategory string
 }
 
 type StatConfig struct {
@@ -105,7 +104,7 @@ func makeStatBuff(char *Character, config BuffConfig) *Aura {
 		Label:      config.Label,
 		ActionID:   config.ActionID,
 		Duration:   TernaryDuration(config.Duration > 0, config.Duration, NeverExpires),
-		BuildPhase: Ternary(config.HideBonusFromUIStats, CharacterBuildPhaseNone, CharacterBuildPhaseBuffs),
+		BuildPhase: CharacterBuildPhaseBuffs,
 	})
 
 	if config.ExclusiveCategory != "" {
@@ -672,8 +671,7 @@ func UnleashedRageAura(char *Character, casterIdx int32, points int32) *Aura {
 		Stats: []StatConfig{
 			{stats.AttackPower, 1 + 0.02*float64(points), true},
 		},
-		ExclusiveCategory:    UnleashedRageCategory,
-		HideBonusFromUIStats: true,
+		ExclusiveCategory: UnleashedRageCategory,
 	})
 }
 
