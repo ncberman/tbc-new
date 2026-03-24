@@ -29,13 +29,17 @@ func (shaman *Shaman) NewFireElemental() *FireElemental {
 		}),
 		shamanOwner: shaman,
 	}
-	baseMeleeDamage := 134.0
+
 	fireElemental.EnableManaBar()
+
+	fireElemental.AddStatDependency(stats.Strength, stats.AttackPower, 2)
+	fireElemental.AddStatDependency(stats.Agility, stats.PhysicalCritPercent, core.CritPerAgiMaxLevel[proto.Class_ClassWarrior])
 	fireElemental.AddStatDependency(stats.Intellect, stats.Mana, 15)
+
 	fireElemental.EnableAutoAttacks(fireElemental, core.AutoAttackOptions{
 		MainHand: core.Weapon{
-			BaseDamageMin:  baseMeleeDamage,
-			BaseDamageMax:  baseMeleeDamage,
+			BaseDamageMin:  134.0,
+			BaseDamageMax:  134.0,
 			SwingSpeed:     2.0,
 			CritMultiplier: fireElemental.DefaultMeleeCritMultiplier(),
 			SpellSchool:    core.SpellSchoolFire,
