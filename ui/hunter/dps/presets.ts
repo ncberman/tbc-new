@@ -121,7 +121,7 @@ export const P1_SV_EP_PRESET = PresetUtils.makePresetEpWeights(
 export const BMTalents = {
 	name: 'BM',
 	data: SavedTalents.create({
-		talentsString: '522002005150122431051-0550201205',
+		talentsString: '522002005150122431051-0505201205',
 	}),
 };
 export const SVTalents = {
