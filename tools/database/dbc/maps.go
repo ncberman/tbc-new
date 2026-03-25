@@ -411,6 +411,7 @@ var MapItemIdToPPM = map[int32]float64{
 	30090: 1,   // World Breaker
 	32505: 1,   // Madness of the Betrayer
 	31859: 1,   // Darkmoon Card: Madness
+	32262: 1,   // Syphon of the Nathrezim
 }
 
 func getPPMForItemID(itemID int32) float64 {

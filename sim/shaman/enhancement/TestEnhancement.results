@@ -1069,6 +1069,13 @@ dps_results: {
  }
 }
 dps_results: {
+ key: "TestEnhancement-AllItems-SyphonoftheNathrezim-32262"
+ value: {
+  dps: 1800.07529
+  tps: 1706.12699
+ }
+}
+dps_results: {
  key: "TestEnhancement-AllItems-TalismanofAscendance-22678"
  value: {
   dps: 1818.06164
