@@ -9,8 +9,8 @@ import { Stats, UnitStat } from '../../core/proto_utils/stats.js';
 import { DefaultDebuffs, DefaultRaidBuffs, DefaultPartyBuffs, DefaultIndividualBuffs, DefaultConsumables, DefaultSimpleRotation } from './presets';
 import * as Presets from './presets.js';
 import * as Inputs from './inputs.js';
-import { validateFunctionCode } from 'ajv/dist/compile/validate';
-import { RetributionPaladin_Rotation } from '../../core/proto/paladin';
+import * as Mechanics from '../../core/constants/mechanics';
+import { ReforgeOptimizer } from '../../core/components/suggest_reforges_action';
 
 const SPEC_CONFIG = registerSpecConfig(Spec.SpecRetributionPaladin, {
 	cssClass: 'retribution-paladin-sim-ui',
@@ -65,6 +65,12 @@ const SPEC_CONFIG = registerSpecConfig(Spec.SpecRetributionPaladin, {
 		gear: Presets.P1_GEAR_PRESET.gear,
 		// Default EP weights for sorting gear in the gear picker.
 		epWeights: Presets.P1_EP_PRESET.epWeights,
+		statCaps: (() => {
+			const hitCap = new Stats().withPseudoStat(PseudoStat.PseudoStatMeleeHitPercent, 9);
+			const expCap = new Stats().withStat(Stat.StatExpertiseRating, 6.5 * 4 * Mechanics.EXPERTISE_PER_QUARTER_PERCENT_REDUCTION);
+
+			return hitCap.add(expCap);
+		})(),
 		// Default consumes settings.
 		consumables: DefaultConsumables,
 		// Default talents.
@@ -176,5 +182,6 @@ const SPEC_CONFIG = registerSpecConfig(Spec.SpecRetributionPaladin, {
 export class RetributionPaladinSimUI extends IndividualSimUI<Spec.SpecRetributionPaladin> {
 	constructor(parentElem: HTMLElement, player: Player<Spec.SpecRetributionPaladin>) {
 		super(parentElem, player, SPEC_CONFIG);
+		this.reforger = new ReforgeOptimizer(this);
 	}
 }
