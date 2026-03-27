@@ -1,3 +1,4 @@
+import { DrumsBattle } from '../../core/components/inputs/consumables';
 import { RetributionPaladin } from '../../core/player_specs/paladin';
 import * as PresetUtils from '../../core/preset_utils.js';
 import { ConsumesSpec, Debuffs, RaidBuffs, Profession, PseudoStat, PartyBuffs, IndividualBuffs, Race, Stat, Spec, Drums } from '../../core/proto/common.js';
@@ -71,9 +72,10 @@ export const DefaultConsumables = ConsumesSpec.create({
 	foodId: 27658,
 	conjuredId: 12662,
 	superSapper: true,
-	drumsId: Drums.GreaterDrumsOfBattle,
+	goblinSapper: true,
 	scrollAgi: true,
 	scrollStr: true,
+	explosiveId: 30217,
 });
 
 export const DefaultRaidBuffs = RaidBuffs.create({
@@ -94,6 +96,7 @@ export const DefaultPartyBuffs = PartyBuffs.create({
 	strengthOfEarthTotem: 2,
 	windfuryTotem: 2,
 	graceOfAirTotem: 2,
+	drums: Drums.LesserDrumsOfBattle,
 });
 
 export const DefaultIndividualBuffs = IndividualBuffs.create({
