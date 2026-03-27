@@ -437,13 +437,9 @@ func ImprovedSealOfTheCrusaderAura(target *Unit, points int32) *Aura {
 		Label:    "Improved Seal of the Crusader",
 		ActionID: ActionID{SpellID: 20337},
 		Duration: time.Second * 20,
-		OnGain: func(aura *Aura, sim *Simulation) {
-			target.PseudoStats.SchoolBonusSpellDamage[stats.SchoolIndexHoly] += holySpellDamageBonus
-		},
-		OnExpire: func(aura *Aura, sim *Simulation) {
-			target.PseudoStats.SchoolBonusSpellDamage[stats.SchoolIndexHoly] -= holySpellDamageBonus
-		},
-	}).AttachAdditivePseudoStatBuff(&target.PseudoStats.ReducedCritTakenChance, float64(-1*points))
+	}).
+		AttachAdditivePseudoStatBuff(&target.PseudoStats.ReducedCritTakenChance, float64(-1*points)).
+		AttachAdditivePseudoStatBuff(&target.PseudoStats.SchoolBonusSpellDamage[stats.SchoolIndexHoly], holySpellDamageBonus)
 }
 
 func ImprovedShadowBoltAura(target *Unit, uptime float64, points int32) *Aura {
