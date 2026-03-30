@@ -684,9 +684,12 @@ func (paladin *Paladin) registerSealOfBlood(seal seal) {
 		MetricsActionID: core.ActionID{SpellID: seal.spellID},
 		Duration:        time.Second * 30,
 		Callback:        core.CallbackOnSpellHitDealt,
-		ProcMask:        core.ProcMaskMeleeWhiteHit,
 		Outcome:         core.OutcomeLanded,
 		Handler: func(sim *core.Simulation, spell *core.Spell, result *core.SpellResult) {
+			if !spell.ProcMask.Matches(core.ProcMaskMeleeWhiteHit) && !spell.Matches(SpellMaskSealOfCommand) {
+				return
+			}
+
 			procSpell.Cast(sim, result.Target)
 		},
 	})
