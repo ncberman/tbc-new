@@ -87,11 +87,12 @@ var FullPartyBuffs = &proto.PartyBuffs{
 	WrathOfAirTotem:      proto.TristateEffect_TristateEffectImproved,
 	GraceOfAirTotem:      proto.TristateEffect_TristateEffectImproved,
 	StrengthOfEarthTotem: proto.TristateEffect_TristateEffectImproved,
-	TranquilAirTotem:     true,
 	WindfuryTotem:        proto.TristateEffect_TristateEffectImproved,
 
 	BattleShout:     proto.TristateEffect_TristateEffectImproved,
 	CommandingShout: proto.TristateEffect_TristateEffectImproved,
+
+	Drums: proto.Drums_LesserDrumsOfBattle,
 }
 
 var FullIndividualBuffs = &proto.IndividualBuffs{
@@ -409,13 +410,7 @@ func getPlayerSpecOptions(player *proto.Player) interface{} {
 	if playerSpec, ok := player.Spec.(*proto.Player_RetributionPaladin); ok {
 		return playerSpec
 	}
-	if playerSpec, ok := player.Spec.(*proto.Player_DisciplinePriest); ok {
-		return playerSpec
-	}
-	if playerSpec, ok := player.Spec.(*proto.Player_HolyPriest); ok {
-		return playerSpec
-	}
-	if playerSpec, ok := player.Spec.(*proto.Player_ShadowPriest); ok {
+	if playerSpec, ok := player.Spec.(*proto.Player_Priest); ok {
 		return playerSpec
 	}
 	if playerSpec, ok := player.Spec.(*proto.Player_Rogue); ok {

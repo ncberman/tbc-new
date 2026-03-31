@@ -52,7 +52,7 @@ func RegisterMage() {
 	core.RegisterAgentFactory(
 		proto.Player_Mage{},
 		proto.Spec_SpecMage,
-		func(character *core.Character, options *proto.Player) core.Agent {
+		func(character *core.Character, options *proto.Player, _ *proto.Raid) core.Agent {
 			return NewMage(character, options)
 		},
 		func(player *proto.Player, spec interface{}) {
@@ -73,11 +73,7 @@ func (mage *Mage) AddPartyBuffs(partyBuffs *proto.PartyBuffs) {
 }
 
 func (mage *Mage) Initialize() {
-
-	mage.ImprovedScorchAuras = mage.NewEnemyAuraArray(func(target *core.Unit) *core.Aura {
-		return core.ImprovedScorchAura(target, 0)
-	})
-
+	mage.ImprovedScorchAuras = mage.NewEnemyAuraArray(core.ImprovedScorchAura)
 	mage.SlowAuras = mage.NewEnemyAuraArray(core.SlowAura)
 
 	mage.registerPassives()
@@ -138,6 +134,10 @@ func NewMage(character *core.Character, options *proto.Player) *Mage {
 
 	mage.EnableManaBar()
 
+	if mage.Talents.SummonWaterElemental {
+		mage.waterElemental = mage.NewWaterElemental()
+	}
+
 	return mage
 }
 
@@ -180,6 +180,7 @@ const (
 	MageSpellPyroblastDot
 	MageSpellScorch
 	MageSpellSlow
+	MageSpellManaGem
 	MageSpellCombustion
 	MageWaterElementalSpellWaterBolt
 	MageSpellLast

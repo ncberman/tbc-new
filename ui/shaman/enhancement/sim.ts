@@ -1,11 +1,14 @@
-import * as BuffDebuffInputs from '../../core/components/inputs/buffs_debuffs.js';
 import * as OtherInputs from '../../core/components/inputs/other_inputs.js';
+import { ReforgeOptimizer } from '../../core/components/suggest_reforges_action';
 import { IndividualSimUI, registerSpecConfig } from '../../core/individual_sim_ui.js';
 import { Player } from '../../core/player.js';
 import { PlayerClasses } from '../../core/player_classes';
 import { APLRotation } from '../../core/proto/apl.js';
-import { Faction, IndividualBuffs, ItemSlot, PartyBuffs, PseudoStat, Race, Spec, Stat, UnitStats } from '../../core/proto/common.js';
-import { Stats, UnitStat } from '../../core/proto_utils/stats.js';
+import { Faction, ItemSlot, PseudoStat, Race, Spec, Stat } from '../../core/proto/common.js';
+import { StatCapType } from '../../core/proto/ui';
+import { StatCap, Stats, UnitStat } from '../../core/proto_utils/stats.js';
+
+import * as Mechanics from '../../core/constants/mechanics';
 import * as ShamanInputs from '../inputs.js';
 import * as EnhancementInputs from './inputs.js';
 import * as Presets from './presets.js';
@@ -17,49 +20,41 @@ const SPEC_CONFIG = registerSpecConfig(Spec.SpecEnhancementShaman, {
 	knownIssues: [],
 	warnings: [],
 
-	overwriteDisplayStats: (player: Player<Spec.SpecEnhancementShaman>) => {
-		const playerStats = player.getCurrentStats();
-
-		const statMod = (current: UnitStats, previous?: UnitStats) => {
-			return new Stats().withStat(
-				Stat.StatSpellDamage,
-				Stats.fromProto(current).subtract(Stats.fromProto(previous)).getStat(Stat.StatAttackPower) * 0.65,
-			);
-		};
-
-		const base = statMod(playerStats.baseStats!);
-		const gear = statMod(playerStats.gearStats!, playerStats.baseStats);
-		const talents = statMod(playerStats.talentsStats!, playerStats.gearStats);
-		const buffs = statMod(playerStats.buffsStats!, playerStats.talentsStats);
-		const consumes = statMod(playerStats.consumesStats!, playerStats.buffsStats);
-		const debuffs = new Stats();
-		const final = new Stats().withStat(Stat.StatSpellDamage, Stats.fromProto(playerStats.finalStats).getStat(Stat.StatAttackPower) * 0.65);
-
-		return {
-			base: base,
-			gear: gear,
-			talents: talents,
-			buffs: buffs,
-			consumes: consumes,
-			debuffs,
-			final: final,
-			stats: [Stat.StatSpellDamage],
-		};
-	},
-
 	// All stats for which EP should be calculated.
-	epStats: [Stat.StatAgility, Stat.StatIntellect, Stat.StatAttackPower],
-	epPseudoStats: [
-		PseudoStat.PseudoStatMainHandDps,
-		PseudoStat.PseudoStatOffHandDps,
-		PseudoStat.PseudoStatMeleeHitPercent,
-		PseudoStat.PseudoStatSpellHitPercent,
+	epStats: [
+		Stat.StatStrength,
+		Stat.StatAgility,
+		Stat.StatIntellect,
+		Stat.StatAttackPower,
+		Stat.StatMeleeHitRating,
+		Stat.StatMeleeCritRating,
+		Stat.StatMeleeHasteRating,
+		Stat.StatExpertiseRating,
+		Stat.StatArmorPenetration,
+		Stat.StatSpellDamage,
+		Stat.StatNatureDamage,
+		Stat.StatSpellHitRating,
+		Stat.StatSpellCritRating,
 	],
+	epPseudoStats: [PseudoStat.PseudoStatMainHandDps, PseudoStat.PseudoStatOffHandDps],
 	// Reference stat against which to calculate EP.
-	epReferenceStat: Stat.StatAgility,
+	epReferenceStat: Stat.StatAttackPower,
+	consumableStats: [Stat.StatMana],
 	// Which stats to display in the Character Stats section, at the bottom of the left-hand sidebar.
 	displayStats: UnitStat.createDisplayStatArray(
-		[Stat.StatHealth, Stat.StatStamina, Stat.StatStrength, Stat.StatAgility, Stat.StatIntellect, Stat.StatAttackPower, Stat.StatSpellDamage],
+		[
+			Stat.StatHealth,
+			Stat.StatStamina,
+			Stat.StatStrength,
+			Stat.StatAgility,
+			Stat.StatIntellect,
+			Stat.StatMana,
+			Stat.StatAttackPower,
+			Stat.StatExpertiseRating,
+			Stat.StatArmorPenetration,
+			Stat.StatSpellDamage,
+			Stat.StatNatureDamage,
+		],
 		[
 			PseudoStat.PseudoStatMeleeHitPercent,
 			PseudoStat.PseudoStatMeleeCritPercent,
@@ -72,40 +67,54 @@ const SPEC_CONFIG = registerSpecConfig(Spec.SpecEnhancementShaman, {
 
 	defaults: {
 		// Default equipped gear.
-		gear: Presets.P3_PRESET.gear,
+		gear: Presets.P1_PRESET.gear,
 		// Default EP weights for sorting gear in the gear picker.
-		epWeights: Presets.P3_EP_PRESET.epWeights,
+		epWeights: Presets.P1_EP_PRESET.epWeights,
+		statCaps: (() => {
+			const expCap = new Stats().withStat(Stat.StatExpertiseRating, 6.5 * 4 * Mechanics.EXPERTISE_PER_QUARTER_PERCENT_REDUCTION);
+			return expCap;
+		})(),
+		softCapBreakpoints: (() => {
+			const meleeHitSoftCapConfig = StatCap.fromPseudoStat(PseudoStat.PseudoStatMeleeHitPercent, {
+				breakpoints: [9, 20, 28],
+				capType: StatCapType.TypeSoftCap,
+				postCapEPs: [1.9 * Mechanics.PHYSICAL_HIT_RATING_PER_HIT_PERCENT, 1.73 * Mechanics.PHYSICAL_HIT_RATING_PER_HIT_PERCENT, 0],
+			});
+
+			return [meleeHitSoftCapConfig];
+		})(),
 		other: Presets.OtherDefaults,
 		// Default consumes settings.
 		consumables: Presets.DefaultConsumables,
 		// Default talents.
 		talents: Presets.SubRestoIWT.data,
+		itemSwap: Presets.P1_TRUNCHEON_ITEMSWAP_PRESET.itemSwap,
 		// Default spec-specific settings.
 		specOptions: Presets.DefaultOptions,
 		// Default raid/party buffs settings.
 		raidBuffs: Presets.DefaultRaidBuffs,
-		partyBuffs: PartyBuffs.create({}),
-		individualBuffs: IndividualBuffs.create({}),
+		partyBuffs: Presets.DefaultPartyBuffs,
+		individualBuffs: Presets.DefaultIndividualBuffs,
 		debuffs: Presets.DefaultDebuffs,
 	},
 
 	// IconInputs to include in the 'Player' section on the settings tab.
-	playerIconInputs: [
-		ShamanInputs.ShamanShieldInput(),
-		ShamanInputs.ShamanImbueMH(),
-		EnhancementInputs.ShamanImbueOH,
-		ShamanInputs.ShamanImbueMHSwap(),
-		EnhancementInputs.ShamanImbueOHSwap,
-	],
+	playerIconInputs: [ShamanInputs.ShamanImbueMH(), EnhancementInputs.ShamanImbueOH, ShamanInputs.ShamanImbueMHSwap(), EnhancementInputs.ShamanImbueOHSwap],
 	// Buff and Debuff inputs to include/exclude, overriding the EP-based defaults.
-	includeBuffDebuffInputs: [],
+	includeBuffDebuffInputs: [Stat.StatMP5],
 	excludeBuffDebuffInputs: [],
 	// Inputs to include in the 'Other' section on the settings tab.
 	otherInputs: {
-		inputs: [EnhancementInputs.SyncTypeInput, OtherInputs.InputDelay, OtherInputs.TankAssignment, OtherInputs.InFrontOfTarget],
+		inputs: [
+			EnhancementInputs.SyncTypeInput,
+			ShamanInputs.ShamanShieldProcrate(),
+			OtherInputs.InputDelay,
+			OtherInputs.TankAssignment,
+			OtherInputs.InFrontOfTarget,
+		],
 	},
 	itemSwapSlots: [ItemSlot.ItemSlotTrinket1, ItemSlot.ItemSlotTrinket2, ItemSlot.ItemSlotMainHand, ItemSlot.ItemSlotOffHand],
-	customSections: [ShamanInputs.TotemsSection],
+	customSections: [],
 	encounterPicker: {
 		// Whether to include 'Execute Duration (%)' in the 'Encounter' section of the settings tab.
 		showExecuteProportion: false,
@@ -116,13 +125,15 @@ const SPEC_CONFIG = registerSpecConfig(Spec.SpecEnhancementShaman, {
 		// Preset talents that the user can quickly select.
 		talents: [Presets.SubRestoIWT, Presets.SubRestoILS, Presets.SubEle],
 		// Preset rotations that the user can quickly select.
-		rotations: [Presets.ROTATION_PRESET_DEFAULT, Presets.ROTATION_PRESET_P3],
+		rotations: [Presets.ROTATION_PRESET_DEFAULT],
 		// Preset gear configurations that the user can quickly select.
-		gear: [Presets.P1_PRESET, Presets.P2_PRESET, Presets.P3_PRESET],
+		gear: [Presets.PRERAID_PRESET, Presets.P1_PRESET, Presets.P2_PRESET, Presets.P3_PRESET, Presets.P4_PRESET, Presets.P5_PRESET],
+
+		itemSwaps: [Presets.P1_BADGEOH_ITEMSWAP_PRESET, Presets.P1_TRUNCHEON_ITEMSWAP_PRESET, Presets.P1_BIS_ITEMSWAP_PRESET],
 	},
 
 	autoRotation: (_: Player<Spec.SpecEnhancementShaman>): APLRotation => {
-		return Presets.ROTATION_PRESET_P3.rotation.rotation!;
+		return Presets.ROTATION_PRESET_DEFAULT.rotation.rotation!;
 	},
 
 	raidSimPresets: [
@@ -138,10 +149,10 @@ const SPEC_CONFIG = registerSpecConfig(Spec.SpecEnhancementShaman, {
 			},
 			defaultGear: {
 				[Faction.Alliance]: {
-					1: Presets.P3_PRESET.gear,
+					1: Presets.P1_PRESET.gear,
 				},
 				[Faction.Horde]: {
-					1: Presets.P3_PRESET.gear,
+					1: Presets.P1_PRESET.gear,
 				},
 				[Faction.Unknown]: {},
 			},
@@ -153,5 +164,7 @@ const SPEC_CONFIG = registerSpecConfig(Spec.SpecEnhancementShaman, {
 export class EnhancementShamanSimUI extends IndividualSimUI<Spec.SpecEnhancementShaman> {
 	constructor(parentElem: HTMLElement, player: Player<Spec.SpecEnhancementShaman>) {
 		super(parentElem, player, SPEC_CONFIG);
+
+		this.reforger = new ReforgeOptimizer(this, {});
 	}
 }

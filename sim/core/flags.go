@@ -195,6 +195,7 @@ const (
 	SpellFlagPrepullOnly                                    // Indicates this spell should only be used during prepull. Not enforced, just a signal for the APL UI.
 	SpellFlagEncounterOnly                                  // Indicates this spell should only be used during the encounter (not prepull). Not enforced, just a signal for the APL UI.
 	SpellFlagPotion                                         // Indicates this spell is a potion spell.
+	SpellFlagConjured                                       // Indicates this spell is a conjured item spell.
 	SpellFlagCombatPotion                                   // Indicates this spell is the combat potion.
 	SpellFlagNoSpellMods                                    // Indicates that no spell mods should be applied to this spell
 	SpellFlagCanCastWhileMoving                             // Allows the cast to be casted while moving
@@ -273,6 +274,29 @@ func (ss SpellSchool) SchoolDamage() stats.Stat {
 		return stats.ShadowDamage
 	default:
 		return stats.SpellDamage
+	}
+}
+
+func (ss SpellSchool) SchoolIndex() stats.SchoolIndex {
+	switch ss {
+	case SpellSchoolNone:
+		return stats.SchoolIndexNone
+	case SpellSchoolPhysical:
+		return stats.SchoolIndexPhysical
+	case SpellSchoolArcane:
+		return stats.SchoolIndexArcane
+	case SpellSchoolFire:
+		return stats.SchoolIndexFire
+	case SpellSchoolFrost:
+		return stats.SchoolIndexFrost
+	case SpellSchoolHoly:
+		return stats.SchoolIndexHoly
+	case SpellSchoolNature:
+		return stats.SchoolIndexNature
+	case SpellSchoolShadow:
+		return stats.SchoolIndexShadow
+	default:
+		return stats.SchoolIndexPhysical
 	}
 }
 

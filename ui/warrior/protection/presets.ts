@@ -1,6 +1,6 @@
 import { OtherDefaults as SimUIOtherDefaults } from '../../core/individual_sim_ui';
 import * as PresetUtils from '../../core/preset_utils.js';
-import { ConsumesSpec, HealingModel, Profession, PseudoStat, Stat } from '../../core/proto/common.js';
+import { ConsumesSpec, HealingModel, Profession, PseudoStat, Race, Spec, Stat } from '../../core/proto/common.js';
 import { SavedTalents } from '../../core/proto/ui.js';
 import { ProtectionWarrior_Options as ProtectionWarriorOptions, WarriorShout, WarriorStance } from '../../core/proto/warrior.js';
 import { Stats } from '../../core/proto_utils/stats';
@@ -12,6 +12,10 @@ import P3BISGear from './gear_sets/p3_bis.gear.json';
 import P35BISGear from './gear_sets/p35_bis.gear.json';
 import P4BISGear from './gear_sets/p4_bis.gear.json';
 import PreraidBISGear from './gear_sets/preraid.gear.json';
+import DefaultBuild from './builds/default_encounter_only.build.json';
+import MagtheridonBuild from './builds/magtheridon_encounter_only.build.json';
+import KarazhanBuild from './builds/karazhan_encounter_only.build.json';
+import MorogrimBuild from './builds/morogrim_encounter_only.build.json';
 
 // Preset options for this spec.
 // Eventually we will import these values for the raid sim too, so its good to
@@ -69,6 +73,8 @@ export const DefaultOptions = ProtectionWarriorOptions.create({
 		startingRage: 100,
 		defaultShout: WarriorShout.WarriorShoutCommanding,
 		defaultStance: WarriorStance.WarriorStanceDefensive,
+		hasBsT2: true,
+		stanceSnapshot: true,
 	},
 });
 
@@ -89,6 +95,7 @@ export const DefaultConsumables = ConsumesSpec.create({
 export const OtherDefaults: Partial<SimUIOtherDefaults> = {
 	profession1: Profession.Engineering,
 	profession2: Profession.Blacksmithing,
+	race: Race.RaceOrc,
 	distanceFromTarget: 0,
 	healingModel: HealingModel.create({
 		hps: 2200,
@@ -98,6 +105,15 @@ export const OtherDefaults: Partial<SimUIOtherDefaults> = {
 		burstWindow: 6,
 		inspirationUptime: 0.25,
 	}),
+	// Morogrim
+	// healingModel: HealingModel.create({
+	// 	hps: 3300,
+	// 	cadenceSeconds: 1.5,
+	// 	cadenceVariation: 1.0,
+	// 	absorbFrac: 0.02,
+	// 	burstWindow: 6,
+	// 	inspirationUptime: 0.12,
+	// }),
 };
 
 export const P1_PRESET_BUILD = PresetUtils.makePresetBuild('P1', {
@@ -106,3 +122,8 @@ export const P1_PRESET_BUILD = PresetUtils.makePresetBuild('P1', {
 	epWeights: P1_EP_PRESET,
 	rotation: ROTATION_DEFAULT,
 });
+
+export const DEFAULT_PRESET_BUILD = PresetUtils.makePresetBuildFromJSON('Default', Spec.SpecProtectionWarrior, DefaultBuild);
+export const MAGTHERIDON_PRESET_BUILD = PresetUtils.makePresetBuildFromJSON('Magtheridon', Spec.SpecProtectionWarrior, MagtheridonBuild);
+export const KARAZHAN_PRESET_BUILD = PresetUtils.makePresetBuildFromJSON('Karazhan (Boss Average)', Spec.SpecProtectionWarrior, KarazhanBuild);
+export const MOROGRIM_PRESET_BUILD = PresetUtils.makePresetBuildFromJSON('Morogrim', Spec.SpecProtectionWarrior, MorogrimBuild);

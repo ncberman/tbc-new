@@ -5,7 +5,7 @@ import { IndividualSimUI } from '../../individual_sim_ui';
 import i18n from '../../../i18n/config';
 import { translatePresetConfigurationCategory } from '../../../i18n/localization';
 import { PresetBuild } from '../../preset_utils';
-import { ConsumesSpec, Debuffs, Encounter, EquipmentSpec, HealingModel, IndividualBuffs, ItemSwap, RaidBuffs, Spec } from '../../proto/common';
+import { ConsumesSpec, Debuffs, Encounter, EquipmentSpec, HealingModel, IndividualBuffs, ItemSwap, PartyBuffs, RaidBuffs, Spec } from '../../proto/common';
 import { SavedTalents } from '../../proto/ui';
 import { isEqualAPLRotation } from '../../proto_utils/apl_utils';
 import { Stats } from '../../proto_utils/stats';
@@ -18,6 +18,7 @@ export enum PresetConfigurationCategory {
 	Gear = 'gear',
 	Talents = 'talents',
 	Rotation = 'rotation',
+	RotationType = 'rotationType',
 	Encounter = 'encounter',
 	Settings = 'settings',
 }
@@ -93,23 +94,22 @@ export class PresetConfigurationPicker extends Component {
 
 				if (build.settings) {
 					Object.keys(build.settings).forEach(c => {
-						if (['name', 'buffs', 'raidBuffs'].includes(c)) return;
-
-						if (c === 'options') {
+						if (c === 'name') {
+							return;
+						} else if (c === 'specOptions') {
 							categories.push(i18n.t('common.preset.class_spec_options'));
-						} else if (c === 'consumes') {
+						} else if (c === 'consumables') {
 							categories.push(i18n.t('common.preset.consumables'));
+						} else if (c === 'reforgeSettings') {
+							categories.push(i18n.t('common.preset.reforge_settings'));
+						} else if (c === 'debuffs') {
+							categories.push(i18n.t('common.preset.debuffs'));
+						} else if (['buffs', 'raidBuffs', 'partyBuffs'].includes(c)) {
+							categories.push(i18n.t('common.preset.buffs'));
 						} else {
 							categories.push(i18n.t('common.preset.other_settings'));
 						}
 					});
-				}
-
-				if (build.settings?.buffs || build.settings?.raidBuffs) {
-					categories.push(i18n.t('common.preset.buffs'));
-				}
-				if (build.settings?.reforgeSettings) {
-					categories.push(i18n.t('common.preset.reforge_settings'));
 				}
 
 				categories = [...new Set(categories)].sort();
@@ -161,23 +161,24 @@ export class PresetConfigurationPicker extends Component {
 			if (talents) {
 				simUI.player.setTalentsString(eventID, talents.data.talentsString);
 			}
-			if (rotationType) {
+			if (rotationType && !rotation?.rotation.rotation) {
 				simUI.player.aplRotation.type = rotationType;
 				simUI.player.rotationChangeEmitter.emit(eventID);
 			} else if (rotation?.rotation.rotation) {
+				if (rotationType) simUI.player.aplRotation.type = rotationType;
 				simUI.player.setAplRotation(eventID, rotation.rotation.rotation);
 			}
 			if (epWeights) simUI.player.setEpWeights(eventID, epWeights.epWeights);
 			if (settings) {
 				if (settings.race) simUI.player.setRace(eventID, settings.race);
+				if (settings.partyBuffs) simUI.player.getParty()?.setBuffs(eventID, settings.partyBuffs);
 				if (settings.consumables) simUI.player.setConsumes(eventID, settings.consumables);
 				if (settings.playerOptions?.profession1) simUI.player.setProfession1(eventID, settings.playerOptions.profession1);
 				if (settings.playerOptions?.profession2) simUI.player.setProfession2(eventID, settings.playerOptions.profession2);
 				if (typeof settings.playerOptions?.distanceFromTarget === 'number')
 					simUI.player.setDistanceFromTarget(eventID, settings.playerOptions.distanceFromTarget);
-				if (typeof settings.playerOptions?.reactionTimeMs === 'number') simUI.player.setReactionTime(eventID, settings.playerOptions.reactionTimeMs);
-				if (typeof settings.playerOptions?.channelClipDelayMs === 'number')
-					simUI.player.setChannelClipDelay(eventID, settings.playerOptions.channelClipDelayMs);
+				if (settings.playerOptions?.reactionTimeMs) simUI.player.setReactionTime(eventID, settings.playerOptions.reactionTimeMs);
+				if (settings.playerOptions?.channelClipDelayMs) simUI.player.setChannelClipDelay(eventID, settings.playerOptions.channelClipDelayMs);
 				if (typeof settings.playerOptions?.inFrontOfTarget === 'boolean')
 					simUI.player.setInFrontOfTarget(eventID, settings.playerOptions.inFrontOfTarget);
 				if (settings.playerOptions?.enableItemSwap !== undefined && settings.playerOptions?.itemSwap) {
@@ -238,7 +239,9 @@ export class PresetConfigurationPicker extends Component {
 			hasRotation = isEqualAPLRotation(this.simUI.player, activeRotation, rotation.rotation.rotation);
 		}
 		const hasEpWeights = epWeights ? this.simUI.player.getEpWeights().equals(epWeights.epWeights) : true;
-		const hasEncounter = encounter?.encounter ? Encounter.equals(encounter.encounter, this.simUI.sim.encounter.toProto()) : true;
+		const hasEncounter = encounter?.encounter
+			? Encounter.equals({ ...encounter.encounter, apiVersion: 0 }, { ...this.simUI.sim.encounter.toProto(), apiVersion: 0 })
+			: true;
 		const hasHealingModel = encounter?.healingModel ? HealingModel.equals(encounter.healingModel, this.simUI.player.getHealingModel()) : true;
 
 		const hasRace = settings?.race ? this.simUI.player.getRace() === settings.race : true;
@@ -252,9 +255,13 @@ export class PresetConfigurationPicker extends Component {
 			this.simUI.player.itemSwapSettings.getEnableItemSwap() === settings.playerOptions.enableItemSwap;
 		const hasItemSwap =
 			settings?.playerOptions?.itemSwap === undefined ||
-			ItemSwap.equals(this.simUI.player.itemSwapSettings?.toProto(), settings?.playerOptions?.itemSwap);
-		const hasSpecOptions = settings?.specOptions ? JSON.stringify(this.simUI.player.getSpecOptions()) == JSON.stringify(settings.specOptions) : true;
+			ItemSwap.equals(stripItemSwapApiVersion(this.simUI.player.itemSwapSettings?.toProto()), stripItemSwapApiVersion(settings?.playerOptions?.itemSwap));
+		const hasSpecOptions =
+			settings?.specOptions && Object.keys(settings.specOptions).length
+				? JSON.stringify(this.simUI.player.getSpecOptions()) == JSON.stringify(settings.specOptions)
+				: true;
 		const hasConsumables = settings?.consumables ? ConsumesSpec.equals(this.simUI.player.getConsumes(), settings.consumables) : true;
+		const hasPartyBuffs = settings?.partyBuffs ? PartyBuffs.equals(this.simUI.player.getParty()?.getBuffs(), settings.partyBuffs) : true;
 		const hasRaidBuffs = settings?.raidBuffs ? RaidBuffs.equals(this.simUI.sim.raid.getBuffs(), settings.raidBuffs) : true;
 		const hasBuffs = settings?.buffs ? IndividualBuffs.equals(this.simUI.player.getBuffs(), settings.buffs) : true;
 		const hasDebuffs = settings?.debuffs ? Debuffs.equals(this.simUI.sim.raid.getDebuffs(), settings.debuffs) : true;
@@ -274,9 +281,19 @@ export class PresetConfigurationPicker extends Component {
 			hasItemSwap &&
 			hasSpecOptions &&
 			hasConsumables &&
+			hasPartyBuffs &&
 			hasRaidBuffs &&
 			hasBuffs &&
 			hasDebuffs
 		);
 	}
+}
+
+/** Strips apiVersion from an ItemSwap and its nested UnitStats so preset comparisons aren't version-sensitive. */
+function stripItemSwapApiVersion(swap: ItemSwap | undefined): ItemSwap | undefined {
+	if (!swap) return swap;
+	return {
+		...swap,
+		prepullBonusStats: swap.prepullBonusStats ? { ...swap.prepullBonusStats, apiVersion: 0 } : swap.prepullBonusStats,
+	};
 }

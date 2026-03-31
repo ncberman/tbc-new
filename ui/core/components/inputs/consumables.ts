@@ -1,5 +1,5 @@
 import { Player } from '../../player';
-import { Class, ConsumesSpec, ItemSlot, Profession, Spec, Stat } from '../../proto/common';
+import { Class, ConsumesSpec, Drums, ItemSlot, Profession, Spec, Stat, TristateEffect } from '../../proto/common';
 import { Consumable } from '../../proto/db';
 import { ActionId } from '../../proto_utils/action_id';
 import { EventID, TypedEvent } from '../../typed_event';
@@ -8,6 +8,7 @@ import { IconEnumValueConfig } from '../pickers/icon_enum_picker';
 import { ActionInputConfig, ItemStatOption } from './stat_options';
 import i18n from '../../../i18n/config.js';
 import { makeBooleanConsumeInput } from '../icon_inputs';
+import { CURRENT_PHASE, Phase } from '../../constants/other';
 
 export interface ConsumableInputConfig<T> extends ActionInputConfig<T> {
 	value: T;
@@ -91,12 +92,22 @@ export const ConjuredFlameCap = {
 	actionId: ActionId.fromItemId(22788),
 	value: 22788,
 };
+export const ConjuredCrackedPowerCore = {
+	actionId: ActionId.fromItemId(23334),
+	value: 23334,
+};
+export const ChippedCrackedPowerCore = {
+	actionId: ActionId.fromItemId(23381),
+	value: 23381,
+};
 
 export const CONJURED_CONFIG = [
 	{ config: ConjuredRogueThistleTea, stats: [] },
 	{ config: ConjuredHealthstone, stats: [Stat.StatStamina] },
 	{ config: ConjuredDarkRune, stats: [Stat.StatIntellect] },
 	{ config: ConjuredFlameCap, stats: [] },
+	{ config: ConjuredCrackedPowerCore, stats: [Stat.StatSpellDamage] },
+	{ config: ChippedCrackedPowerCore, stats: [Stat.StatSpellDamage] },
 ] as ConsumableStatOption<number>[];
 
 export const makeConjuredInput = makeConsumeInputFactory({ consumesFieldName: 'conjuredId' });
@@ -104,6 +115,16 @@ export const makeConjuredInput = makeConsumeInputFactory({ consumesFieldName: 'c
 ///////////////////////////////////////////////////////////////////////////
 //                               ENGINEERING
 ///////////////////////////////////////////////////////////////////////////
+
+export const EzThroDynamiteTwo = {
+	actionId: ActionId.fromItemId(18588),
+	value: 18588,
+};
+
+export const CrystalCharge = {
+	actionId: ActionId.fromItemId(11566),
+	value: 15239,
+};
 
 export const AdamantiteGrenade = {
 	actionId: ActionId.fromItemId(23737),
@@ -126,6 +147,8 @@ export const GnomishFlameTurrent = {
 export const EXPLOSIVE_CONFIG = [
 	{ config: AdamantiteGrenade, stats: [] },
 	{ config: FelIronBomb, stats: [] },
+	{ config: CrystalCharge, stats: [] },
+	{ config: EzThroDynamiteTwo, stats: [] },
 	// { config: GnomishFlameTurrent, stats: [] }, Excluding this thing for now because it's weird and I don't like it
 ] as ConsumableStatOption<number>[];
 export const makeExplosivesInput = makeConsumeInputFactory({ consumesFieldName: 'explosiveId' });
@@ -170,6 +193,12 @@ export const AdamantiteWeightMH = {
 	value: 34340,
 	showWhen: (player: Player<any>) => player.getGear().hasBluntMHWeapon(),
 };
+export const ConsecratedSharpeningStoneMH = {
+	actionId: ActionId.fromItemId(23122),
+	value: 28891,
+	showWhen: (player: Player<any>) => player.getGear().hasMHWeapon(),
+};
+
 export const AdamantiteSharpeningOH = {
 	actionId: ActionId.fromItemId(23529),
 	value: 29453,
@@ -180,6 +209,12 @@ export const AdamantiteWeightOH = {
 	value: 34340,
 	showWhen: (player: Player<any>) => player.getGear().hasBluntOHWeapon(),
 };
+export const ConsecratedSharpeningStoneOH = {
+	actionId: ActionId.fromItemId(23122),
+	value: 28891,
+	showWhen: (player: Player<any>) => player.getGear().hasOHWeapon(),
+};
+
 // Rogue Poisons
 export const RogueInstantPoison = {
 	actionId: ActionId.fromItemId(21927),
@@ -226,6 +261,7 @@ export const IMBUE_CONFIG_MH = [
 	{ config: SupWizardOil, stats: [Stat.StatSpellDamage] },
 	{ config: AdamantiteSharpeningMH, stats: [Stat.StatAttackPower] },
 	{ config: AdamantiteWeightMH, stats: [Stat.StatAttackPower] },
+	{ config: ConsecratedSharpeningStoneMH, stats: [Stat.StatAttackPower] },
 	{ config: RogueInstantPoison, stats: [] },
 	{ config: RogueDeadlyPoison, stats: [] },
 	{ config: RogueWoundPoison, stats: [] },
@@ -241,6 +277,7 @@ export const IMBUE_CONFIG_OH = [
 	{ config: SupWizardOil, stats: [Stat.StatSpellDamage] },
 	{ config: AdamantiteSharpeningOH, stats: [Stat.StatAttackPower] },
 	{ config: AdamantiteWeightOH, stats: [Stat.StatAttackPower] },
+	{ config: ConsecratedSharpeningStoneOH, stats: [Stat.StatAttackPower] },
 	{ config: RogueInstantPoison, stats: [] },
 	{ config: RogueDeadlyPoison, stats: [] },
 	{ config: RogueWoundPoison, stats: [] },
@@ -252,7 +289,7 @@ export const IMBUE_CONFIG_OH = [
 
 export const makeMHImbueInput = makeConsumeInputFactory({
 	consumesFieldName: 'mhImbueId',
-	showWhen: (player: Player<any>) => !player.getParty() || player.getParty()!.getBuffs().windfuryTotem == 0,
+	showWhen: (player: Player<any>) => !player.getParty() || player.getParty()!.getBuffs().windfuryTotem == TristateEffect.TristateEffectMissing,
 	changedEvent: (player: Player<any>) => TypedEvent.onAny([player.getParty()!.changeEmitter]),
 });
 export const makeOHImbueInput = makeConsumeInputFactory({
@@ -264,28 +301,59 @@ export const makeOHImbueInput = makeConsumeInputFactory({
 //                               	DRUMS
 ///////////////////////////////////////////////////////////////////////////
 
-export const GreaterDrumsBattle = {
-	actionId: ActionId.fromItemId(185848),
-	value: 351355,
+export const DrumsBattle = {
+	...(CURRENT_PHASE >= Phase.Phase4
+		? { actionId: ActionId.fromItemId(185848), value: Drums.GreaterDrumsOfBattle }
+		: {
+				actionId: ActionId.fromItemId(29529),
+				value: Drums.LesserDrumsOfBattle,
+			}),
 };
 
-export const GreaterDrumsRestoration = {
-	actionId: ActionId.fromItemId(185850),
-	value: 351358,
+export const DrumsRestoration = {
+	...(CURRENT_PHASE >= Phase.Phase4
+		? { actionId: ActionId.fromItemId(185850), value: Drums.GreaterDrumsOfRestoration }
+		: {
+				actionId: ActionId.fromItemId(29531),
+				value: Drums.LesserDrumsOfRestoration,
+			}),
 };
 
-export const GreaterDrumsWar = {
-	actionId: ActionId.fromItemId(185852),
-	value: 351360,
+export const DrumsWar = {
+	...(CURRENT_PHASE >= Phase.Phase4
+		? { actionId: ActionId.fromItemId(185852), value: Drums.GreaterDrumsOfWar }
+		: {
+				actionId: ActionId.fromItemId(29528),
+				value: Drums.LesserDrumsOfWar,
+			}),
 };
 
 export const DRUMS_CONFIG = [
-	{ config: GreaterDrumsBattle, stats: [] },
-	{ config: GreaterDrumsRestoration, stats: [Stat.StatMana] },
-	{ config: GreaterDrumsWar, stats: [Stat.StatAttackPower, Stat.StatSpellDamage] },
+	{ config: DrumsBattle, stats: [] },
+	{ config: DrumsRestoration, stats: [Stat.StatMana] },
+	{ config: DrumsWar, stats: [Stat.StatAttackPower, Stat.StatSpellDamage] },
 ] as ConsumableStatOption<number>[];
 
-export const makeDrumsInput = makeConsumeInputFactory({ consumesFieldName: 'drumsId' });
+export const makeDrumsInput = makeConsumeInputFactory({
+	consumesFieldName: 'drumsId',
+	showWhen: (player: Player<any>) => player.hasProfession(Profession.Leatherworking),
+});
+
+///////////////////////////////////////////////////////////////////////////
+//                                   PET
+///////////////////////////////////////////////////////////////////////////
+
+export const PetScrollAgi = makeBooleanConsumeInput({
+	actionId: () => ActionId.fromItemId(27498),
+	fieldName: 'petScrollAgi',
+	showWhen: (player: Player<any>) => [Spec.SpecHunter, Spec.SpecWarlock, Spec.SpecPriest].includes(player.getSpec()),
+});
+
+export const PetScrollStr = makeBooleanConsumeInput({
+	actionId: () => ActionId.fromItemId(27503),
+	fieldName: 'petScrollStr',
+	showWhen: (player: Player<any>) => [Spec.SpecHunter, Spec.SpecWarlock, Spec.SpecPriest].includes(player.getSpec()),
+});
 
 ///////////////////////////////////////////////////////////////////////////
 //                                 SCROLLS
@@ -336,6 +404,7 @@ export const NightmareSeed = makeBooleanConsumeInput({
 export interface ConsumableInputOptions {
 	consumesFieldName: keyof ConsumesSpec;
 	setValue?: (eventID: EventID, player: Player<any>, newValue: number) => void;
+	showWhen?: (player: Player<any>) => boolean;
 }
 
 export function makeConsumableInput(
@@ -358,7 +427,7 @@ export function makeConsumableInput(
 		zeroValue: 0,
 		changedEvent: (player: Player<any>) => player.consumesChangeEmitter,
 		getValue: (player: Player<any>) => player.getConsumes()[options.consumesFieldName] as number,
-		showWhen: (_: Player<any>) => !!valueOptions.length,
+		showWhen: (player: Player<any>) => !!valueOptions.length && (!options.showWhen || options.showWhen(player)),
 		setValue: (eventID: EventID, player: Player<any>, newValue: number) => {
 			if (options.setValue) {
 				options.setValue(eventID, player, newValue);

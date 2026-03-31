@@ -13,6 +13,14 @@ import (
 	googleproto "google.golang.org/protobuf/proto"
 )
 
+func MinTristate(a proto.TristateEffect, b proto.TristateEffect) proto.TristateEffect {
+	if a < b {
+		return a
+	} else {
+		return b
+	}
+}
+
 func DurationFromSeconds(numSeconds float64) time.Duration {
 	return time.Duration(float64(time.Second) * numSeconds)
 }
@@ -46,6 +54,10 @@ func (unit *Unit) ExecuteResourceGain(sim *Simulation, resource proto.ResourceTy
 		unit.SpendRage(sim, -amount/10, metrics)
 	case resource == proto.ResourceType_ResourceTypeRage && amount > 0:
 		unit.AddRage(sim, amount/10, metrics)
+	case resource == proto.ResourceType_ResourceTypeEnergy && amount < 0:
+		unit.SpendEnergy(sim, -amount, metrics)
+	case resource == proto.ResourceType_ResourceTypeEnergy && amount > 0:
+		unit.AddEnergy(sim, amount, metrics)
 	default:
 		panic("Unsupported Resource Type in ExecuteResourceGain")
 	}

@@ -1,10 +1,9 @@
-import { Drums, Race, Stat, TristateEffect } from '../../proto/common';
+import { Drums, Race, Stat } from '../../proto/common';
 import { ActionId } from '../../proto_utils/action_id';
 import {
 	makeBooleanDebuffInput,
 	makeBooleanIndividualBuffInput,
 	makeBooleanRaidBuffInput,
-	makeEnumValuePartyBuffInput,
 	makeMultistateIndividualBuffInput,
 	makeMultistatePartyBuffInput,
 	makeTristateRaidBuffInput,
@@ -15,9 +14,11 @@ import {
 	makeQuadstatePartyBuffInput,
 } from '../icon_inputs';
 import { IconPicker } from '../pickers/icon_picker';
+import * as InputHelpers from '../input_helpers';
 import { IconPickerStatOption, PickerStatOptions } from './stat_options';
 import { Party } from '../../party';
-import { NumberPicker } from '../pickers/number_picker';
+import { IconEnumPicker } from '../pickers/icon_enum_picker';
+import { DrumsBattle, DrumsRestoration, DrumsWar } from './consumables';
 
 ///////////////////////////////////////////////////////////////////////////
 //                                 RAID BUFFS
@@ -149,10 +150,12 @@ export const SanctityAura = makeTristatePartyBuffInput({
 	fieldName: 'sanctityAura',
 	label: 'Sanctity Aura',
 });
-export const StrengthOfEarthTotem = makeTristatePartyBuffInput({
+export const StrengthOfEarthTotem = makeQuadstatePartyBuffInput({
 	actionId: () => ActionId.fromSpellId(25528),
 	impId: ActionId.fromSpellId(16295),
+	impId2: ActionId.fromSpellId(37223),
 	fieldName: 'strengthOfEarthTotem',
+	fieldNameImp2: 'soeEnhancement2Pt4',
 	label: 'Strength of Earth Totem',
 });
 export const TotemOfWrath = makeMultistatePartyBuffInput(ActionId.fromSpellId(30706), 5, 'totemOfWrath', 'Totem of Wrath');
@@ -175,9 +178,11 @@ export const WindfuryTotem = makeTristatePartyBuffInput({
 	fieldName: 'windfuryTotem',
 	label: 'Windfury Totem',
 });
-
-export const DrumsOfBattleBuff = makeEnumValuePartyBuffInput(ActionId.fromItemId(185848), 'drums', Drums.DrumsOfBattle);
-export const DrumsOfRestorationBuff = makeEnumValuePartyBuffInput(ActionId.fromItemId(185850), 'drums', Drums.DrumsOfRestoration);
+export const DrumsBuff = InputHelpers.makePartyBuffEnumIconInput({
+	fieldName: 'drums',
+	values: [{ color: 'gray', value: Drums.DrumsUnknown }, DrumsBattle, DrumsWar, DrumsRestoration],
+	label: 'Drums',
+});
 
 // Individual Buffs
 export const BlessingOfKings = makeBooleanIndividualBuffInput({
@@ -367,6 +372,11 @@ export const PARTY_BUFFS_CONFIG = [
 		picker: IconPicker,
 		stats: [Stat.StatAttackPower],
 	},
+	{
+		config: DrumsBuff,
+		picker: IconEnumPicker,
+		stats: [],
+	},
 ] as PickerStatOptions[];
 
 export const BUFFS_CONFIG = [
@@ -389,7 +399,7 @@ export const BUFFS_CONFIG = [
 	{
 		config: DivineSpirit,
 		picker: IconPicker,
-		stats: [Stat.StatSpirit],
+		stats: [Stat.StatSpirit, Stat.StatSpellDamage],
 	},
 	{
 		config: GiftOfTheWild,
@@ -593,42 +603,42 @@ export const DEBUFFS_CONFIG = [
 	{
 		config: GiftOfArthas,
 		picker: IconPicker,
-		stats: [Stat.StatAttackPower],
+		stats: [Stat.StatAttackPower, Stat.StatResilienceRating],
 	},
 	{
 		config: DemoralizingRoar,
 		picker: IconPicker,
-		stats: [Stat.StatStamina],
+		stats: [Stat.StatStamina, Stat.StatResilienceRating],
 	},
 	{
 		config: DemoralizingShout,
 		picker: IconPicker,
-		stats: [Stat.StatStamina],
+		stats: [Stat.StatStamina, Stat.StatResilienceRating],
 	},
 	{
 		config: Screech,
 		picker: IconPicker,
-		stats: [Stat.StatStamina],
+		stats: [Stat.StatStamina, Stat.StatResilienceRating],
 	},
 	{
 		config: ThunderClap,
 		picker: IconPicker,
-		stats: [Stat.StatStamina],
+		stats: [Stat.StatStamina, Stat.StatResilienceRating],
 	},
 	{
 		config: InsectSwarm,
 		picker: IconPicker,
-		stats: [Stat.StatStamina],
+		stats: [Stat.StatStamina, Stat.StatResilienceRating],
 	},
 	{
 		config: ScorpidSting,
 		picker: IconPicker,
-		stats: [Stat.StatStamina],
+		stats: [Stat.StatStamina, Stat.StatResilienceRating],
 	},
 	{
 		config: ShadowEmbrace,
 		picker: IconPicker,
-		stats: [Stat.StatStamina],
+		stats: [Stat.StatStamina, Stat.StatResilienceRating],
 	},
 ] as PickerStatOptions[];
 

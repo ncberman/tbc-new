@@ -3,17 +3,36 @@ import { IndividualSimUI, registerSpecConfig } from '../../core/individual_sim_u
 import { Player } from '../../core/player';
 import { PlayerClasses } from '../../core/player_classes';
 import { APLRotation } from '../../core/proto/apl';
-import { Debuffs, Faction, IndividualBuffs, ItemSlot, PartyBuffs, PseudoStat, Race, RaidBuffs, Spec, Stat, TristateEffect } from '../../core/proto/common';
-import { UnitStat } from '../../core/proto_utils/stats';
-import { defaultRaidBuffMajorDamageCooldowns } from '../../core/proto_utils/utils';
+import {
+	Debuffs,
+	Drums,
+	Faction,
+	IndividualBuffs,
+	ItemSlot,
+	PartyBuffs,
+	PseudoStat,
+	Race,
+	RaidBuffs,
+	Spec,
+	Stat,
+	TristateEffect,
+} from '../../core/proto/common';
+import { StatCap, Stats, UnitStat } from '../../core/proto_utils/stats';
+import { defaultExposeWeaknessSettings, defaultRaidBuffMajorDamageCooldowns } from '../../core/proto_utils/utils';
 
 import * as Presets from './presets';
+import * as Mechanics from '../../core/constants/mechanics';
+import { StatCapType } from '../../core/proto/ui';
+import { ReforgeOptimizer } from '../../core/components/suggest_reforges_action';
 
 const SPEC_CONFIG = registerSpecConfig(Spec.SpecRogue, {
 	cssClass: 'rogue-sim-ui',
 	cssScheme: PlayerClasses.getCssClass(PlayerClasses.Rogue),
 	// List any known bugs / issues here and they'll be shown on the site.
-	knownIssues: [],
+	knownIssues: [
+		'The APL is in constant flux due to bug fixes and new findings; if your DPS drops dramatically, reset it back to "Auto" in the Rotation tab!',
+		'Mutilate does not have a default APL currently. It will not be automatically used when talented.',
+	],
 
 	// All stats for which EP should be calculated.
 	epStats: [
@@ -42,6 +61,19 @@ const SPEC_CONFIG = registerSpecConfig(Spec.SpecRogue, {
 		gear: Presets.P1_SWORDS_GEAR.gear,
 		// Default EP weights for sorting gear in the gear picker.
 		epWeights: Presets.P1_EP_PRESET.epWeights,
+		statCaps: (() => {
+			const expCap = new Stats().withStat(Stat.StatExpertiseRating, 6.5 * 4 * Mechanics.EXPERTISE_PER_QUARTER_PERCENT_REDUCTION);
+			return expCap;
+		})(),
+		softCapBreakpoints: (() => {
+			const meleeHitSoftCapConfig = StatCap.fromPseudoStat(PseudoStat.PseudoStatMeleeHitPercent, {
+				breakpoints: [9, 28],
+				capType: StatCapType.TypeSoftCap,
+				postCapEPs: [3.06 * Mechanics.PHYSICAL_HIT_RATING_PER_HIT_PERCENT, 0],
+			});
+
+			return [meleeHitSoftCapConfig];
+		})(),
 		other: Presets.OtherDefaults,
 		// Default consumes settings.
 		consumables: Presets.DefaultConsumables,
@@ -52,7 +84,7 @@ const SPEC_CONFIG = registerSpecConfig(Spec.SpecRogue, {
 		// Default raid/party buffs settings.
 		raidBuffs: RaidBuffs.create({
 			...defaultRaidBuffMajorDamageCooldowns(),
-			giftOfTheWild: TristateEffect.TristateEffectImproved
+			giftOfTheWild: TristateEffect.TristateEffectImproved,
 		}),
 		partyBuffs: PartyBuffs.create({
 			battleShout: TristateEffect.TristateEffectImproved,
@@ -60,7 +92,9 @@ const SPEC_CONFIG = registerSpecConfig(Spec.SpecRogue, {
 			strengthOfEarthTotem: TristateEffect.TristateEffectImproved,
 			graceOfAirTotem: TristateEffect.TristateEffectImproved,
 			windfuryTotem: TristateEffect.TristateEffectImproved,
-			leaderOfThePack: TristateEffect.TristateEffectRegular
+			leaderOfThePack: TristateEffect.TristateEffectRegular,
+			totemTwisting: true,
+			drums: Drums.LesserDrumsOfBattle,
 		}),
 		individualBuffs: IndividualBuffs.create({
 			blessingOfKings: true,
@@ -68,6 +102,7 @@ const SPEC_CONFIG = registerSpecConfig(Spec.SpecRogue, {
 			unleashedRage: true,
 		}),
 		debuffs: Debuffs.create({
+			...defaultExposeWeaknessSettings(),
 			bloodFrenzy: true,
 			huntersMark: TristateEffect.TristateEffectImproved,
 			improvedSealOfTheCrusader: true,
@@ -75,8 +110,6 @@ const SPEC_CONFIG = registerSpecConfig(Spec.SpecRogue, {
 			misery: true,
 			curseOfRecklessness: true,
 			faerieFire: TristateEffect.TristateEffectImproved,
-			exposeWeaknessUptime: 0.9,
-			exposeWeaknessHunterAgility: 1080,
 			giftOfArthas: true,
 			sunderArmor: true,
 		}),
@@ -88,11 +121,11 @@ const SPEC_CONFIG = registerSpecConfig(Spec.SpecRogue, {
 	// IconInputs to include in the 'Player' section on the settings tab.
 	playerIconInputs: [],
 	// Buff and Debuff inputs to include/exclude, overriding the EP-based defaults.
-	includeBuffDebuffInputs: [],
+	includeBuffDebuffInputs: [Stat.StatSpellHitRating],
 	excludeBuffDebuffInputs: [],
 	// Inputs to include in the 'Other' section on the settings tab.
 	otherInputs: {
-		inputs: [OtherInputs.InFrontOfTarget, OtherInputs.InputDelay],
+		inputs: [OtherInputs.TotemTwisting, OtherInputs.InFrontOfTarget, OtherInputs.InputDelay],
 	},
 	itemSwapSlots: [ItemSlot.ItemSlotTrinket1, ItemSlot.ItemSlotTrinket2, ItemSlot.ItemSlotMainHand, ItemSlot.ItemSlotOffHand],
 	encounterPicker: {
@@ -105,7 +138,7 @@ const SPEC_CONFIG = registerSpecConfig(Spec.SpecRogue, {
 		// Preset talents that the user can quickly select.
 		talents: [Presets.Talents],
 		// Preset rotations that the user can quickly select.
-		rotations: [Presets.SINSITER_APL, Presets.SHIV_APL],
+		rotations: [Presets.SINSITER_APL],
 		// Preset gear configurations that the user can quickly select.
 		gear: [Presets.PREARAID_SWORDS_GEAR, Presets.P1_SWORDS_GEAR],
 	},
@@ -143,13 +176,6 @@ export class RogueSimUI extends IndividualSimUI<Spec.SpecRogue> {
 	constructor(parentElem: HTMLElement, player: Player<Spec.SpecRogue>) {
 		super(parentElem, player, SPEC_CONFIG);
 
-		this.player.changeEmitter.on(c => {
-			const options = this.player.getSpecOptions();
-			this.player.setSpecOptions(c, options);
-		});
-		this.sim.encounter.changeEmitter.on(c => {
-			const options = this.player.getSpecOptions();
-			this.player.setSpecOptions(c, options);
-		});
+		this.reforger = new ReforgeOptimizer(this, {});
 	}
 }

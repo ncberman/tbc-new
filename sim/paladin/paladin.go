@@ -20,8 +20,10 @@ type Paladin struct {
 
 	PreviousSeal      *core.Aura
 	PreviousJudgement *core.Spell
+	PreviousSealSpell *core.Spell
 	CurrentSeal       *core.Aura
 	CurrentJudgement  *core.Spell
+	CurrentSealSpell  *core.Spell
 
 	// Timers for spells with multiple ranks
 	consecrationTimer   *core.Timer
@@ -85,6 +87,12 @@ type Paladin struct {
 	CrusaderStrike          *core.Spell
 	Repentance              *core.Spell
 	HolyShocks              []*core.Spell
+
+	JudgementOfLightAuras       core.AuraArray
+	JudgementOfWisdomAuras      core.AuraArray
+	JudgementOfJusticeAuras     core.AuraArray
+	JudgementOfTheCrusaderAuras core.AuraArray
+	JudgementAuras              []core.AuraArray
 }
 
 // Implemented by each Paladin spec.
@@ -135,6 +143,8 @@ func (paladin *Paladin) registerSpells() {
 }
 
 func (paladin *Paladin) Reset(sim *core.Simulation) {
+	paladin.CurrentSeal = nil
+	paladin.PreviousSeal = nil
 }
 
 func (paladin *Paladin) OnEncounterStart(sim *core.Simulation) {

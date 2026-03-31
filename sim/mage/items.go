@@ -35,7 +35,7 @@ var ItemSetTirisfalRegalia = core.NewItemSet(core.ItemSet{
 	Bonuses: map[int32]core.ApplySetBonus{
 		2: func(agent core.Agent, setBonusAura *core.Aura) {
 			setBonusAura.AttachSpellMod(core.SpellModConfig{
-				Kind:       core.SpellMod_DamageDone_Pct,
+				Kind:       core.SpellMod_DamageDone_Flat,
 				FloatValue: .20,
 				ClassMask:  MageSpellArcaneBlast,
 			}).AttachSpellMod(core.SpellModConfig{
@@ -81,18 +81,37 @@ var ItemSetTempestRegalia = core.NewItemSet(core.ItemSet{
 		},
 		4: func(agent core.Agent, setBonusAura *core.Aura) {
 			setBonusAura.AttachSpellMod(core.SpellModConfig{
-				Kind:       core.SpellMod_DamageDone_Pct,
+				Kind:       core.SpellMod_DamageDone_Flat,
 				FloatValue: .05,
-				ClassMask:  MageSpellFireball,
-			}).AttachSpellMod(core.SpellModConfig{
-				Kind:       core.SpellMod_DamageDone_Pct,
-				FloatValue: .05,
-				ClassMask:  MageSpellFrostbolt,
-			}).AttachSpellMod(core.SpellModConfig{
-				Kind:       core.SpellMod_DamageDone_Pct,
-				FloatValue: .05,
-				ClassMask:  MageSpellArcaneMissilesTick,
+				ClassMask:  MageSpellFireball | MageSpellFrostbolt | MageSpellArcaneMissilesTick,
 			})
 		},
 	},
 })
+
+func init() {
+	core.NewItemEffect(30720, func(agent core.Agent) {
+		character := agent.GetCharacter()
+
+		aura := character.NewTemporaryStatsAura(
+			"Mana Surge",
+			core.ActionID{SpellID: 37445},
+			stats.Stats{stats.SpellDamage: 225},
+			time.Second*15,
+		)
+
+		procAura := character.MakeProcTriggerAura(core.ProcTrigger{
+			Name:           "Serpent-Coil Braid",
+			ActionID:       core.ActionID{ItemID: 30720},
+			ClassSpellMask: MageSpellManaGem,
+			Callback:       core.CallbackOnCastComplete,
+			Handler: func(sim *core.Simulation, spell *core.Spell, result *core.SpellResult) {
+				aura.Activate(sim)
+			},
+		})
+
+		eligibleSlots := character.ItemSwap.EligibleSlotsForItem(30720)
+		character.AddStatProcBuff(30720, aura, false, eligibleSlots)
+		character.ItemSwap.RegisterProc(30720, procAura)
+	})
+}

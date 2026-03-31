@@ -181,11 +181,8 @@ func (swap *ItemSwap) registerProcInternal(config ItemSwapProcConfig) {
 	isItemProc := config.ItemID != 0
 	isEnchantEffectProc := config.EnchantId != 0
 
-	// Enchant effects such as Weapon/Back do not trigger an ICD
-	shouldUpdateIcd := isItemProc && (config.Aura.Icd != nil)
-
 	character := swap.character
-	character.RegisterItemSwapCallback(config.Slots, func(sim *Simulation, _ proto.ItemSlot) {
+	character.RegisterItemSwapCallback(config.Slots, func(sim *Simulation, slot proto.ItemSlot) {
 		isItemSlotMatch := false
 
 		if isItemProc {
@@ -198,12 +195,9 @@ func (swap *ItemSwap) registerProcInternal(config ItemSwapProcConfig) {
 			if !config.Aura.IsActive() {
 				config.Aura.Activate(sim)
 			}
-			if swap.initialized && shouldUpdateIcd {
-				config.Aura.Icd.Use(sim)
-			}
 		} else {
 			config.Aura.Deactivate(sim)
-			if swap.initialized && shouldUpdateIcd {
+			if swap.initialized {
 				// This is a hack to block ActivateAura APL
 				// actions from executing for unequipped items.
 				config.Aura.Icd.Set(NeverExpires)
@@ -375,7 +369,7 @@ func (swap *ItemSwap) SwapItems(sim *Simulation, swapSet proto.APLActionItemSwap
 	isPrepull := sim.CurrentTime < 0
 
 	for _, slot := range swap.slots {
-		if slot == proto.ItemSlot_ItemSlotMainHand || slot == proto.ItemSlot_ItemSlotOffHand {
+		if slot == proto.ItemSlot_ItemSlotMainHand || slot == proto.ItemSlot_ItemSlotOffHand || slot == proto.ItemSlot_ItemSlotRanged {
 			weaponSlotSwapped = true
 		} else if !isReset && !isPrepull {
 			continue
@@ -432,20 +426,18 @@ func (swap *ItemSwap) swapItem(sim *Simulation, slot proto.ItemSlot, isPrepull b
 	character := swap.character
 
 	switch slot {
-	case proto.ItemSlot_ItemSlotMainHand:
-
-		// As of MoP Ranged Weapons are worn in the Main Hand
+	case proto.ItemSlot_ItemSlotRanged:
 		// If we can get it, we equipeed a valid ranged weapon
 		if character.Ranged() != nil {
 			if character.AutoAttacks.AutoSwingRanged {
 				character.AutoAttacks.SetRanged(character.WeaponFromRanged(swap.rangedCritMultiplier))
 			}
-		} else {
-			// Feral's concept of Paws is handeled in the druid.go Initialize()
-			// and doesn't need MH swap handling here.
-			if character.AutoAttacks.AutoSwingMelee && !swap.isFeralDruid {
-				character.AutoAttacks.SetMH(character.WeaponFromMainHand(swap.mhCritMultiplier))
-			}
+		}
+	case proto.ItemSlot_ItemSlotMainHand:
+		// Feral's concept of Paws is handeled in the druid.go Initialize()
+		// and doesn't need MH swap handling here.
+		if character.AutoAttacks.AutoSwingMelee && !swap.isFeralDruid {
+			character.AutoAttacks.SetMH(character.WeaponFromMainHand(swap.mhCritMultiplier))
 		}
 	case proto.ItemSlot_ItemSlotOffHand:
 		// OH slot handling is more involved because we need to dynamically toggle the OH weapon attack on/off

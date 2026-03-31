@@ -1,21 +1,32 @@
 import * as Mechanics from '../../core/constants/mechanics';
 import * as PresetUtils from '../../core/preset_utils.js';
-import { Class, ConsumesSpec, Debuffs, Profession, PseudoStat, Race, RaidBuffs, Stat } from '../../core/proto/common.js';
 import {
-	EnhancementShaman_Options as EnhancementShamanOptions,
-	FeleAutocastSettings,
-	ShamanImbue,
-	ShamanShield,
-	ShamanSyncType,
-} from '../../core/proto/shaman.js';
+	Class,
+	ConsumesSpec,
+	Debuffs,
+	Drums,
+	IndividualBuffs,
+	PartyBuffs,
+	Profession,
+	PseudoStat,
+	Race,
+	RaidBuffs,
+	Stat,
+	TristateEffect,
+} from '../../core/proto/common.js';
+import { EnhancementShaman_Options as EnhancementShamanOptions, ShamanImbue, ShamanSyncType } from '../../core/proto/shaman.js';
 import { SavedTalents } from '../../core/proto/ui.js';
 import { Stats } from '../../core/proto_utils/stats';
-import { defaultRaidBuffMajorDamageCooldowns } from '../../core/proto_utils/utils';
+import { defaultExposeWeaknessSettings, defaultRaidBuffMajorDamageCooldowns } from '../../core/proto_utils/utils';
 import DefaultApl from './apls/default.apl.json';
-import P3Apl from './apls/p3.apl.json';
 import P1Gear from './gear_sets/p1.gear.json';
 import P2Gear from './gear_sets/p2.gear.json';
 import P3Gear from './gear_sets/p3.gear.json';
+import P4Gear from './gear_sets/p4.gear.json';
+import P5Gear from './gear_sets/p5.gear.json';
+import P1KhadgarsItemSwap from './gear_sets/p1.khadgars.itemswap.json';
+import P1TruncheonItemSwap from './gear_sets/p1.truncheon.itemswap.json';
+import P1BisItemSwap from './gear_sets/p1.bis.itemswap.json';
 import PreraidGear from './gear_sets/preraid.gear.json';
 
 // Preset options for this spec.
@@ -24,27 +35,41 @@ import PreraidGear from './gear_sets/preraid.gear.json';
 
 export const PRERAID_PRESET = PresetUtils.makePresetGear('Pre-raid', PreraidGear);
 
-export const P1_PRESET = PresetUtils.makePresetGear('P1', P1Gear);
-export const P2_PRESET = PresetUtils.makePresetGear('P2', P2Gear);
-export const P3_PRESET = PresetUtils.makePresetGear('P3 (WiP)', P3Gear);
+export const P1_PRESET = PresetUtils.makePresetGear('P1 Preset', P1Gear);
+export const P2_PRESET = PresetUtils.makePresetGear('P2 Preset', P2Gear);
+export const P3_PRESET = PresetUtils.makePresetGear('P3 Preset', P3Gear);
+export const P4_PRESET = PresetUtils.makePresetGear('P4 Preset', P4Gear);
+export const P5_PRESET = PresetUtils.makePresetGear('P5 Preset', P5Gear);
+
+export const P1_BADGEOH_ITEMSWAP_PRESET = PresetUtils.makePresetItemSwapGear('P1 FireEle Swap (Badge OH)', P1KhadgarsItemSwap);
+export const P1_TRUNCHEON_ITEMSWAP_PRESET = PresetUtils.makePresetItemSwapGear('P1 FireEle Swap (Weapon OH)', P1TruncheonItemSwap);
+export const P1_BIS_ITEMSWAP_PRESET = PresetUtils.makePresetItemSwapGear('P1 FireEle Swap (BIS)', P1BisItemSwap);
 
 export const ROTATION_PRESET_DEFAULT = PresetUtils.makePresetAPLRotation('Default', DefaultApl);
-export const ROTATION_PRESET_P3 = PresetUtils.makePresetAPLRotation('P3 (WiP)', P3Apl);
 
 // Preset options for EP weights
 export const P1_EP_PRESET = PresetUtils.makePresetEpWeights(
 	'Default',
 	Stats.fromMap(
 		{
-			[Stat.StatIntellect]: 0.04,
-			[Stat.StatAgility]: 1.0,
-			[Stat.StatAttackPower]: 0.4,
+			// calculated in p1 bis after building out new default APL
+			[Stat.StatStrength]: 2.2,
+			[Stat.StatAgility]: 1.62,
+			[Stat.StatIntellect]: 0.08,
+			[Stat.StatSpellDamage]: 0.56,
+			[Stat.StatNatureDamage]: 0.4, // As simulated using Fire Ele Totem Only
+			[Stat.StatSpellHitRating]: 0.55,
+			[Stat.StatSpellCritRating]: 0.13,
+			[Stat.StatAttackPower]: 1.0,
+			[Stat.StatMeleeHitRating]: 1.9,
+			[Stat.StatMeleeCritRating]: 1.73,
+			[Stat.StatMeleeHasteRating]: 1.37,
+			[Stat.StatArmorPenetration]: 0.3,
+			[Stat.StatExpertiseRating]: 3.1,
 		},
 		{
-			[PseudoStat.PseudoStatMainHandDps]: 0.88,
-			[PseudoStat.PseudoStatOffHandDps]: 0.76,
-			[PseudoStat.PseudoStatSpellHitPercent]: 0.57 * Mechanics.SPELL_HIT_RATING_PER_HIT_PERCENT,
-			[PseudoStat.PseudoStatMeleeHitPercent]: 0.39 * Mechanics.PHYSICAL_HIT_RATING_PER_HIT_PERCENT,
+			[PseudoStat.PseudoStatMainHandDps]: 8.19,
+			[PseudoStat.PseudoStatOffHandDps]: 3.59,
 		},
 	),
 );
@@ -53,15 +78,22 @@ export const P3_EP_PRESET = PresetUtils.makePresetEpWeights(
 	'P3 (WiP)',
 	Stats.fromMap(
 		{
-			[Stat.StatIntellect]: 0.04,
-			[Stat.StatAgility]: 1.0,
-			[Stat.StatAttackPower]: 0.4,
+			// calculated in p3 bis after building out new default APL
+			[Stat.StatIntellect]: 0.1,
+			[Stat.StatAgility]: 1.69,
+			[Stat.StatStrength]: 2.2,
+			[Stat.StatAttackPower]: 1.0,
+			[Stat.StatSpellDamage]: 0.48,
+			[Stat.StatNatureDamage]: 0.35, // As simulated using Fire Ele Totem Only
+			[Stat.StatMeleeHitRating]: 1.91,
+			[Stat.StatMeleeCritRating]: 1.74,
+			[Stat.StatMeleeHasteRating]: 1.94,
+			[Stat.StatArmorPenetration]: 0.33,
+			[Stat.StatExpertiseRating]: 2.73,
 		},
 		{
-			[PseudoStat.PseudoStatMainHandDps]: 0.67,
-			[PseudoStat.PseudoStatOffHandDps]: 0.52,
-			[PseudoStat.PseudoStatSpellHitPercent]: 0.32 * Mechanics.SPELL_HIT_RATING_PER_HIT_PERCENT,
-			[PseudoStat.PseudoStatMeleeHitPercent]: 0.565 * Mechanics.PHYSICAL_HIT_RATING_PER_HIT_PERCENT,
+			[PseudoStat.PseudoStatMainHandDps]: 8.25,
+			[PseudoStat.PseudoStatOffHandDps]: 3.61,
 		},
 	),
 );
@@ -89,43 +121,67 @@ export const SubEle = {
 	}),
 };
 
+export const DefaultIndividualBuffs = IndividualBuffs.create({
+	blessingOfKings: true,
+	blessingOfMight: TristateEffect.TristateEffectImproved,
+});
+
 export const DefaultOptions = EnhancementShamanOptions.create({
 	classOptions: {
-		shield: ShamanShield.LightningShield,
+		shieldProcrate: 0,
 		imbueMh: ShamanImbue.WindfuryWeapon,
-		imbueMhSwap: ShamanImbue.WindfuryWeapon,
-		feleAutocast: FeleAutocastSettings.create({
-			autocastFireblast: true,
-			autocastFirenova: true,
-			autocastImmolate: true,
-			autocastEmpower: false,
-			noImmolateWfunleash: false,
-			noImmolateDuration: 0,
-		}),
 	},
-	imbueOh: ShamanImbue.FlametongueWeapon,
-	imbueOhSwap: ShamanImbue.FlametongueWeapon,
-	syncType: ShamanSyncType.Auto,
+	imbueOh: ShamanImbue.WindfuryWeapon,
+	syncType: ShamanSyncType.DelayOffhandSwings,
 });
 
 export const OtherDefaults = {
 	distanceFromTarget: 5,
 	profession1: Profession.Engineering,
-	profession2: Profession.Herbalism,
-	race: Race.RaceTroll,
+	profession2: Profession.Leatherworking,
+	race: Race.RaceOrc,
 };
 
 export const DefaultConsumables = ConsumesSpec.create({
-	flaskId: 76084, // Flask of Spring Blossoms
-	foodId: 74648, // Sea Mist Rice Noodles
-	potId: 76089, // Virmen's Bite
+	potId: 22838, // Haste Potion
+	flaskId: 22854, // Flask of Relentless Assault
+	foodId: 27658, // Roasted Clefthoof
+	drumsId: Drums.LesserDrumsOfBattle,
+	conjuredId: 22788,
+	explosiveId: 30217,
+	superSapper: true,
+	goblinSapper: true,
+	scrollAgi: true,
+	scrollStr: true,
+});
+
+export const DefaultPartyBuffs = PartyBuffs.create({
+	ferociousInspiration: 2,
+	braidedEterniumChain: true,
+	leaderOfThePack: TristateEffect.TristateEffectRegular,
+	battleShout: TristateEffect.TristateEffectImproved,
 });
 
 export const DefaultRaidBuffs = RaidBuffs.create({
 	...defaultRaidBuffMajorDamageCooldowns(Class.ClassShaman),
-
+	powerWordFortitude: TristateEffect.TristateEffectImproved,
+	giftOfTheWild: TristateEffect.TristateEffectImproved,
+	arcaneBrilliance: true,
 });
 
 export const DefaultDebuffs = Debuffs.create({
-
+	...defaultExposeWeaknessSettings(),
+	improvedSealOfTheCrusader: true,
+	judgementOfWisdom: true,
+	screech: true,
+	misery: true,
+	bloodFrenzy: true,
+	giftOfArthas: true,
+	mangle: true,
+	exposeArmor: TristateEffect.TristateEffectImproved,
+	faerieFire: TristateEffect.TristateEffectImproved,
+	sunderArmor: true,
+	curseOfElements: TristateEffect.TristateEffectImproved,
+	curseOfRecklessness: true,
+	huntersMark: TristateEffect.TristateEffectImproved,
 });

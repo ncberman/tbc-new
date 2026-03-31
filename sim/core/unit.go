@@ -207,7 +207,6 @@ type Unit struct {
 
 func (unit *Unit) getSpellDamageValueImpl(spell *Spell, _ *Unit) float64 {
 	return spell.Unit.GetStat(stats.SpellDamage) + spell.BonusSpellDamage + spell.SpellSchoolBonusDamage()
-
 }
 
 func (unit *Unit) getAttackPowerValueImpl(spell *Spell, target *Unit) float64 {
@@ -635,29 +634,12 @@ func (unit *Unit) MultiplyAttackSpeed(sim *Simulation, amount float64) {
 
 // Helper for multiplying resource generation speed
 func (unit *Unit) MultiplyResourceRegenSpeed(sim *Simulation, amount float64) {
-	if unit.HasFocusBar() {
-		unit.MultiplyFocusRegenSpeed(sim, amount)
-	} else if unit.HasEnergyBar() {
+	if unit.HasEnergyBar() {
 		unit.MultiplyEnergyRegenSpeed(sim, amount)
 	}
 
 	unit.Env.TriggerDelayedPetInheritance(sim, unit.RegenInheritancePets, func(sim *Simulation, pet *Pet) {
 		pet.MultiplyResourceRegenSpeed(sim, amount)
-	})
-}
-
-func (unit *Unit) AddBonusRangedHitPercent(percentage float64) {
-	unit.OnSpellRegistered(func(spell *Spell) {
-		if spell.ProcMask.Matches(ProcMaskRanged) {
-			spell.BonusHitPercent += percentage
-		}
-	})
-}
-func (unit *Unit) AddBonusRangedCritPercent(percentage float64) {
-	unit.OnSpellRegistered(func(spell *Spell) {
-		if spell.ProcMask.Matches(ProcMaskRanged) {
-			spell.BonusCritPercent += percentage
-		}
 	})
 }
 
@@ -844,6 +826,8 @@ func (unit *Unit) GetMetadata() *proto.UnitMetadata {
 			EncounterOnly:   spell.Flags.Matches(SpellFlagEncounterOnly),
 			HasCastTime:     spell.DefaultCast.CastTime > 0,
 			IsFriendly:      spell.Flags.Matches(SpellFlagHelpful),
+			IsPotion:        spell.Flags.Matches(SpellFlagPotion),
+			IsConjured:      spell.Flags.Matches(SpellFlagConjured),
 			HasExpectedTick: spell.expectedTickDamageInternal != nil,
 			HasMissileSpeed: spell.MissileSpeed > 0.0,
 			HasRanks:        spell.Rank > 0,

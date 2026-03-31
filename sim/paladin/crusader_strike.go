@@ -20,6 +20,7 @@ func (paladin *Paladin) registerCrusaderStrike() {
 		ClassSpellMask: SpellMaskCrusaderStrike,
 
 		Cast: core.CastConfig{
+			IgnoreHaste: true,
 			DefaultCast: core.Cast{
 				GCD: core.GCDDefault,
 			},
@@ -39,8 +40,15 @@ func (paladin *Paladin) registerCrusaderStrike() {
 		CritMultiplier:   paladin.DefaultMeleeCritMultiplier(),
 
 		ApplyEffects: func(sim *core.Simulation, target *core.Unit, spell *core.Spell) {
-			baseDamage := spell.Unit.MHNormalizedWeaponDamage(sim, spell.MeleeAttackPower())
-			spell.CalcAndDealDamage(sim, target, baseDamage, spell.OutcomeMeleeWeaponSpecialHitAndCrit)
+			baseDamage := spell.Unit.MHNormalizedWeaponDamage(sim, spell.MeleeAttackPower(target))
+			result := spell.CalcAndDealDamage(sim, target, baseDamage, spell.OutcomeMeleeWeaponSpecialHitAndCrit)
+			if result.Landed() {
+				for _, auraArray := range paladin.JudgementAuras {
+					if aura := auraArray.Get(target); aura.IsActive() {
+						aura.Refresh(sim)
+					}
+				}
+			}
 		},
 	})
 }

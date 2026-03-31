@@ -1,10 +1,9 @@
 import * as PresetUtils from '../../core/preset_utils';
-import { ConsumesSpec, PseudoStat, Stat } from '../../core/proto/common';
+import { ConsumesSpec, Drums, PseudoStat, Stat } from '../../core/proto/common';
 import { Rogue_Options as RogueOptions } from '../../core/proto/rogue';
 import { SavedTalents } from '../../core/proto/ui';
 import { Stats } from '../../core/proto_utils/stats';
-import ShivAPL from './apls/shiv.apl.json'
-import SinisterAPL from './apls/sinister.apl.json'
+import SinisterAPL from './apls/swords.apl.json';
 import PreraidSwordsGear from './gear_sets/preraid.gear.json';
 import P1SwordsGear from './gear_sets/p1.gear.json';
 
@@ -12,12 +11,10 @@ import P1SwordsGear from './gear_sets/p1.gear.json';
 // Eventually we will import these values for the raid sim too, so its good to
 // keep them in a separate file.
 
-export const SHIV_APL = PresetUtils.makePresetAPLRotation('Shiv EA', ShivAPL)
-export const SINSITER_APL = PresetUtils.makePresetAPLRotation('Sinister Strike EA', SinisterAPL)
+export const SINSITER_APL = PresetUtils.makePresetAPLRotation('SS/Hemo/Shiv', SinisterAPL);
 
 export const P1_SWORDS_GEAR = PresetUtils.makePresetGear('P1 Swords', P1SwordsGear);
 export const PREARAID_SWORDS_GEAR = PresetUtils.makePresetGear('Preraid Swords', PreraidSwordsGear);
-
 
 // Preset options for EP weights
 export const P1_EP_PRESET = PresetUtils.makePresetEpWeights(
@@ -37,7 +34,7 @@ export const P1_EP_PRESET = PresetUtils.makePresetEpWeights(
 		},
 		{
 			[PseudoStat.PseudoStatMainHandDps]: 9.34,
-			[PseudoStat.PseudoStatOffHandDps]: 3.40,
+			[PseudoStat.PseudoStatOffHandDps]: 3.4,
 		},
 	),
 );
@@ -48,13 +45,12 @@ export const P1_EP_PRESET = PresetUtils.makePresetEpWeights(
 export const Talents = {
 	name: 'Combat Swords',
 	data: SavedTalents.create({
-		talentsString: '00532012502-023305200005015002321151',
+		talentsString: '0053201252-023305200005015002321151',
 	}),
 };
 
 export const DefaultOptions = RogueOptions.create({
-	classOptions: {
-	},
+	classOptions: {},
 });
 
 export const DefaultConsumables = ConsumesSpec.create({
@@ -64,7 +60,6 @@ export const DefaultConsumables = ConsumesSpec.create({
 	potId: 22838,
 	conjuredId: 7676,
 	ohImbueId: 27186,
-	drumsId: 351355
 });
 
 export const OtherDefaults = {

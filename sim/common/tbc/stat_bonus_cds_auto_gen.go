@@ -54,9 +54,7 @@ func RegisterAllOnUseCds() {
 	// shared.NewSimpleStatActive(24098) // Pendant of the Null Rune - https://www.wowhead.com/tbc/spell=31002
 	// shared.NewSimpleStatActive(24106) // Thick Felsteel Necklace - https://www.wowhead.com/tbc/spell=31023
 	// shared.NewSimpleStatActive(24110) // Living Ruby Pendant - https://www.wowhead.com/tbc/spell=31024
-	// shared.NewSimpleStatActive(24116) // Eye of the Night - https://www.wowhead.com/tbc/spell=31033
 	// shared.NewSimpleStatActive(24117) // Embrace of the Dawn - https://www.wowhead.com/tbc/spell=31026
-	// shared.NewSimpleStatActive(24121) // Chain of the Twilight Owl - https://www.wowhead.com/tbc/spell=31035
 	// shared.NewSimpleStatActive(24127) // Figurine - Talasite Owl - https://www.wowhead.com/tbc/spell=31045
 	// shared.NewSimpleStatActive(24376) // Runed Fungalcap - https://www.wowhead.com/tbc/spell=31771
 	// shared.NewSimpleStatActive(24390) // Auslese's Light Channeler - https://www.wowhead.com/tbc/spell=31794
@@ -68,7 +66,6 @@ func RegisterAllOnUseCds() {
 	// shared.NewSimpleStatActive(27416) // Fetish of the Fallen - https://www.wowhead.com/tbc/spell=33014
 	// shared.NewSimpleStatActive(27900) // Jewel of Charismatic Mystique - https://www.wowhead.com/tbc/spell=33486
 	// shared.NewSimpleStatActive(28590) // Ribbon of Sacrifice - https://www.wowhead.com/tbc/spell=38332
-	// shared.NewSimpleStatActive(28727) // Pendant of the Violet Eye - https://www.wowhead.com/tbc/spell=29601
 	// shared.NewSimpleStatActive(28767) // The Decapitator - https://www.wowhead.com/tbc/spell=37208
 	// shared.NewSimpleStatActive(29181) // Timelapse Shard - https://www.wowhead.com/tbc/spell=35352
 	// shared.NewSimpleStatActive(30841) // Lower City Prayerbook - https://www.wowhead.com/tbc/spell=37877
@@ -77,7 +74,6 @@ func RegisterAllOnUseCds() {
 	// shared.NewSimpleStatActive(32539) // Skyguard's Drape - https://www.wowhead.com/tbc/spell=12438
 	// shared.NewSimpleStatActive(33808) // The Horseman's Helm - https://www.wowhead.com/tbc/spell=43873
 	// shared.NewSimpleStatActive(33820) // Weather-Beaten Fishing Hat - https://www.wowhead.com/tbc/spell=43699
-	// shared.NewSimpleStatActive(34429) // Shifting Naaru Sliver - https://www.wowhead.com/tbc/spell=45042
 	// shared.NewSimpleStatActive(34430) // Glimmering Naaru Sliver - https://www.wowhead.com/tbc/spell=45052
 	// shared.NewSimpleStatActive(34471) // Vial of the Sunwell - https://www.wowhead.com/tbc/spell=45064
 	// shared.NewSimpleStatActive(35275) // Orb of the Sin'dorei - https://www.wowhead.com/tbc/spell=46354
@@ -103,9 +99,6 @@ func RegisterAllOnUseCds() {
 	shared.NewSimpleStatActive(19345) // Aegis of Preservation - https://www.wowhead.com/tbc/spell=23780
 	shared.NewSimpleStatActive(27891) // Adamantine Figurine - https://www.wowhead.com/tbc/spell=33479
 	shared.NewSimpleStatActive(33830) // Ancient Aqir Artifact - https://www.wowhead.com/tbc/spell=43713
-
-	// Armor / AttackPower / SpellDamage
-	shared.NewSimpleStatActive(19337) // The Black Book - https://www.wowhead.com/tbc/spell=23720
 
 	// ArmorPenetration
 	shared.NewSimpleStatActive(28121) // Icon of Unyielding Courage - https://www.wowhead.com/tbc/spell=34106
@@ -190,9 +183,6 @@ func RegisterAllOnUseCds() {
 	// Health / Strength
 	shared.NewSimpleStatActive(28484) // Bulwark of Kings - https://www.wowhead.com/tbc/spell=34511
 	shared.NewSimpleStatActive(28485) // Bulwark of the Ancient Kings - https://www.wowhead.com/tbc/spell=34511
-
-	// MeleeCritRating
-	shared.NewSimpleStatActive(24114) // Braided Eternium Chain - https://www.wowhead.com/tbc/spell=31025
 
 	// MeleeHasteRating
 	shared.NewSimpleStatActive(22954) // Kiss of the Spider - https://www.wowhead.com/tbc/spell=28866

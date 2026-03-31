@@ -24,6 +24,7 @@ const (
 	CallbackOnPeriodicHealDealt
 	CallbackOnCastComplete
 	CallbackOnApplyEffects
+	CallbackOnPeriodicDamageTaken
 
 	CallbackLast
 )
@@ -49,6 +50,7 @@ type ProcTrigger struct {
 	Handler            ProcHandler
 	TriggerImmediately bool // If false (default), the handler will be called one spell batch window later for improved realism.
 	ClassSpellMask     int64
+	ClassSpellsOnly    bool // Corresponds to the Only Proc From Class Abilities flag, e.g. https://www.wowhead.com/tbc/spell=32106/lesser-spell-blasting
 	ExtraCondition     ProcExtraCondition
 }
 
@@ -100,6 +102,9 @@ func (procAura *Aura) AttachProcTriggerCallback(unit *Unit, config ProcTrigger) 
 			return
 		}
 		if config.ClassSpellMask > 0 && config.ClassSpellMask&spell.ClassSpellMask == 0 {
+			return
+		}
+		if config.ClassSpellsOnly && spell.ClassSpellMask == 0 {
 			return
 		}
 		if config.ProcMaskExclude != ProcMaskUnknown && spell.ProcMask.Matches(config.ProcMaskExclude) {
@@ -213,6 +218,9 @@ func (procAura *Aura) AttachProcTriggerCallback(unit *Unit, config ProcTrigger) 
 			applyHandler(sim, spell, emptyResult)
 		}
 	}
+	if config.Callback.Matches(CallbackOnPeriodicDamageTaken) {
+		procAura.OnPeriodicDamageTaken = callback
+	}
 }
 
 func (unit *Unit) MakeProcTriggerAura(config ProcTrigger) *Aura {
@@ -298,11 +306,13 @@ func MakePermanent(aura *Aura) *Aura {
 	aura.Duration = NeverExpires
 	if aura.OnReset == nil {
 		aura.OnReset = func(aura *Aura, sim *Simulation) {
+			aura.Duration = NeverExpires
 			aura.Activate(sim)
 		}
 	} else {
 		oldOnReset := aura.OnReset
 		aura.OnReset = func(aura *Aura, sim *Simulation) {
+			aura.Duration = NeverExpires
 			oldOnReset(aura, sim)
 			aura.Activate(sim)
 		}
@@ -589,6 +599,18 @@ func (parentAura *Aura) AttachMultiplyAttackSpeed(multiplier float64) *Aura {
 	return parentAura
 }
 
+func (parentAura *Aura) AttachMultiplyRangedHaste(multiplier float64) *Aura {
+	parentAura.ApplyOnGain(func(_ *Aura, sim *Simulation) {
+		parentAura.Unit.MultiplyRangedHaste(sim, multiplier)
+	})
+
+	parentAura.ApplyOnExpire(func(_ *Aura, sim *Simulation) {
+		parentAura.Unit.MultiplyRangedHaste(sim, 1/multiplier)
+	})
+
+	return parentAura
+}
+
 // Attaches a Damage Done By Caster buff to a parent Aura
 // Returns parent aura for chaining
 func (parentAura *Aura) AttachDDBC(index int, maxIndex int, attackTables *[]*AttackTable, handler DynamicDamageDoneByCaster) *Aura {
@@ -604,6 +626,27 @@ func (parentAura *Aura) AttachDDBC(index int, maxIndex int, attackTables *[]*Att
 		EnableDamageDoneByCaster(index, maxIndex, (*attackTables)[parentAura.Unit.UnitIndex], handler)
 	}
 
+	return parentAura
+}
+
+func (parentAura *Aura) AttachPeriodicAction(config PeriodicActionOptions) *Aura {
+	var pa *PendingAction
+	tickImmediately := config.TickImmediately
+	config.TickImmediately = false
+	parentAura.ApplyOnGain(func(_ *Aura, sim *Simulation) {
+		if pa == nil {
+			pa = NewPeriodicAction(sim, config)
+		}
+		pa.cancelled = false
+		pa.NextActionAt = sim.CurrentTime + TernaryDuration(tickImmediately, 0, config.Period)
+		sim.AddPendingAction(pa)
+	})
+	parentAura.ApplyOnExpire(func(_ *Aura, sim *Simulation) {
+		pa.Cancel(sim)
+	})
+	if parentAura.IsActive() {
+		panic("Can't attach a periodic action to an active aura.")
+	}
 	return parentAura
 }
 
