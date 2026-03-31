@@ -560,7 +560,7 @@ func (paladin *Paladin) applyDivinePurposeTalent() {
 
 // Fanaticism - Increases the critical strike chance of all Judgements capable of a critical hit by 3/6/9/12/15% and reduces threat caused by all actions by 6/12/18/24/30%
 func (paladin *Paladin) applyFanaticism() {
-	critChance := .03 * float64(paladin.Talents.Fanaticism)
+	critChance := 3 * float64(paladin.Talents.Fanaticism)
 	threatReduc := -.06 * float64(paladin.Talents.Fanaticism)
 
 	paladin.AddStaticMod(core.SpellModConfig{
